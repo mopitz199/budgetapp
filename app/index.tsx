@@ -1,13 +1,56 @@
 import auth from '@react-native-firebase/auth';
 import { FirebaseError } from 'firebase/app';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ActivityIndicator, Button, KeyboardAvoidingView, Text, TextInput, View } from "react-native";
+
+import {
+  GoogleSignin,
+  isErrorWithCode,
+  isSuccessResponse,
+  statusCodes
+} from '@react-native-google-signin/google-signin';
 
 export default function Index() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    GoogleSignin.configure();
+  }, []);
+
+  // Somewhere in your code
+  const googleSignIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const response = await GoogleSignin.signIn();
+      if (isSuccessResponse(response)) {
+        console.log('User Info: ', response.data);
+      } else {
+        console.log('Sign in cancelled by the user');
+      }
+    } catch (error) {
+      if (isErrorWithCode(error)) {
+        switch (error.code) {
+          case statusCodes.IN_PROGRESS:
+            console.log('Sign in already in progress');
+            // operation (eg. sign in) already in progress
+            break;
+          case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+            console.log('Play services not available or outdated');
+            // Android only, play services not available or outdated
+            break;
+          default:
+          // some other error happened
+        }
+      } else {
+        console.log('An error that is not related to google sign in occurred:', error);
+        // an error that's not related to google sign in occurred
+      }
+    }
+  }
+
 
   const signUp = async () => {
     setLoading(true);
@@ -61,6 +104,7 @@ export default function Index() {
             <>
               <Button onPress={signIn} title="Login"/>
               <Button onPress={signUp} title="Create account"/>
+              <Button onPress={googleSignIn} title="Sign in with Gooooogle"/>
             </>
           )}
         </View>
