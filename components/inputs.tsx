@@ -1,23 +1,36 @@
-import { TextInput, TextInputProps } from 'react-native';
+import { Text, TextInput, TextInputProps, View } from 'react-native';
 
-export function TopInput({ className, value, onChangeText, ...otherProps}: TextInputProps) {
+export function Input({ className, value, onChangeText, ...otherProps}: TextInputProps) {
   return (
     <TextInput
-      className='text-2xl p-4 text-primaryTextOverLight bg-surfaceCard rounded-t-xl'
+      className={`
+        text-2xl p-4
+        text-primaryTextOverLight 
+        bg-surfaceCard
+        rounded-xl
+        border-divider
+        border
+      ${className}`}
       value={value}
       onChangeText={onChangeText}
+      autoCapitalize='none'
       {...otherProps}
     />
   );
 }
 
-export function BottomInput({ className, value, onChangeText, ...otherProps}: TextInputProps) {
+
+export function InputWithError({
+  className,
+  value,
+  onChangeText,
+  errorMessage,
+  ...otherProps}: TextInputProps & { errorMessage?: string }
+) {
   return (
-    <TextInput
-      className='border-t text-2xl p-4 border-divider rounded-b-xl text-primaryTextOverLight bg-surfaceCard'
-      value={value}
-      onChangeText={onChangeText}
-      {...otherProps}
-    />
+    <View className='mb-2'>
+      <Input className='mb-2' value={value} onChangeText={onChangeText} {...otherProps}/>
+      <Text className='pl-2 text-error text-lg'>{errorMessage}</Text>
+    </View>
   );
 }

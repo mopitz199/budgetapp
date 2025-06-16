@@ -19,7 +19,7 @@ import {
 } from '@react-native-google-signin/google-signin';
 
 import { GoogleButton, PrimaryButton } from '@/components/buttons';
-import { BottomInput, TopInput } from '@/components/inputs';
+import { Input } from '@/components/inputs';
 import { sleep } from '@/utils';
 
 export default function Index() {
@@ -116,9 +116,11 @@ export default function Index() {
               <View>
                 <View>
                   <KeyboardAvoidingView behavior="padding" className="">
-                    <TopInput value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" placeholder="Email" />
-                    <BottomInput value={password} onChangeText={setPassword} secureTextEntry placeholder="Password" />
-                    <PrimaryButton onPress={signIn} text={"Log In"} className='mt-4 mb-4'/>
+                    <Input className='mb-2' value={email} onChangeText={setEmail} keyboardType="email-address" placeholder="Email" />
+                    <Text className='pl-2 mb-2 text-error text-lg'>Invalid email</Text>
+                    <Input className='mb-2' value={password} onChangeText={setPassword} secureTextEntry placeholder="Password" />
+                    <Text className='pl-2 mb-2 text-error text-lg'>Wrong password</Text>
+                    <PrimaryButton className='mt-2 mb-4' onPress={signIn} text={"Log In"}/>
                   </KeyboardAvoidingView>
                   <Text className="text-right text-primaryTextOverLight">Forgot Password?</Text>
                 </View>
