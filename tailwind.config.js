@@ -6,13 +6,34 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "put my primary color here",
-        secondary: "put my secondary color here",
-        light: {
-          100: "#32329d",
-          200: "#32329d",
-          300: "#32329d",
-          600: "#32329d",
+        primaryTextOverColorOrDark: "#FFFFFF",
+        primaryTextOverLight: "#1D2430",
+        secondaryTextOverLight: "#5C677D",
+        disableTextOverLight: "#9AA1B3",
+
+        divider: "#E5E7EB",
+        surfaceCard: "#FFFFFF",
+        background: "#F9FAFB",
+
+        linkTextOverLight: "#0066FF",
+
+        primary: "#0057FF",
+        success: "#00C48C",
+        error: "#FF5A5F",
+        warning: "#FFA928",
+        accent: "#FF57D9",
+
+        
+        darkMode: {
+          background: "#0E1116",
+          primaryButton: "#4C8DFF",
+          secondaryButton: "#30D9A3",
+          warning: "#FFC44D",
+          error: "#FF7A80",
+          surface: "#1B1F24",
+          textPrimary: "#EAECEE",
+          textSecondary: "#9AA1B3",
+          accent: "#FF8BF0",
         }
       }
     },
