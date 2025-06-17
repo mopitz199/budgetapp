@@ -1,5 +1,5 @@
 
-import { Image, Text, TouchableOpacity } from 'react-native';
+import { Image, Text, TouchableOpacity, TouchableOpacityProps } from 'react-native';
 
 type Props = {
   text?: string;
@@ -7,9 +7,9 @@ type Props = {
   className: string;
 };
 
-export function PrimaryButton({ text, onPress , className }: Props) {
+export function PrimaryButton({ text, onPress , className, ...props }: TouchableOpacityProps & Props ) {
   return (
-    <TouchableOpacity onPress={onPress} className={`bg-primary p-4 rounded-xl ${className}`}>
+    <TouchableOpacity onPress={onPress} className={`bg-primary p-4 rounded-xl ${className}`} {...props}>
       <Text className='text-white text-center text-2xl font-semibold'>{text}</Text>
     </TouchableOpacity>
   );

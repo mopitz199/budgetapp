@@ -31,7 +31,8 @@ export default function RootLayout() {
     if (user && !inAuthGroup) {
       router.replace('/(auth)/home');
     } else if (!user && inAuthGroup) {
-      router.replace('/')
+      alert("holaaa")
+      router.replace('/SignUp')
     }
 
   }, [user, initializing])
@@ -45,7 +46,8 @@ export default function RootLayout() {
   } else {
     return (
         <Stack>
-          <Stack.Screen name='index' options={{headerShown: false}} />
+          <Stack.Screen name='index' options={{headerShown: false, title: 'Login'}} />
+          <Stack.Screen name='SignUp' options={{title: 'SignUp'}}/>
           <Stack.Screen name='(auth)' options={{headerShown: false}}/>
         </Stack>
     )

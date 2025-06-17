@@ -1,4 +1,11 @@
 import auth from '@react-native-firebase/auth';
+import {
+  GoogleSignin,
+  isErrorWithCode,
+  isSuccessResponse,
+  statusCodes
+} from '@react-native-google-signin/google-signin';
+import { useRouter } from "expo-router";
 import { FirebaseError } from 'firebase/app';
 import React, { useEffect, useState } from "react";
 import {
@@ -11,18 +18,12 @@ import {
   View
 } from "react-native";
 
-import {
-  GoogleSignin,
-  isErrorWithCode,
-  isSuccessResponse,
-  statusCodes
-} from '@react-native-google-signin/google-signin';
-
 import { GoogleButton, PrimaryButton } from '@/components/buttons';
 import { Input } from '@/components/inputs';
-import { sleep } from '@/utils';
 
 export default function Index() {
+
+  const router = useRouter();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -71,11 +72,8 @@ export default function Index() {
     }
   }
 
-
   const signUp = async () => {
-    setLoading(true);
-    await sleep(2000);
-    setLoading(false);
+    router.push('/SignUp');
     /*try {
       const {user} = await auth().createUserWithEmailAndPassword(email, password);
       user.sendEmailVerification();
