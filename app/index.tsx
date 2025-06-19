@@ -14,10 +14,12 @@ import {
   Alert,
   Image,
   KeyboardAvoidingView,
+  Pressable,
   SafeAreaView,
   Text,
   View
 } from "react-native";
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import { GoogleButton, PrimaryButton } from '@/components/buttons';
 import { Input } from '@/components/inputs';
@@ -30,6 +32,8 @@ export default function Index() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  
 
   useEffect(() => {
     GoogleSignin.configure();
@@ -102,7 +106,12 @@ export default function Index() {
                 <View>
                   <KeyboardAvoidingView behavior="padding" className="">
                     <Input className='mb-2' value={email} onChangeText={setEmail} keyboardType="email-address" placeholder={t("email")} />
-                    <Input className='mb-2' value={password} onChangeText={setPassword} secureTextEntry placeholder={t("password")} />
+                    <View className='justify-center'>
+                      <Input editable={!loading} className='mb-2' value={password} onChangeText={setPassword} secureTextEntry={!showPassword} placeholder={t("password")} />
+                      <Pressable className='absolute right-4' onPress={() => setShowPassword((showPassword) => !showPassword)}>
+                        <Icon name={showPassword ? "eye" : "eye-off"} size={30} color="#1D2430" />
+                      </Pressable>
+                    </View>
                     <PrimaryButton className='mt-2 mb-4' onPress={signIn} text={t("logIn")}/>
                   </KeyboardAvoidingView>
                   <Text className="text-right text-primaryTextOverLight">{t('forgotPassword')}</Text>
