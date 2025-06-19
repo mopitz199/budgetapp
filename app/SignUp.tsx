@@ -58,7 +58,6 @@ export default function CreateAccount() {
     try {
       const {user} = await auth().createUserWithEmailAndPassword(email, password);
       user.sendEmailVerification();
-      alert("Check your email!")
     } catch (e: any) {
       const err = e as FirebaseError;
       alert("Registration failed: " + err.message)

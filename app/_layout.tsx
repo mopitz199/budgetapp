@@ -39,8 +39,7 @@ export default function RootLayout() {
         router.replace('/(auth)/EmailVerification');
       }
     } else if (!user && inAuthGroup) {
-      alert("holaaa")
-      router.replace('/SignUp')
+      router.replace('/')
     }
 
   }, [user, initializing])

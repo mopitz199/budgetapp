@@ -12,6 +12,7 @@ const resources = {
       "or": "or",
       "doesNotHaveAnAccount": "Don't have an account?",
       "signUp": "Sign Up",
+      "signOut": "Sign Out",
       "logIn": "Log In",
       "email": "Email",
       "password": "Password",
@@ -23,6 +24,11 @@ const resources = {
       "invalidRepeatedPassword": "The passwords does not match",
       "createAccount": "Create Account",
       "verifyYourEmail": "Verify your Email",
+      "emailSent": "Email sent.",
+      "verifyAgain": "Verify Again",
+      "notVerifiedCheckEmail": "Not verified yet. check your inbox or spam.",
+      "weHaveSentYouVerificationLink": "We have sent you a verification link.",
+      "checkYourEmail": "Check your email",
       "Welcome to React": "Welcome to React and react-i18next"
     }
   },
@@ -33,6 +39,7 @@ const resources = {
       "or": "o",
       "doesNotHaveAnAccount": "No tienes una cuenta?",
       "signUp": "Registrate",
+      "signOut": "Salir",
       "logIn": "Ingresar",
       "email": "Correo",
       "password": "Contraseña",
@@ -44,6 +51,11 @@ const resources = {
       "invalidRepeatedPassword": "Las contraseñas no calzan",
       "createAccount": "Crea tu Cuenta",
       "verifyYourEmail": "Verifica tu Correo",
+      "emailSent": "Correo enviado.",
+      "notVerifiedCheckEmail": "No verificado aun. Revisa tu correo o tu bandeja de spam",
+      "verifyAgain": "Verificar de nuevo",
+      "weHaveSentYouVerificationLink": "Te hemos enviado un correo de verificación",
+      "checkYourEmail": "Revisa tu correo",
       "Welcome to React": "Bienvenue à React et react-i18next"
     }
   }
