@@ -8,6 +8,7 @@ import {
 import { useRouter } from "expo-router";
 import { FirebaseError } from 'firebase/app';
 import React, { useEffect, useState } from "react";
+import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   Alert,
@@ -24,6 +25,7 @@ import { Input } from '@/components/inputs';
 export default function Index() {
 
   const router = useRouter();
+  const { t } = useTranslation();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -33,7 +35,6 @@ export default function Index() {
     GoogleSignin.configure();
   }, []);
 
-  // Somewhere in your code
   const googleSignIn = async () => {
     try {
       await GoogleSignin.hasPlayServices();
@@ -53,12 +54,10 @@ export default function Index() {
         console.log('Error code:', error);
         switch (error.code) {
           case statusCodes.IN_PROGRESS:
-            console.log('Sign in already in progress');
             Alert.alert('Information', 'Sign in already in progress', [{text: 'OK'}]);
             break;
           case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
             // Android only, play services not available or outdated
-            console.log('Play services not available or outdated');
             Alert.alert('Error', 'Play services not available or outdated', [{text: 'OK'}]);
             break;
           default:
@@ -66,7 +65,6 @@ export default function Index() {
         }
       } else {
         // an error that's not related to google sign in occurred
-        console.log('An error that is not related to google sign in occurred:', error);
         Alert.alert('Error', 'Please try again later', [{text: 'OK'}]);
       }
     }
@@ -74,23 +72,12 @@ export default function Index() {
 
   const signUp = async () => {
     router.push('/SignUp');
-    /*try {
-      const {user} = await auth().createUserWithEmailAndPassword(email, password);
-      user.sendEmailVerification();
-      alert("Check your email!")
-    } catch (e: any) {
-      const err = e as FirebaseError;
-      alert("Registration failed: " + err.message)
-    } finally {
-      setLoading(false);
-    }*/
   }
 
   const signIn = async () => {
     setLoading(true);
     try {
       await auth().signInWithEmailAndPassword(email, password);
-      alert("Check your email!")
     } catch (e: any) {
       const err = e as FirebaseError;
       console.log("sign in error", err);
@@ -114,24 +101,22 @@ export default function Index() {
               <View>
                 <View>
                   <KeyboardAvoidingView behavior="padding" className="">
-                    <Input className='mb-2' value={email} onChangeText={setEmail} keyboardType="email-address" placeholder="Email" />
-                    <Text className='pl-2 mb-2 text-error text-lg'>Invalid email</Text>
-                    <Input className='mb-2' value={password} onChangeText={setPassword} secureTextEntry placeholder="Password" />
-                    <Text className='pl-2 mb-2 text-error text-lg'>Wrong password</Text>
-                    <PrimaryButton className='mt-2 mb-4' onPress={signIn} text={"Log In"}/>
+                    <Input className='mb-2' value={email} onChangeText={setEmail} keyboardType="email-address" placeholder={t("email")} />
+                    <Input className='mb-2' value={password} onChangeText={setPassword} secureTextEntry placeholder={t("password")} />
+                    <PrimaryButton className='mt-2 mb-4' onPress={signIn} text={t("logIn")}/>
                   </KeyboardAvoidingView>
-                  <Text className="text-right text-primaryTextOverLight">Forgot Password?</Text>
+                  <Text className="text-right text-primaryTextOverLight">{t('forgotPassword')}</Text>
                 </View>
                 <View className="flex-row">
                   <View className='flex-1 grow-[1] border-t border-divider mt-4'></View>
-                  <Text className='text-end text-2xl mr-4 ml-4 text-secondaryTextOverLight'>or</Text>
+                  <Text className='text-end text-2xl mr-4 ml-4 text-secondaryTextOverLight'>{t('or')}</Text>
                   <View className='flex-1 grow-[1] border-t border-divider mt-4'></View>
                 </View>
                 <View>
                   <GoogleButton onPress={googleSignIn} className='mt-4'/>
                   <View className='flex-row items-center justify-center mt-4'>
-                    <Text className='text-md text-primaryTextOverLight'>Don't have an account?
-                      <Text onPress={signUp} className="text-md text-linkTextOverLight"> Sign Up</Text>
+                    <Text className='text-md text-primaryTextOverLight'>{t('doesNotHaveAnAccount')}
+                      <Text onPress={signUp} className="text-md text-linkTextOverLight"> {t('signUp')}</Text>
                     </Text>
                   </View>
                 </View>

@@ -1,6 +1,9 @@
+import { PrimaryButton } from '@/components/buttons';
+import { Input } from '@/components/inputs';
 import auth from '@react-native-firebase/auth';
 import { FirebaseError } from 'firebase/app';
 import React, { useState } from "react";
+import { useTranslation } from 'react-i18next';
 import {
   KeyboardAvoidingView,
   SafeAreaView,
@@ -8,11 +11,10 @@ import {
   View
 } from "react-native";
 
-import { PrimaryButton } from '@/components/buttons';
-import { Input } from '@/components/inputs';
-
 export default function CreateAccount() {
 
+  const { t } = useTranslation();
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [repeatedPassword, setRepeatedPassword] = useState('');
@@ -26,7 +28,7 @@ export default function CreateAccount() {
   const validateEmail = (): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
     if(email.trim() == '' || !emailRegex.test(email)){
-      setEmailError("The email in invalid")
+      setEmailError(t("invalidEmail"))
       return false
     }
     setEmailError("")
@@ -34,9 +36,9 @@ export default function CreateAccount() {
   }
 
   const validatePassword = (): boolean => {
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*\d).{6,}$/;
     if (password.trim() == '' || !passwordRegex.test(password)){
-      setPasswordError("Use at least 6 numbers and characters")
+      setPasswordError(t("invalidPassword"))
       return false
     }
     setPasswordError("")
@@ -45,7 +47,7 @@ export default function CreateAccount() {
 
   const validateRepeatedPassword = (): boolean => {
     if(password != repeatedPassword){
-      setRepeatedPasswordError("The passwords does not match")
+      setRepeatedPasswordError(t("invalidRepeatedPassword"))
       return false
     }
     setRepeatedPasswordError("")
@@ -78,21 +80,20 @@ export default function CreateAccount() {
   return (
     <SafeAreaView className="flex-1 flex-col justify-center items-center bg-background">
       <View className='grow-[1] justify-end'>
-        <Text className='text-4xl text-primaryTextOverLight mb-4'>Create Account</Text>
+        <Text className='text-4xl text-primaryTextOverLight mb-4'>{t("createAccount")}</Text>
       </View>
       <KeyboardAvoidingView className='w-full grow-[1] justify-start p-10'>
-        <Input className='mb-2' value={email} onChangeText={setEmail} keyboardType="email-address" placeholder="Email" />
+        <Input editable={!loading} className='mb-2' value={email} onChangeText={setEmail} keyboardType="email-address" placeholder={t("email")} />
         <Text className='pl-2 mb-2 text-error text-lg'>{emailError}</Text>
-        <Input className='mb-2' value={password} onChangeText={setPassword} secureTextEntry placeholder="Password" />
+        <Input editable={!loading} className='mb-2' value={password} onChangeText={setPassword} secureTextEntry placeholder={t("password")} />
         <Text className='pl-2 mb-2 text-error text-lg'>{passwordError}</Text>
-        <Input className='mb-2' value={repeatedPassword} onChangeText={setRepeatedPassword} secureTextEntry placeholder="Repeat Password" />
+        <Input editable={!loading} className='mb-2' value={repeatedPassword} onChangeText={setRepeatedPassword} secureTextEntry placeholder={t("repeatPassword")} />
         <Text className='pl-2 mb-2 text-error text-lg'>{repeatedPasswordError}</Text>
         <PrimaryButton
-          className='mt-2 mb-4'
+          className={`mt-2 mb-4 ${loading ? 'opacity-50' : 'opacity-100'}`}
           onPress={signUp}
           disabled={loading}
-          style={{ opacity: loading ? 0.5 : 1 }}
-          text={loading ? 'Loading...' : '¡Start Saving!'}
+          text={loading ? t("creatingAccount") : t("startSaving")}
         />
       </KeyboardAvoidingView>
     </SafeAreaView>

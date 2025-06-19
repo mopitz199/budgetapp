@@ -1,11 +1,15 @@
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { Stack, useRouter, useSegments } from "expo-router";
 import { useEffect, useState } from "react";
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, View } from "react-native";
+
 import "./global.css";
 
 export default function RootLayout() {
 
+  const { t } = useTranslation();
+  
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
 
@@ -29,7 +33,11 @@ export default function RootLayout() {
     const inAuthGroup = segments[0] === '(auth)'; 
 
     if (user && !inAuthGroup) {
-      router.replace('/(auth)/home');
+      if(user.emailVerified){
+        router.replace('/(auth)/home');
+      }else {
+        router.replace('/(auth)/EmailVerification');
+      }
     } else if (!user && inAuthGroup) {
       alert("holaaa")
       router.replace('/SignUp')
@@ -47,7 +55,7 @@ export default function RootLayout() {
     return (
         <Stack>
           <Stack.Screen name='index' options={{headerShown: false, title: 'Login'}} />
-          <Stack.Screen name='SignUp' options={{title: 'SignUp'}}/>
+          <Stack.Screen name='SignUp' options={{title: t("signUp")}}/>
           <Stack.Screen name='(auth)' options={{headerShown: false}}/>
         </Stack>
     )
