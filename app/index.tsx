@@ -14,15 +14,13 @@ import {
   Alert,
   Image,
   KeyboardAvoidingView,
-  Pressable,
   SafeAreaView,
   Text,
   View
 } from "react-native";
-import Icon from 'react-native-vector-icons/Ionicons';
 
 import { GoogleButton, PrimaryButton } from '@/components/buttons';
-import { Input } from '@/components/inputs';
+import { Input, PasswordInput } from '@/components/inputs';
 
 export default function Index() {
 
@@ -106,12 +104,16 @@ export default function Index() {
                 <View>
                   <KeyboardAvoidingView behavior="padding" className="">
                     <Input className='mb-2' value={email} onChangeText={setEmail} keyboardType="email-address" placeholder={t("email")} />
-                    <View className='justify-center'>
-                      <Input editable={!loading} className='mb-2' value={password} onChangeText={setPassword} secureTextEntry={!showPassword} placeholder={t("password")} />
-                      <Pressable className='absolute right-4' onPress={() => setShowPassword((showPassword) => !showPassword)}>
-                        <Icon name={showPassword ? "eye" : "eye-off"} size={30} color="#1D2430" />
-                      </Pressable>
-                    </View>
+                    <PasswordInput
+                      onIconPress={() => setShowPassword((showPassword) => !showPassword)}
+                      iconName={showPassword ? "eye" : "eye-off"}
+                      editable={!loading}
+                      className='mb-2'
+                      value={password}
+                      onChangeText={setPassword}
+                      secureTextEntry={!showPassword}
+                      placeholder={t("password")}
+                    />
                     <PrimaryButton className='mt-2 mb-4' onPress={signIn} text={t("logIn")}/>
                   </KeyboardAvoidingView>
                   <Text className="text-right text-primaryTextOverLight">{t('forgotPassword')}</Text>

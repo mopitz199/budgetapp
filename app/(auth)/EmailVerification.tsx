@@ -41,15 +41,15 @@ export default function EmailVerification() {
         <Image
           source={require('@/assets/images/check-email.png')} 
           resizeMode='contain'
-          className="h-40 w-full"
+          className="h-36 w-full"
         />
       </View>
       <View className='items-center mt-4 mb-4'>
-        <Text className='text-5xl font-semibold text-primaryTextOverLight'>{t("checkYourEmail")}</Text>
+        <Text className='text-4xl font-semibold text-primaryTextOverLight'>{t("checkYourEmail")}</Text>
       </View>
       <View className='flex-[1] grow-[1] items-center'>
         <Text className='text-2xl text-secondaryTextOverLight text-center'>{t("weHaveSentYouVerificationLink")}</Text>
-        <PrimaryButton text={"Resend Email"} className='mt-4' onPress={resend} />
+        <PrimaryButton text={t("resendEmail")} className='mt-4' onPress={resend} />
         <TouchableOpacity onPress={retry} className={`bg-white p-2 rounded-xl mt-4`}>
           <Text className='text-primaryTextOverLight text-center text-xl'>{t("verifyAgain")}</Text>
         </TouchableOpacity>

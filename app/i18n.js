@@ -29,6 +29,7 @@ const resources = {
       "notVerifiedCheckEmail": "Not verified yet. check your inbox or spam.",
       "weHaveSentYouVerificationLink": "We have sent you a verification link.",
       "checkYourEmail": "Check your email",
+      "resendEmail": "Resend Email",
       "Welcome to React": "Welcome to React and react-i18next"
     }
   },
@@ -56,6 +57,7 @@ const resources = {
       "verifyAgain": "Verificar de nuevo",
       "weHaveSentYouVerificationLink": "Te hemos enviado un correo de verificación",
       "checkYourEmail": "Revisa tu correo",
+      "resendEmail": "Reenviar Correo",
       "Welcome to React": "Bienvenue à React et react-i18next"
     }
   }

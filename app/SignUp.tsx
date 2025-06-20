@@ -1,17 +1,15 @@
 import { PrimaryButton } from '@/components/buttons';
-import { Input } from '@/components/inputs';
+import { Input, PasswordInput } from '@/components/inputs';
 import auth from '@react-native-firebase/auth';
 import { FirebaseError } from 'firebase/app';
 import React, { useState } from "react";
 import { useTranslation } from 'react-i18next';
 import {
   KeyboardAvoidingView,
-  Pressable,
   SafeAreaView,
   Text,
   View
 } from "react-native";
-import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function CreateAccount() {
 
@@ -88,19 +86,27 @@ export default function CreateAccount() {
       <KeyboardAvoidingView className='w-full grow-[1] justify-start p-10'>
         <Input editable={!loading} className='mb-2' value={email} onChangeText={setEmail} keyboardType="email-address" placeholder={t("email")} />
         <Text className='pl-2 mb-2 text-error text-lg'>{emailError}</Text>
-        <View className='justify-center'>
-          <Input editable={!loading} className='mb-2' value={password} onChangeText={setPassword} secureTextEntry={!showPassword} placeholder={t("password")} />
-          <Pressable className='absolute right-4' onPress={() => setShowPassword((showPassword) => !showPassword)}>
-            <Icon name={showPassword ? "eye" : "eye-off"} size={30} color="#1D2430" />
-          </Pressable>
-        </View>
+        <PasswordInput
+          onIconPress={() => setShowPassword((showPassword) => !showPassword)}
+          iconName={showPassword ? "eye" : "eye-off"}
+          editable={!loading}
+          className='mb-2'
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry={!showPassword}
+          placeholder={t("password")}
+        />
         <Text className='pl-2 mb-2 text-error text-lg'>{passwordError}</Text>
-        <View className='justify-center'>
-          <Input editable={!loading} className='mb-2' value={repeatedPassword} onChangeText={setRepeatedPassword} secureTextEntry={!showRepeatedPassword} placeholder={t("repeatPassword")} />
-          <Pressable className='absolute right-4' onPress={() => setShowRepeatedPassword((showRepeatedPassword) => !showRepeatedPassword)}>
-            <Icon name={showRepeatedPassword ? "eye" : "eye-off"} size={30} color="#1D2430" />
-          </Pressable>
-        </View>
+        <PasswordInput
+          onIconPress={() => setShowRepeatedPassword((showRepeatedPassword) => !showRepeatedPassword)}
+          iconName={showRepeatedPassword ? "eye" : "eye-off"}
+          editable={!loading}
+          className='mb-2'
+          value={repeatedPassword}
+          onChangeText={setRepeatedPassword}
+          secureTextEntry={!showRepeatedPassword}
+          placeholder={t("repeatPassword")}
+        />
         <Text className='pl-2 mb-2 text-error text-lg'>{repeatedPasswordError}</Text>
         <PrimaryButton
           className={`mt-2 mb-4 ${loading ? 'opacity-50' : 'opacity-100'}`}
