@@ -62,7 +62,7 @@ const resources = {
       "weHaveSentYouVerificationLink": "Te hemos enviado un correo de verificación",
       "checkYourEmail": "Revisa tu correo",
       "resendEmail": "Reenviar Correo",
-      "passwordRecovery": "Recuperacion de Contraseña",
+      "passwordRecovery": "Recuperación de Contraseña",
       "sendEmail": "Enviar correo",
       "sendingEmail": "Enviando correo...",
       "emailSentForPasswordRecovery": "Te enviamos un enlace para restablecer tu contraseña.",

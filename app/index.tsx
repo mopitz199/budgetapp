@@ -16,6 +16,7 @@ import {
   Image,
   Keyboard,
   KeyboardAvoidingView,
+  Pressable,
   SafeAreaView,
   Text,
   TouchableWithoutFeedback,
@@ -124,7 +125,9 @@ export default function Index() {
                       />
                       <PrimaryButton className='mb-4 mt-4' onPress={signIn} text={t("logIn")}/>
                     </KeyboardAvoidingView>
-                    <Text className="text-right text-primaryTextOverLight" onPress={recoverPassword} >{t('forgotPassword')}</Text>
+                    <Pressable className="active:opacity-20" onPress={recoverPassword} hitSlop={15}>
+                      <Text className="text-right text-primaryTextOverLight">{t('forgotPassword')}</Text>
+                    </Pressable>
                   </View>
                   <View className="flex-row">
                     <View className='flex-1 grow-[1] border-t border-divider mt-4'></View>
@@ -133,10 +136,11 @@ export default function Index() {
                   </View>
                   <View>
                     <GoogleButton onPress={googleSignIn} className='mt-4'/>
-                    <View className='flex-row items-center justify-center mt-4'>
-                      <Text className='text-md text-primaryTextOverLight'>{t('doesNotHaveAnAccount')}
-                        <Text onPress={signUp} className="text-md text-linkTextOverLight"> {t('signUp')}</Text>
-                      </Text>
+                    <View className='flex-row items-start justify-center mt-4'>
+                      <Text className='text-md text-primaryTextOverLight'>{t('doesNotHaveAnAccount')}</Text>
+                      <Pressable className="active:opacity-20" onPress={signUp} hitSlop={15}>
+                        <Text className="text-md text-linkTextOverLight"> {t('signUp')}</Text>
+                      </Pressable>
                     </View>
                   </View>
                 </View>
