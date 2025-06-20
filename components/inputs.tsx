@@ -6,7 +6,7 @@ export function Input({ className, ...otherProps}: TextInputProps) {
     <TextInput
       className={`
         text-xl p-4 h-16
-        text-primaryTextOverLight 
+        text-primaryTextOverLight
         bg-surfaceCard
         rounded-xl
         border-divider
@@ -14,9 +14,6 @@ export function Input({ className, ...otherProps}: TextInputProps) {
       ${className}`}
       autoCapitalize='none'
       placeholderTextColor="#9AA1B3"
-      style={{
-        lineHeight: 0
-      }}
       {...otherProps}
     />
   );

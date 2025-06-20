@@ -87,7 +87,7 @@ export default function CreateAccount() {
       <SafeAreaView className='flex-1'>
         <View className='flex-1 p-10 flex-col justify-center bg-background'>
           <Text className='text-center text-3xl text-primaryTextOverLight mb-10'>{t("createAccount")}</Text>
-          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}>
             <Input editable={!loading} value={email} onChangeText={setEmail} keyboardType="email-address" placeholder={t("email")} />
             <Text className='pl-2 mb-2 text-error text-lg'>{emailError}</Text>
             <PasswordInput
