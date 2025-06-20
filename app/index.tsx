@@ -14,9 +14,11 @@ import {
   ActivityIndicator,
   Alert,
   Image,
+  Keyboard,
   KeyboardAvoidingView,
   SafeAreaView,
   Text,
+  TouchableWithoutFeedback,
   View
 } from "react-native";
 
@@ -96,51 +98,52 @@ export default function Index() {
   }
 
   return (
-    <View className="flex-1 p-10 pt-20 bg-background">
-      <SafeAreaView className="flex-1 justify-center">
-        <View className="flex-1 items-center grow-[1] justify-end">
-          <Image source={require('@/assets/images/logo.png')} resizeMode='contain' className="h-28 w-full" />
-          <Image source={require('@/assets/images/logo-title.png')} resizeMode='contain' className="h-14 w-full mt-4" />
-        </View>
-        <View className="flex-1 pt-6 grow-[2] justify-start">
-          {loading ? (
-              <ActivityIndicator size={'large'} className="flex-1"/>
-            ) : (
-              <View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView className='flex-1'>
+        <View className="flex-1 p-10 justify-center bg-background">
+          <View className="flex-1 items-center grow-[1] justify-end">
+            <Image source={require('@/assets/images/logo.png')} resizeMode='contain' className="h-28 w-full" />
+            <Image source={require('@/assets/images/logo-title.png')} resizeMode='contain' className="h-14 w-full mt-4" />
+          </View>
+          <View className="flex-1 pt-6 grow-[2] justify-start">
+            {loading ? (
+                <ActivityIndicator size={'large'} className="flex-1"/>
+              ) : (
                 <View>
-                  <KeyboardAvoidingView behavior="padding" className="">
-                    <Input className='mb-2' value={email} onChangeText={setEmail} keyboardType="email-address" placeholder={t("email")} />
-                    <PasswordInput
-                      onIconPress={() => setShowPassword((showPassword) => !showPassword)}
-                      iconName={showPassword ? "eye" : "eye-off"}
-                      editable={!loading}
-                      className='mb-2'
-                      value={password}
-                      onChangeText={setPassword}
-                      secureTextEntry={!showPassword}
-                      placeholder={t("password")}
-                    />
-                    <PrimaryButton className='mt-2 mb-4' onPress={signIn} text={t("logIn")}/>
-                  </KeyboardAvoidingView>
-                  <Text className="text-right text-primaryTextOverLight" onPress={recoverPassword} >{t('forgotPassword')}</Text>
-                </View>
-                <View className="flex-row">
-                  <View className='flex-1 grow-[1] border-t border-divider mt-4'></View>
-                  <Text className='text-end text-2xl mr-4 ml-4 text-secondaryTextOverLight'>{t('or')}</Text>
-                  <View className='flex-1 grow-[1] border-t border-divider mt-4'></View>
-                </View>
-                <View>
-                  <GoogleButton onPress={googleSignIn} className='mt-4'/>
-                  <View className='flex-row items-center justify-center mt-4'>
-                    <Text className='text-md text-primaryTextOverLight'>{t('doesNotHaveAnAccount')}
-                      <Text onPress={signUp} className="text-md text-linkTextOverLight"> {t('signUp')}</Text>
-                    </Text>
+                  <View>
+                    <KeyboardAvoidingView behavior="padding" className="">
+                      <Input className='mb-4' value={email} onChangeText={setEmail} keyboardType="email-address" placeholder={t("email")} />
+                      <PasswordInput
+                        onIconPress={() => setShowPassword((showPassword) => !showPassword)}
+                        iconName={showPassword ? "eye" : "eye-off"}
+                        editable={!loading}
+                        value={password}
+                        onChangeText={setPassword}
+                        secureTextEntry={!showPassword}
+                        placeholder={t("password")}
+                      />
+                      <PrimaryButton className='mb-4 mt-4' onPress={signIn} text={t("logIn")}/>
+                    </KeyboardAvoidingView>
+                    <Text className="text-right text-primaryTextOverLight" onPress={recoverPassword} >{t('forgotPassword')}</Text>
+                  </View>
+                  <View className="flex-row">
+                    <View className='flex-1 grow-[1] border-t border-divider mt-4'></View>
+                    <Text className='text-end text-2xl mr-4 ml-4 text-secondaryTextOverLight'>{t('or')}</Text>
+                    <View className='flex-1 grow-[1] border-t border-divider mt-4'></View>
+                  </View>
+                  <View>
+                    <GoogleButton onPress={googleSignIn} className='mt-4'/>
+                    <View className='flex-row items-center justify-center mt-4'>
+                      <Text className='text-md text-primaryTextOverLight'>{t('doesNotHaveAnAccount')}
+                        <Text onPress={signUp} className="text-md text-linkTextOverLight"> {t('signUp')}</Text>
+                      </Text>
+                    </View>
                   </View>
                 </View>
-              </View>
-            )}
+              )}
+          </View>
         </View>
       </SafeAreaView>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }

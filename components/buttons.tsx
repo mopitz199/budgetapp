@@ -11,7 +11,7 @@ type Props = {
 export function PrimaryButton({ text, onPress , className, ...props }: TouchableOpacityProps & Props ) {
   return (
     <TouchableOpacity onPress={onPress} className={`bg-primary p-4 rounded-xl ${className}`} {...props}>
-      <Text className='text-white text-center text-2xl font-semibold'>{text}</Text>
+      <Text className='text-white text-center text-xl'>{text}</Text>
     </TouchableOpacity>
   );
 }

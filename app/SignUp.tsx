@@ -5,9 +5,12 @@ import { FirebaseError } from 'firebase/app';
 import React, { useState } from "react";
 import { useTranslation } from 'react-i18next';
 import {
+  Keyboard,
   KeyboardAvoidingView,
+  Platform,
   SafeAreaView,
   Text,
+  TouchableWithoutFeedback,
   View
 } from "react-native";
 
@@ -80,42 +83,42 @@ export default function CreateAccount() {
   }
 
   return (
-    <SafeAreaView className="flex-1 flex-col justify-center items-center bg-background">
-      <View className='grow-[1] justify-end'>
-        <Text className='text-4xl text-primaryTextOverLight mb-4'>{t("createAccount")}</Text>
-      </View>
-      <KeyboardAvoidingView className='w-full grow-[1] justify-start p-10'>
-        <Input editable={!loading} className='mb-2' value={email} onChangeText={setEmail} keyboardType="email-address" placeholder={t("email")} />
-        <Text className='pl-2 mb-2 text-error text-lg'>{emailError}</Text>
-        <PasswordInput
-          onIconPress={() => setShowPassword((showPassword) => !showPassword)}
-          iconName={showPassword ? "eye" : "eye-off"}
-          editable={!loading}
-          className='mb-2'
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry={!showPassword}
-          placeholder={t("password")}
-        />
-        <Text className='pl-2 mb-2 text-error text-lg'>{passwordError}</Text>
-        <PasswordInput
-          onIconPress={() => setShowRepeatedPassword((showRepeatedPassword) => !showRepeatedPassword)}
-          iconName={showRepeatedPassword ? "eye" : "eye-off"}
-          editable={!loading}
-          className='mb-2'
-          value={repeatedPassword}
-          onChangeText={setRepeatedPassword}
-          secureTextEntry={!showRepeatedPassword}
-          placeholder={t("repeatPassword")}
-        />
-        <Text className='pl-2 mb-2 text-error text-lg'>{repeatedPasswordError}</Text>
-        <PrimaryButton
-          className={`mt-2 mb-4 ${loading ? 'opacity-50' : 'opacity-100'}`}
-          onPress={signUp}
-          disabled={loading}
-          text={loading ? t("creatingAccount") : t("startSaving")}
-        />
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView className='flex-1'>
+        <View className='flex-1 p-10 flex-col justify-center bg-background'>
+          <Text className='text-center text-3xl text-primaryTextOverLight mb-10'>{t("createAccount")}</Text>
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+            <Input editable={!loading} value={email} onChangeText={setEmail} keyboardType="email-address" placeholder={t("email")} />
+            <Text className='pl-2 mb-2 text-error text-lg'>{emailError}</Text>
+            <PasswordInput
+              onIconPress={() => setShowPassword((showPassword) => !showPassword)}
+              iconName={showPassword ? "eye" : "eye-off"}
+              editable={!loading}
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={!showPassword}
+              placeholder={t("password")}
+            />
+            <Text className='pl-2 mb-2 text-error text-lg'>{passwordError}</Text>
+            <PasswordInput
+              onIconPress={() => setShowRepeatedPassword((showRepeatedPassword) => !showRepeatedPassword)}
+              iconName={showRepeatedPassword ? "eye" : "eye-off"}
+              editable={!loading}
+              value={repeatedPassword}
+              onChangeText={setRepeatedPassword}
+              secureTextEntry={!showRepeatedPassword}
+              placeholder={t("repeatPassword")}
+            />
+            <Text className='pl-2 mb-2 text-error text-lg'>{repeatedPasswordError}</Text>
+            <PrimaryButton
+              className={`${loading ? 'opacity-50' : 'opacity-100'}`}
+              onPress={signUp}
+              disabled={loading}
+              text={loading ? t("creatingAccount") : t("startSaving")}
+            />
+          </KeyboardAvoidingView>
+        </View>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 }

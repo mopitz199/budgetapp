@@ -5,7 +5,7 @@ export function Input({ className, ...otherProps}: TextInputProps) {
   return (
     <TextInput
       className={`
-        text-2xl p-4
+        text-xl p-4 h-16
         text-primaryTextOverLight 
         bg-surfaceCard
         rounded-xl
@@ -13,6 +13,10 @@ export function Input({ className, ...otherProps}: TextInputProps) {
         border
       ${className}`}
       autoCapitalize='none'
+      placeholderTextColor="#9AA1B3"
+      style={{
+        lineHeight: 0
+      }}
       {...otherProps}
     />
   );
@@ -22,8 +26,11 @@ export function PasswordInput({onIconPress, iconName, ...props}: any & "text" & 
   return (
     <View className='justify-center'>
       <Input {...props} />
-      <Pressable className='absolute right-4' onPress={onIconPress}>
-        <Ionicons name={iconName} size={30} color="#1D2430" />
+      <Pressable
+        className='absolute right-4'
+        onPress={onIconPress}
+      >
+        <Ionicons name={iconName} size={25} color="#1D2430" />
       </Pressable>
     </View>
   )
