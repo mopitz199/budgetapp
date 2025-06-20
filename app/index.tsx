@@ -1,4 +1,5 @@
-import auth from '@react-native-firebase/auth';
+// import auth from '@react-native-firebase/auth';
+import { getAuth, GoogleAuthProvider } from '@react-native-firebase/auth';
 import {
   GoogleSignin,
   isErrorWithCode,
@@ -31,6 +32,7 @@ export default function Index() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const auth = getAuth()
   
 
   useEffect(() => {
@@ -43,11 +45,11 @@ export default function Index() {
       const response: any = await GoogleSignin.signIn();
       if (isSuccessResponse(response)) {
         console.log("user", response.data);
-        const googleCredential = auth.GoogleAuthProvider.credential(
+        const googleCredential = GoogleAuthProvider.credential(
           response.data.idToken,
         );
         console.log("google credential", googleCredential);
-        await auth().signInWithCredential(googleCredential);
+        await auth.signInWithCredential(googleCredential);
       } else {
         console.log('Sign in cancelled by the user');
       }
@@ -76,10 +78,14 @@ export default function Index() {
     router.push('/SignUp');
   }
 
+  const recoverPassword = () => {
+    router.push('/PasswordRecovery');
+  }
+
   const signIn = async () => {
     setLoading(true);
     try {
-      await auth().signInWithEmailAndPassword(email, password);
+      await auth.signInWithEmailAndPassword(email, password);
     } catch (e: any) {
       const err = e as FirebaseError;
       console.log("sign in error", err);
@@ -116,7 +122,7 @@ export default function Index() {
                     />
                     <PrimaryButton className='mt-2 mb-4' onPress={signIn} text={t("logIn")}/>
                   </KeyboardAvoidingView>
-                  <Text className="text-right text-primaryTextOverLight">{t('forgotPassword')}</Text>
+                  <Text className="text-right text-primaryTextOverLight" onPress={recoverPassword} >{t('forgotPassword')}</Text>
                 </View>
                 <View className="flex-row">
                   <View className='flex-1 grow-[1] border-t border-divider mt-4'></View>

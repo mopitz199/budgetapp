@@ -1,6 +1,6 @@
 import { PrimaryButton } from '@/components/buttons';
 import { Input, PasswordInput } from '@/components/inputs';
-import auth from '@react-native-firebase/auth';
+import { getAuth } from '@react-native-firebase/auth';
 import { FirebaseError } from 'firebase/app';
 import React, { useState } from "react";
 import { useTranslation } from 'react-i18next';
@@ -26,6 +26,7 @@ export default function CreateAccount() {
   const [repeatedPasswordError, setRepeatedPasswordError] = useState('');
 
   const [loading, setLoading] = useState(false);
+  const auth = getAuth()
 
   const validateEmail = (): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -58,7 +59,7 @@ export default function CreateAccount() {
 
   const createAccount = async () => {
     try {
-      const {user} = await auth().createUserWithEmailAndPassword(email, password);
+      const {user} = await auth.createUserWithEmailAndPassword(email, password);
       user.sendEmailVerification();
     } catch (e: any) {
       const err = e as FirebaseError;

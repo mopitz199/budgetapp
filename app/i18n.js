@@ -30,6 +30,10 @@ const resources = {
       "weHaveSentYouVerificationLink": "We have sent you a verification link.",
       "checkYourEmail": "Check your email",
       "resendEmail": "Resend Email",
+      "passwordRecovery": "Password Recovery",
+      "sendEmail": "Send email",
+      "sendingEmail": "Sending email...",
+      "emailSentForPasswordRecovery": "We've sent you a link to recover your password",
       "Welcome to React": "Welcome to React and react-i18next"
     }
   },
@@ -58,6 +62,10 @@ const resources = {
       "weHaveSentYouVerificationLink": "Te hemos enviado un correo de verificación",
       "checkYourEmail": "Revisa tu correo",
       "resendEmail": "Reenviar Correo",
+      "passwordRecovery": "Recuperacion de Contraseña",
+      "sendEmail": "Enviar correo",
+      "sendingEmail": "Enviando correo...",
+      "emailSentForPasswordRecovery": "Te enviamos un enlace para restablecer tu contraseña.",
       "Welcome to React": "Bienvenue à React et react-i18next"
     }
   }

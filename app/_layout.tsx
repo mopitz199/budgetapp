@@ -1,4 +1,4 @@
-import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import { FirebaseAuthTypes, getAuth } from '@react-native-firebase/auth';
 import { Stack, useRouter, useSegments } from "expo-router";
 import { useEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
@@ -23,7 +23,8 @@ export default function RootLayout() {
   }
 
   useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    const auth = getAuth()
+    const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
     return subscriber
   }, [])
 
@@ -55,6 +56,7 @@ export default function RootLayout() {
         <Stack>
           <Stack.Screen name='index' options={{headerShown: false, title: 'Login'}} />
           <Stack.Screen name='SignUp' options={{title: t("signUp")}}/>
+          <Stack.Screen name='PasswordRecovery' options={{title: t("passwordRecovery")}}/>
           <Stack.Screen name='(auth)' options={{headerShown: false}}/>
         </Stack>
     )

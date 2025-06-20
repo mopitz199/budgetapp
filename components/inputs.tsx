@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Pressable, Text, TextInput, TextInputProps, View } from 'react-native';
+import { Pressable, TextInput, TextInputProps, View } from 'react-native';
 
 export function Input({ className, ...otherProps}: TextInputProps) {
   return (
@@ -27,19 +27,4 @@ export function PasswordInput({onIconPress, iconName, ...props}: any & "text" & 
       </Pressable>
     </View>
   )
-}
-
-export function InputWithError({
-  className,
-  value,
-  onChangeText,
-  errorMessage,
-  ...otherProps}: TextInputProps & { errorMessage?: string }
-) {
-  return (
-    <View className='mb-2'>
-      <Input className='mb-2' value={value} onChangeText={onChangeText} {...otherProps}/>
-      <Text className='pl-2 text-error text-lg'>{errorMessage}</Text>
-    </View>
-  );
 }

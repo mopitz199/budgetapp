@@ -1,5 +1,5 @@
 import { PrimaryButton } from '@/components/buttons';
-import auth from '@react-native-firebase/auth';
+import { getAuth } from '@react-native-firebase/auth';
 import { useRouter } from "expo-router";
 import { useTranslation } from 'react-i18next';
 import {
@@ -12,19 +12,20 @@ import {
 export default function EmailVerification() {
   const { t } = useTranslation();
   const router = useRouter();
+  const auth = getAuth()
 
   const resend = () => {
-    const user = auth().currentUser;
+    const user = auth.currentUser;
     user?.sendEmailVerification()
     alert(t("emailSent"))
   }
 
   const signOut = () => {
-    auth().signOut()
+    auth.signOut()
   }
 
   const retry = async () => {
-    const user = auth().currentUser;
+    const user = auth.currentUser;
     if(user){
       await user.reload();
       if(user.emailVerified){
