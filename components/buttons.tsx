@@ -16,6 +16,14 @@ export function PrimaryButton({ text, onPress , className, ...props }: Touchable
   );
 }
 
+export function SecondaryButton({ text, onPress , className, ...props }: TouchableOpacityProps & Props ) {
+  return (
+    <TouchableOpacity onPress={onPress} className={`bg-surfaceCard p-4 rounded-xl border border-divider ${className}`} {...props}>
+      <Text className='text-primaryTextOverLight text-center text-xl'>{text}</Text>
+    </TouchableOpacity>
+  );
+}
+
 export function GoogleButton({onPress , className}: Props) {
   const { t } = useTranslation();
 

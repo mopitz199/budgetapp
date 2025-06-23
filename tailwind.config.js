@@ -13,7 +13,7 @@ module.exports = {
 
         divider: "#E5E7EB",
         surfaceCard: "#FFFFFF",
-        background: "#F9FAFB",
+        background: "#F3F4F6",
 
         linkTextOverLight: "#0066FF",
 
