@@ -30,7 +30,7 @@ export default function EmailVerification() {
     if(user){
       await user.reload();
       if(user.emailVerified){
-        router.replace('/(auth)/home');
+        router.replace('/(auth)/(tabs)/Home');
       }else{
         alert(t("notVerifiedCheckEmail"))
       }

@@ -5,6 +5,11 @@ module.exports = {
   presets: [require("nativewind/preset")],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Roboto'],             // fuente base por defecto
+        bold: ['Roboto_Bold'],             // fuente base por defecto
+        light: ['Roboto_Light'],  // fuente para títulos
+      },
       colors: {
         primaryTextOverColorOrDark: "#FFFFFF",
         primaryTextOverLight: "#1D2430",

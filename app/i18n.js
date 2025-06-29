@@ -34,7 +34,12 @@ const resources = {
       "sendEmail": "Send email",
       "sendingEmail": "Sending email...",
       "emailSentForPasswordRecovery": "We've sent you a link to recover your password",
-      "Welcome to React": "Welcome to React and react-i18next"
+      "Welcome to React": "Welcome to React and react-i18next",
+      "addYourImages": "Add you images",
+      "select": "Select",
+      "loading": "Loading...",
+      "upload": "Upload",
+      "selectAgain": "Select again",
     }
   },
   es: {
@@ -66,7 +71,12 @@ const resources = {
       "sendEmail": "Enviar correo",
       "sendingEmail": "Enviando correo...",
       "emailSentForPasswordRecovery": "Te enviamos un enlace para restablecer tu contraseña.",
-      "Welcome to React": "Bienvenue à React et react-i18next"
+      "Welcome to React": "Bienvenue à React et react-i18next",
+      "addYourImages": "Agrega tus imágenes",
+      "select": "Seleccionar",
+      "loading": "Cargando...",
+      "upload": "Subir",
+      "selectAgain": "Seleccionar de nuevo",
     }
   }
 };

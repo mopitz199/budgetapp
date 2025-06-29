@@ -18,6 +18,7 @@ const Layout = () => {
       <Stack.Screen name='RealHome' options={{headerShown: false}} />*/}
       <Stack.Screen name='EmailVerification' options={{title: t("verifyYourEmail")}}/>
       <Stack.Screen name='SelectTransactionType' options={{animation: 'none', headerShown: false}}/>
+      <Stack.Screen name='TransactionsPreview'/>
     </Stack>
   )
 }

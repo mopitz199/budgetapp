@@ -2,12 +2,15 @@ import { PrimaryButton, SecondaryButton } from '@/components/buttons';
 import { getAuth } from '@react-native-firebase/auth';
 import { getStorage } from '@react-native-firebase/storage';
 import * as ImagePicker from 'expo-image-picker';
+import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Image, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { useTranslation } from 'react-i18next';
+import { ActivityIndicator, Alert, Image, SafeAreaView, ScrollView, Text, View } from "react-native";
 import uuid from 'react-native-uuid';
 
 const UploadFiles = () => {
 
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [images_uri, setImagesURI] = useState<string[]>([]);
 
@@ -49,6 +52,7 @@ const UploadFiles = () => {
   const uploadImage = async () => {
     const auth = getAuth()
     const user = auth.currentUser;
+    const router = useRouter();
 
     if(user){
       setLoading(true)
@@ -65,15 +69,27 @@ const UploadFiles = () => {
       }
 
       try {
-        console.log("empezar a subir a openai")
         const token = await user.getIdToken();
         const response = await readImages(token, images_urls)
-        console.log(response)
+        if(response.ok){
+          const data = await response.json();
+          router.replace(
+            {
+              pathname: '/(auth)/TransactionsPreview',
+              params: { transactionsId: data.id },
+            }
+          )
+          setImagesURI([]); // Clear images after successful upload
+        }else{
+          const errorData = await response.json();
+          console.error("Error processing images:", errorData);
+          Alert.alert("Error", "An error occurred while processing the images. Please try again later.");
+        }
       } catch (err) {
-        console.log("error", err)
+        Alert.alert("Error", "An error occurred while reading the images. Please try again later.");
       }
     }else{
-      console.log("user does not exist")
+      Alert.alert("Error", "The user is not authenticated. Please log in again.");
     }
     setLoading(false)
   }
@@ -112,8 +128,8 @@ const UploadFiles = () => {
                 )))}
               </View>
             </ScrollView>
-            <PrimaryButton className="mr-10 ml-10 mb-4 mt-4" text={loading ? "Loading..." : "Upload"} disabled={loading} onPress={uploadImage} />
-            <SecondaryButton className="mr-10 ml-10 mb-10" text="Pick again" disabled={loading} onPress={pickImageAsync} />
+            <PrimaryButton className="mr-10 ml-10 mb-4 mt-4" text={loading ? t("loading") : t("upload")} disabled={loading} onPress={uploadImage} />
+            <SecondaryButton className="mr-10 ml-10 mb-10" text={t("selectAgain")} disabled={loading} onPress={pickImageAsync} />
           </View> :
           <View className='flex-1 justify-center p-10'>
             <Image
@@ -121,8 +137,8 @@ const UploadFiles = () => {
               resizeMode='contain'
               className="h-36 w-full"
             />
-            <Text className='text-center text-xl text-primaryTextOverLight'>No images added</Text>
-            <PrimaryButton className="mt-4 p-6" text={loading ? "Loading..." : "Pick"} disabled={loading} onPress={pickImageAsync} />
+            <Text className='text-center text-xl text-primaryTextOverLight'>{t("addYourImages")}</Text>
+            <PrimaryButton className="mt-4 p-6" text={loading ? t("loading") : t("select")} disabled={loading} onPress={pickImageAsync} />
           </View>
         }
       </View>

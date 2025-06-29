@@ -1,4 +1,5 @@
 import { FirebaseAuthTypes, getAuth } from '@react-native-firebase/auth';
+import { useFonts } from 'expo-font';
 import { Stack, useRouter, useSegments } from "expo-router";
 import { useEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
@@ -7,6 +8,12 @@ import { ActivityIndicator, View } from "react-native";
 import "./global.css";
 
 export default function RootLayout() {
+
+  const [fontsLoaded] = useFonts({
+    Roboto: require('@/assets/fonts/Roboto-Regular.ttf'),
+    Roboto_Bold: require('@/assets/fonts/Roboto-Bold.ttf'),
+    Roboto_Light: require('@/assets/fonts/Roboto-Light.ttf'),
+  });
 
   const { t } = useTranslation();
   
