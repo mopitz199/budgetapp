@@ -51,7 +51,7 @@ const UploadFiles = () => {
   }
   
   const readImages = async (token: string, images_urls: string[]) => {
-    const response = await fetch('http://192.168.1.85:8080/analyze-bank-transactions', {
+    const response = await fetch('http://169.254.180.74:8080/analyze-bank-transactions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`, // 👈 Enviar token como Bearer
@@ -128,9 +128,9 @@ const UploadFiles = () => {
         {images_uri.length > 0 ?
           <View className='flex-1'>
             <ScrollView>
-              <View className='flex-1 flex-row p-8 flex-wrap justify-around items-start bg-background'>
+              <View className='flex-1 flex-row p-8 flex-wrap justify-around items-start dark:bg-darkMode-background bg-background'>
                 {(images_uri.map((uri, index) => (
-                  <View className='w-[50%] p-2 bg-background' key={index}>
+                  <View className='w-[50%] p-2 dark:bg-darkMode-background bg-background' key={index}>
                     <View className=' bg-surfaceCard rounded-2xl p-2'>
                       <Image
                         className='h-60 rounded-2xl'

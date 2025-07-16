@@ -20,7 +20,7 @@ import {
 export default function CreateAccount() {
 
   const navigation = useNavigation();
-  const colorScheme = useColorScheme(); // 👉 'light' o 'dark'
+  const colorScheme = useColorScheme();
   const { t } = useTranslation();
   
   const [email, setEmail] = useState('');
@@ -40,7 +40,7 @@ export default function CreateAccount() {
   useLayoutEffect(() => headerSettings(
     navigation,
     colorScheme,
-    t("createAccount")
+    t("signUp")
   ), [navigation, colorScheme]);
 
   const validateEmail = (): boolean => {
@@ -97,7 +97,7 @@ export default function CreateAccount() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <CustomMainView className='flex-1'>
-        <View className='flex-1 p-10 flex-col justify-center dark:bg-darkMode-background'>
+        <View className='flex-1 p-10 flex-col justify-center'>
           <Text className='text-center text-3xl text-textPrimary dark:text-darkMode-textPrimary mb-10'>{t("createAccount")}</Text>
           <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}>
             <Input editable={!loading} value={email} onChangeText={setEmail} keyboardType="email-address" placeholder={t("email")} />

@@ -1,8 +1,8 @@
 import { PrimaryButton, SecondaryButton } from '@/components/buttons';
-import { CustomSafeAreaView } from '@/components/customMainView';
+import { CustomMainView, CustomSafeAreaView } from '@/components/customMainView';
 import { Input } from '@/components/inputs';
 import IOSDatePicker from '@/components/iosDatePicker';
-import { formatNumber } from '@/utils';
+import { formatNumber, headerSettings } from '@/utils';
 import { Ionicons } from '@expo/vector-icons';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { doc, getDoc, getFirestore } from '@react-native-firebase/firestore';
@@ -59,13 +59,16 @@ export default function TransactionEdition() {
       {label: 'Pear', value: 'pear'},
   ]);
 
-  useLayoutEffect(() => {
-    console.log("hideBackButton", hideBackButton);
-    navigation.setOptions({
-      headerShown: !hideBackButton,
-      gestureEnabled: !hideBackButton, // si usas swipe back
-    });
-  });
+  useLayoutEffect(() => headerSettings(
+      navigation,
+      colorScheme,
+      "Sube tus imagenes",
+      {
+        headerShown: !hideBackButton,
+        gestureEnabled: !hideBackButton,
+      }
+    ), [navigation, colorScheme, hideBackButton]
+  );
 
 
   const readTransactions = async () => {
@@ -137,7 +140,6 @@ export default function TransactionEdition() {
   }, []);
 
   useEffect(() => {
-    console.log("lala", hideBackButton)
     if(!hideBackButton) return;
 
     const backHandler = BackHandler.addEventListener(
@@ -153,12 +155,11 @@ export default function TransactionEdition() {
 
   const transactionListPreview = () => {
     return (
-      <CustomSafeAreaView
+      <CustomMainView
         screenWithHeader={hideBackButton}
-        insets={insets}
-        colorScheme={colorScheme}
+        className='pb-8'
       >
-        <View className="flex-1 bg-background p-4">
+        <View className="flex-1 bg-background dark:bg-darkMode-background p-4">
           <ScrollView>
             {transactions.filter(transaction => !transaction.removed).map((transaction) => (
               <View className="flex-row border p-4 bg-surfaceCard mb-4 rounded-2xl border-divider" key={transaction.index}>
@@ -233,7 +234,7 @@ export default function TransactionEdition() {
         >
           <Text className='font-sans color-white'>{t("transactionRemoved")}</Text>
         </Snackbar>
-      </CustomSafeAreaView>
+      </CustomMainView>
     )
   }
 
@@ -269,14 +270,12 @@ export default function TransactionEdition() {
       <CustomSafeAreaView
         className='pr-10 pl-10'
         screenWithHeader={hideBackButton}
-        insets={insets}
-        colorScheme={colorScheme}
       >
         {iosPicker()}
 
-        <View className='p-4'>
-          <View className='border'>
-            <View>
+        <View className='p-4 flex-1 justify-center'>
+          <View className=''>
+            <View className='mb-4'>
               <Input
                 value={transactionToEdit.amount.toString()}
                 keyboardType="email-address"
@@ -286,15 +285,21 @@ export default function TransactionEdition() {
                 }}
               />
             </View>
-            <View>
+            <View className='mb-4'>
               <Input value={"Descripcion del la transaccionn"} keyboardType="email-address" placeholder={"Monto"} />
             </View>
-            <View className='border'>
+            <View className=''>
               <Pressable
-                className='p-2 rounded-lg border border-divider'
+                className='
+                  p-4
+                  bg-surfaceCard
+                  rounded-xl
+                  border-divider
+                  border
+                '
                 onPress={displayDatePickerView}
               >
-                <Text className='text-lg font-light leading-6 mb-4 text-textPrimary'>{transactionToEdit.date}</Text>
+                <Text className='text-xl font-light text-textPrimary'>{transactionToEdit.date}</Text>
               </Pressable>
             </View>
             <View>

@@ -101,7 +101,7 @@ export default function Index() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <CustomMainView className='flex-1'>
-        <View className="flex-1 p-10 justify-center dark:bg-darkMode-background bg-background">
+        <View className="flex-1 p-10 justify-center">
           <View className="flex-1 items-center grow-[1] justify-end">
             <Image source={require('@/assets/images/logo.png')} resizeMode='contain' className="h-28 w-full" />
             <Image source={require('@/assets/images/logo-title.png')} resizeMode='contain' className="h-14 w-full mt-4" />

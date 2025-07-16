@@ -1,4 +1,5 @@
-import { PrimaryButton } from '@/components/buttons';
+import { PrimaryButton, SecondaryButton } from '@/components/buttons';
+import { CustomMainView } from '@/components/customMainView';
 import { headerSettings } from '@/utils';
 import { getAuth } from '@react-native-firebase/auth';
 import { useNavigation, useRouter } from "expo-router";
@@ -8,7 +9,6 @@ import {
   Image,
   Pressable,
   Text,
-  TouchableOpacity,
   useColorScheme,
   View
 } from "react-native";
@@ -51,7 +51,7 @@ export default function EmailVerification() {
   }
 
   return (
-    <View className='flex-1 p-10 dark:bg-darkMode-background bg-background'>
+    <CustomMainView className='flex-1 p-10'>
       <View className='flex-[1] grow-[1] justify-end'>
         <Image
           source={require('@/assets/images/check-email.png')} 
@@ -65,15 +65,13 @@ export default function EmailVerification() {
       </View>
       <View className='flex-[1] grow-[1]'>
         <PrimaryButton text={t("resendEmail")} className='mt-4' onPress={resend} />
-        <TouchableOpacity onPress={retry} className={`bg-white p-2 rounded-xl mt-4`}>
-          <Text className='text-textPrimary text-center text-xl'>{t("verifyAgain")}</Text>
-        </TouchableOpacity>
+        <SecondaryButton onPress={retry} className='mt-4' text={t("verifyAgain")} />
         <View className='items-center mt-4'>
           <Pressable className="active:opacity-20" onPress={signOut}>
             <Text className=" text-linkTextOverLight dark:text-darkMode-textPrimary">{t("signOut")}</Text>
           </Pressable>
         </View>
       </View>
-    </View>
+    </CustomMainView>
   )
 }

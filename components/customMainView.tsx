@@ -11,10 +11,9 @@ export function CustomSafeAreaView(
   {
     children,
     screenWithHeader = true,
-    colorScheme,
     className,
     ...rest
-  }: CustomComponentProps & { screenWithHeader?: boolean; colorScheme?: any }
+  }: CustomComponentProps & { screenWithHeader?: boolean }
 ) {
   return (
     <SafeAreaView
@@ -36,10 +35,9 @@ export function CustomMainView(
   {
     children,
     screenWithHeader = true,
-    colorScheme,
     className,
     ...rest
-  }: CustomComponentProps & { screenWithHeader?: boolean; colorScheme?: any }
+  }: CustomComponentProps & { screenWithHeader?: boolean }
 ) {
   return (
     <View

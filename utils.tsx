@@ -28,13 +28,14 @@ export function colorSchemeStyle(scheme: any, style: string, color: string): str
   return finalStyle;
 }
 
-export function headerSettings(navigation: any, colorScheme: any, title: string): void {
+export function headerSettings(navigation: any, colorScheme: any, title: string, rest?: any): void {
   return navigation.setOptions({
     title: title,
     headerStyle: {
-      backgroundColor:
-        colorScheme === 'dark' ? '#1D2430' : '#F3F4F6', // usa tu paleta
+      backgroundColor: colorScheme === 'dark' ? '#1D2430' : '#F3F4F6', // usa tu paleta
     },
     headerTintColor: colorScheme === 'dark' ? '#EAECEE' : '#1D2430',
+    headerShadowVisible: false,
+    ...(rest ?? {}),
   })
 }

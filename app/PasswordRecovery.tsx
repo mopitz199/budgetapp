@@ -1,16 +1,27 @@
 import { PrimaryButton } from '@/components/buttons';
+import { CustomMainView } from '@/components/customMainView';
 import { Input } from '@/components/inputs';
+import { headerSettings } from '@/utils';
 import { getAuth } from '@react-native-firebase/auth';
-import React, { useState } from "react";
+import { useNavigation } from '@react-navigation/core';
+import React, { useLayoutEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
-import { Alert, Image, Keyboard, KeyboardAvoidingView, Platform, Text, TouchableWithoutFeedback, View } from "react-native";
+import { Alert, Image, Keyboard, KeyboardAvoidingView, Platform, Text, TouchableWithoutFeedback, useColorScheme, View } from "react-native";
 
 export default function Index() {
 
+  const navigation = useNavigation();
+  const colorScheme = useColorScheme();
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const auth = getAuth()
+
+  useLayoutEffect(() => headerSettings(
+    navigation,
+    colorScheme,
+    t("signUp")
+  ), [navigation, colorScheme]);
 
   const recoverPassword = async () => {
     setLoading(true)
@@ -25,7 +36,7 @@ export default function Index() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View className="flex-1 p-10">
+      <CustomMainView className="p-10">
         <View className="flex-1 grow-[1] justify-end pb-4">
           <Image
             source={require('@/assets/images/recover-password.png')} 
@@ -34,7 +45,7 @@ export default function Index() {
           />
         </View>
         <KeyboardAvoidingView className="" behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-          <Text className='text-3xl mb-10 text-primaryTextOverLight text-center'>{t("passwordRecovery")}</Text>
+          <Text className='text-3xl mb-10 text-textPrimary dark:text-darkMode-textPrimary text-center'>{t("passwordRecovery")}</Text>
           <Input className='mb-4 w-full' value={email} onChangeText={setEmail} keyboardType="email-address" placeholder={t("email")} />
           <View>
             <PrimaryButton
@@ -46,7 +57,7 @@ export default function Index() {
           </View>
         </KeyboardAvoidingView>
         <View className='flex-1 grow-[1]'></View>
-      </View>
+      </CustomMainView>
     </TouchableWithoutFeedback>
   )
 }

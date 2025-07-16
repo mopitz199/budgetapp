@@ -63,7 +63,7 @@ export default function RootLayout() {
     return (
         <Stack>
           <Stack.Screen name='index' options={{headerShown: false, title: 'Login'}} />
-          <Stack.Screen name='SignUp' options={{title: t("signUp")}}/>
+          <Stack.Screen name='SignUp'/>
           <Stack.Screen name='PasswordRecovery' options={{title: t("passwordRecovery")}}/>
           <Stack.Screen name='(auth)' options={{headerShown: false}}/>
         </Stack>
