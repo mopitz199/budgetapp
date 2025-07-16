@@ -1,21 +1,26 @@
 import { PrimaryButton } from '@/components/buttons';
+import { CustomMainView } from '@/components/customMainView';
 import { Input, PasswordInput } from '@/components/inputs';
+import { headerSettings } from '@/utils';
 import { getAuth } from '@react-native-firebase/auth';
+import { useNavigation } from '@react-navigation/core';
 import { FirebaseError } from 'firebase/app';
-import React, { useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
 import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
   Text,
   TouchableWithoutFeedback,
+  useColorScheme,
   View
 } from "react-native";
 
 export default function CreateAccount() {
 
+  const navigation = useNavigation();
+  const colorScheme = useColorScheme(); // 👉 'light' o 'dark'
   const { t } = useTranslation();
   
   const [email, setEmail] = useState('');
@@ -30,6 +35,13 @@ export default function CreateAccount() {
 
   const [loading, setLoading] = useState(false);
   const auth = getAuth()
+
+  
+  useLayoutEffect(() => headerSettings(
+    navigation,
+    colorScheme,
+    t("createAccount")
+  ), [navigation, colorScheme]);
 
   const validateEmail = (): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -84,9 +96,9 @@ export default function CreateAccount() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <SafeAreaView className='flex-1'>
-        <View className='flex-1 p-10 flex-col justify-center bg-background'>
-          <Text className='text-center text-3xl text-primaryTextOverLight mb-10'>{t("createAccount")}</Text>
+      <CustomMainView className='flex-1'>
+        <View className='flex-1 p-10 flex-col justify-center dark:bg-darkMode-background'>
+          <Text className='text-center text-3xl text-textPrimary dark:text-darkMode-textPrimary mb-10'>{t("createAccount")}</Text>
           <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}>
             <Input editable={!loading} value={email} onChangeText={setEmail} keyboardType="email-address" placeholder={t("email")} />
             <Text className='pl-2 mb-2 text-error text-lg'>{emailError}</Text>
@@ -118,7 +130,7 @@ export default function CreateAccount() {
             />
           </KeyboardAvoidingView>
         </View>
-      </SafeAreaView>
+      </CustomMainView>
     </TouchableWithoutFeedback>
   );
 }

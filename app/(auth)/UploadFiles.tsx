@@ -1,18 +1,33 @@
 import { PrimaryButton, SecondaryButton } from '@/components/buttons';
+import { CustomMainView } from '@/components/customMainView';
+import { headerSettings } from '@/utils';
 import { getAuth } from '@react-native-firebase/auth';
 import { getStorage } from '@react-native-firebase/storage';
+import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Alert, Image, SafeAreaView, ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Image, ScrollView, Text, useColorScheme, View } from "react-native";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import uuid from 'react-native-uuid';
 
 const UploadFiles = () => {
 
+  const navigation = useNavigation();
+  const colorScheme = useColorScheme(); // 👉 'light' o 'dark'
+
+  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [images_uri, setImagesURI] = useState<string[]>([]);
+
+  useLayoutEffect(() => headerSettings(
+      navigation,
+      colorScheme,
+      "Sube tus imagenes",
+    ), [navigation, colorScheme]
+  );
 
   const pickImageAsync = async () => {
     setLoading(true)
@@ -95,11 +110,11 @@ const UploadFiles = () => {
   }
 
   useEffect(() => {
-    pickImageAsync();
+    //pickImageAsync();
   }, []);
 
   return (
-    <SafeAreaView className="flex-1">
+    <CustomMainView>
       {loading?
         <View className='absolute top-0 left-0 right-0 inset-0 h-max z-10 justify-center'>
           <View className='absolute top-0 left-0 right-0 opacity-20 bg-black inset-0 h-max z-10 justify-center' />
@@ -137,12 +152,12 @@ const UploadFiles = () => {
               resizeMode='contain'
               className="h-36 w-full"
             />
-            <Text className='text-center text-xl text-primaryTextOverLight'>{t("addYourImages")}</Text>
-            <PrimaryButton className="mt-4 p-6" text={loading ? t("loading") : t("select")} disabled={loading} onPress={pickImageAsync} />
+            <Text className='text-center text-xl text-textPrimary dark:text-darkMode-textPrimary'>{t("addYourImages")}</Text>
+            <PrimaryButton className="mt-4" text={loading ? t("loading") : t("select")} disabled={loading} onPress={pickImageAsync} />
           </View>
         }
       </View>
-    </SafeAreaView>
+    </CustomMainView>
   )
 }
 export default UploadFiles;

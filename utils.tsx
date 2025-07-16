@@ -21,3 +21,20 @@ export function formatNumber(value: number): string {
 
   return formatedInteger;
 }
+
+export function colorSchemeStyle(scheme: any, style: string, color: string): string {
+  const finalStyle = `${style}-${color} dark:${style}-${color}`;
+  console.log(finalStyle)
+  return finalStyle;
+}
+
+export function headerSettings(navigation: any, colorScheme: any, title: string): void {
+  return navigation.setOptions({
+    title: title,
+    headerStyle: {
+      backgroundColor:
+        colorScheme === 'dark' ? '#1D2430' : '#F3F4F6', // usa tu paleta
+    },
+    headerTintColor: colorScheme === 'dark' ? '#EAECEE' : '#1D2430',
+  })
+}

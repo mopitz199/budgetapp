@@ -1,12 +1,21 @@
+import { CustomSafeAreaView } from '@/components/customMainView';
 import { Ionicons } from '@expo/vector-icons';
+import { getAuth } from '@react-native-firebase/auth/lib/modular';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useRouter } from "expo-router";
-import { Pressable, SafeAreaView, Text, View } from "react-native";
+import { Button, Pressable, Text, useColorScheme, View } from "react-native";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Home = () => {
 
+  // Use always to ensure the color scheme is applied correctly
+  const colorScheme = useColorScheme();
+
+  const auth = getAuth()
+
   const router = useRouter();
   const bottomTabBarHeight = useBottomTabBarHeight();
+  const insets = useSafeAreaInsets();
 
   const BaseHome = () => {
     return (
@@ -33,12 +42,14 @@ const Home = () => {
   }
 
   return (
-    <SafeAreaView className="flex-1">
+    <CustomSafeAreaView colorScheme={colorScheme} style={{ marginBottom: -insets.bottom }} className="bg-background">
       <View className="flex-1">
         <Text>{bottomTabBarHeight}</Text>
+        <Text>Holaa</Text>
+        <Button title="Sign Out" onPress={() => auth.signOut()} />
         <BaseHome />
       </View>
-    </SafeAreaView>
+    </CustomSafeAreaView>
   )
 }
 export default Home;

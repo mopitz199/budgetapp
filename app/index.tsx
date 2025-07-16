@@ -17,13 +17,13 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Pressable,
-  SafeAreaView,
   Text,
   TouchableWithoutFeedback,
   View
 } from "react-native";
 
 import { GoogleButton, PrimaryButton } from '@/components/buttons';
+import { CustomMainView } from '@/components/customMainView';
 import { Input, PasswordInput } from '@/components/inputs';
 
 export default function Index() {
@@ -100,8 +100,8 @@ export default function Index() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <SafeAreaView className='flex-1'>
-        <View className="flex-1 p-10 justify-center bg-background">
+      <CustomMainView className='flex-1'>
+        <View className="flex-1 p-10 justify-center dark:bg-darkMode-background bg-background">
           <View className="flex-1 items-center grow-[1] justify-end">
             <Image source={require('@/assets/images/logo.png')} resizeMode='contain' className="h-28 w-full" />
             <Image source={require('@/assets/images/logo-title.png')} resizeMode='contain' className="h-14 w-full mt-4" />
@@ -126,18 +126,18 @@ export default function Index() {
                       <PrimaryButton className='mb-4 mt-4' onPress={signIn} text={t("logIn")}/>
                     </KeyboardAvoidingView>
                     <Pressable className="active:opacity-20" onPress={recoverPassword} hitSlop={15}>
-                      <Text className="text-right text-primaryTextOverLight">{t('forgotPassword')}</Text>
+                      <Text className="text-right text-textPrimary dark:text-darkMode-textPrimary">{t('forgotPassword')}</Text>
                     </Pressable>
                   </View>
                   <View className="flex-row">
                     <View className='flex-1 grow-[1] border-t border-divider mt-4'></View>
-                    <Text className='text-end text-2xl mr-4 ml-4 text-secondaryTextOverLight'>{t('or')}</Text>
+                    <Text className='text-end text-2xl mr-4 ml-4 text-textSecondary'>{t('or')}</Text>
                     <View className='flex-1 grow-[1] border-t border-divider mt-4'></View>
                   </View>
                   <View>
                     <GoogleButton onPress={googleSignIn} className='mt-4'/>
                     <View className='flex-row items-start justify-center mt-4'>
-                      <Text className='text-md text-primaryTextOverLight'>{t('doesNotHaveAnAccount')}</Text>
+                      <Text className='text-md text-textPrimary dark:text-darkMode-textPrimary'>{t('doesNotHaveAnAccount')}</Text>
                       <Pressable className="active:opacity-20" onPress={signUp} hitSlop={15}>
                         <Text className="text-md text-linkTextOverLight"> {t('signUp')}</Text>
                       </Pressable>
@@ -147,7 +147,7 @@ export default function Index() {
               )}
           </View>
         </View>
-      </SafeAreaView>
+      </CustomMainView>
     </TouchableWithoutFeedback>
   );
 }

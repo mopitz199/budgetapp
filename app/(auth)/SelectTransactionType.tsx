@@ -1,10 +1,14 @@
+import { CustomSafeAreaView } from '@/components/customMainView';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Platform, Pressable, SafeAreaView, Text, View } from "react-native";
+import { Pressable, Text, useColorScheme, View } from "react-native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const SelectTransactionType = () => {
 
+  // Use always to ensure the color scheme is applied correctly
+  const colorScheme = useColorScheme();
+  console.log("colorScheme", colorScheme);
   const router = useRouter();
 
   const ButtonsSelection = () => {
@@ -21,12 +25,12 @@ const SelectTransactionType = () => {
         right-10
         "
         style={{
-          marginBottom: parseInt(bottomTabBarHeight) - (Platform.OS === 'ios' ? insets.bottom : 0)
+          marginBottom: parseInt(bottomTabBarHeight) - (insets.bottom)
         }}
       >
         <View className='flex-1'>
           <View className='flex-row items-center justify-end mb-8 mr-2'>
-            <Text className='m-4 text-xl text-primaryTextOverLight'>Manually</Text>
+            <Text className="m-4 text-xl text-textPrimary dark:text-darkMode-textPrimary">Manually</Text>
             <Pressable className='
               bg-surfaceCard
               border-divider
@@ -42,7 +46,7 @@ const SelectTransactionType = () => {
             </Pressable>
           </View>
           <View className='flex-row items-center justify-end mb-8 mr-2'>
-            <Text className='m-4 text-xl text-primaryTextOverLight'>Upload files</Text>
+            <Text className='m-4 text-xl text-textPrimary dark:text-darkMode-textPrimary'>Upload files</Text>
             <Pressable className='
               bg-surfaceCard
               border-divider
@@ -83,11 +87,11 @@ const SelectTransactionType = () => {
   }
 
   return (
-    <SafeAreaView className="flex-1">
+    <CustomSafeAreaView className="flex-1" colorScheme={colorScheme}>
       <View className="flex-1">
         <ButtonsSelection />
       </View>
-    </SafeAreaView>
+    </CustomSafeAreaView>
   )
 }
 export default SelectTransactionType;

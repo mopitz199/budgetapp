@@ -40,6 +40,10 @@ const resources = {
       "loading": "Loading...",
       "upload": "Upload",
       "selectAgain": "Select again",
+      "undo": "Undo",
+      "transactionRemoved": "Transaction removed",
+      "confirm": "Confirm",
+      "confirming": "Confirming...",
     }
   },
   es: {
@@ -77,6 +81,10 @@ const resources = {
       "loading": "Cargando...",
       "upload": "Subir",
       "selectAgain": "Seleccionar de nuevo",
+      "undo": "Deshacer",
+      "transactionRemoved": "Transacción eliminada",
+      "confirm": "Confirmar",
+      "confirming": "Confirmando...",
     }
   }
 };

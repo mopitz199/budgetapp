@@ -19,7 +19,7 @@ export function PrimaryButton({ text, onPress , className, ...props }: Touchable
 export function SecondaryButton({ text, onPress , className, ...props }: TouchableOpacityProps & Props ) {
   return (
     <TouchableOpacity onPress={onPress} className={`bg-surfaceCard p-4 rounded-xl border border-divider ${className}`} {...props}>
-      <Text className='text-primaryTextOverLight text-center text-xl'>{text}</Text>
+      <Text className='text-textPrimary text-center text-xl'>{text}</Text>
     </TouchableOpacity>
   );
 }
@@ -33,7 +33,7 @@ export function GoogleButton({onPress , className}: Props) {
         className='absolute left-0 w-7 h-7 ml-4'
         source={{ uri: 'https://www.gstatic.com/marketing-cms/assets/images/d5/dc/cfe9ce8b4425b410b49b7f2dd3f3/g.webp=s48-fcrop64=1,00000000ffffffff-rw' }}
       />
-      <Text className='text-xl text-primaryTextOverLight '>{t("continueWithGoogle")}</Text>
+      <Text className='text-xl text-textPrimary '>{t("continueWithGoogle")}</Text>
     </TouchableOpacity>
   );
 }

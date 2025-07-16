@@ -1,19 +1,32 @@
 import { PrimaryButton } from '@/components/buttons';
+import { headerSettings } from '@/utils';
 import { getAuth } from '@react-native-firebase/auth';
-import { useRouter } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
+import { useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Image,
   Pressable,
   Text,
   TouchableOpacity,
+  useColorScheme,
   View
 } from "react-native";
 
 export default function EmailVerification() {
+
+  const navigation = useNavigation();
+  const colorScheme = useColorScheme(); // 👉 'light' o 'dark'
   const { t } = useTranslation();
   const router = useRouter();
   const auth = getAuth()
+
+  useLayoutEffect(() => headerSettings(
+      navigation,
+      colorScheme,
+      t("verifyYourEmail"),
+    ), [navigation, colorScheme]
+  );
 
   const resend = () => {
     const user = auth.currentUser;
@@ -38,7 +51,7 @@ export default function EmailVerification() {
   }
 
   return (
-    <View className='flex-1 p-10'>
+    <View className='flex-1 p-10 dark:bg-darkMode-background bg-background'>
       <View className='flex-[1] grow-[1] justify-end'>
         <Image
           source={require('@/assets/images/check-email.png')} 
@@ -47,17 +60,17 @@ export default function EmailVerification() {
         />
       </View>
       <View className='items-center mt-4 mb-4'>
-        <Text className='text-3xl text-primaryTextOverLight'>{t("checkYourEmail")}</Text>
-        <Text className='text-2xl text-secondaryTextOverLight text-center'>{t("weHaveSentYouVerificationLink")}</Text>
+        <Text className='text-3xl text-textPrimary dark:text-darkMode-textPrimary'>{t("checkYourEmail")}</Text>
+        <Text className='text-2xl text-textSecondary dark:text-darkMode-textSecondary text-center'>{t("weHaveSentYouVerificationLink")}</Text>
       </View>
       <View className='flex-[1] grow-[1]'>
         <PrimaryButton text={t("resendEmail")} className='mt-4' onPress={resend} />
         <TouchableOpacity onPress={retry} className={`bg-white p-2 rounded-xl mt-4`}>
-          <Text className='text-primaryTextOverLight text-center text-xl'>{t("verifyAgain")}</Text>
+          <Text className='text-textPrimary text-center text-xl'>{t("verifyAgain")}</Text>
         </TouchableOpacity>
         <View className='items-center mt-4'>
           <Pressable className="active:opacity-20" onPress={signOut}>
-            <Text className=" text-linkTextOverLight">{t("signOut")}</Text>
+            <Text className=" text-linkTextOverLight dark:text-darkMode-textPrimary">{t("signOut")}</Text>
           </Pressable>
         </View>
       </View>

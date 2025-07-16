@@ -6,7 +6,7 @@ export function Input({ className, ...otherProps}: TextInputProps) {
     <TextInput
       className={`
         text-xl p-4 h-16
-        text-primaryTextOverLight
+        text-textPrimary
         bg-surfaceCard
         rounded-xl
         border-divider

@@ -11,9 +11,8 @@ module.exports = {
         light: ['Roboto_Light'],  // fuente para títulos
       },
       colors: {
-        primaryTextOverColorOrDark: "#FFFFFF",
-        primaryTextOverLight: "#1D2430",
-        secondaryTextOverLight: "#5C677D",
+        textPrimary: "#1D2430",
+        textSecondary: "#5C677D",
         disableTextOverLight: "#9AA1B3",
 
         divider: "#E5E7EB",
@@ -30,18 +29,19 @@ module.exports = {
 
         
         darkMode: {
-          background: "#0E1116",
+          background: "#1D2430",
           primaryButton: "#4C8DFF",
           secondaryButton: "#30D9A3",
           warning: "#FFC44D",
           error: "#FF7A80",
-          surface: "#1B1F24",
-          textPrimary: "#EAECEE",
+          surfaceCard: "#1B1F24",
+          textPrimary: "#FFFFFF",
           textSecondary: "#9AA1B3",
           accent: "#FF8BF0",
         }
       }
     },
   },
+  //darkMode: "media", // o 'class' si lo manejás manualmente
   plugins: [],
 }
