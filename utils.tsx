@@ -2,8 +2,8 @@ export function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export function formatNumber(value: number): string {
-  const parts = value.toString().split('.');
+export function formatNumber(value: string): string {
+  const parts = value.split('.');
   const integer = parts[0];
   const decimal = parts[1];
 

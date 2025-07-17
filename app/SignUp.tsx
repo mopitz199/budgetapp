@@ -1,6 +1,6 @@
 import { PrimaryButton } from '@/components/buttons';
 import { CustomMainView } from '@/components/customMainView';
-import { Input, PasswordInput } from '@/components/inputs';
+import { Input } from '@/components/inputs';
 import { headerSettings } from '@/utils';
 import { getAuth } from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
@@ -16,6 +16,7 @@ import {
   useColorScheme,
   View
 } from "react-native";
+import { TextInput } from 'react-native-paper';
 
 export default function CreateAccount() {
 
@@ -100,26 +101,38 @@ export default function CreateAccount() {
         <View className='flex-1 p-10 flex-col justify-center'>
           <Text className='text-center text-3xl text-textPrimary dark:text-darkMode-textPrimary mb-10'>{t("createAccount")}</Text>
           <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}>
-            <Input editable={!loading} value={email} onChangeText={setEmail} keyboardType="email-address" placeholder={t("email")} />
+            <Input editable={!loading} value={email} onChangeText={setEmail} keyboardType="email-address" label={t("email")} />
             <Text className='pl-2 mb-2 text-error text-lg'>{emailError}</Text>
-            <PasswordInput
-              onIconPress={() => setShowPassword((showPassword) => !showPassword)}
-              iconName={showPassword ? "eye" : "eye-off"}
-              editable={!loading}
+            <Input
+              className=''
               value={password}
+              forceTextInputFocus={false}
               onChangeText={setPassword}
+              disabled={loading}
               secureTextEntry={!showPassword}
-              placeholder={t("password")}
+              label={t("password")}
+              right={
+                <TextInput.Icon
+                  onPress={() => {setShowPassword((showPassword) => !showPassword)}}
+                  icon={showPassword ? "eye" : "eye-off"}
+                />
+              }
             />
             <Text className='pl-2 mb-2 text-error text-lg'>{passwordError}</Text>
-            <PasswordInput
-              onIconPress={() => setShowRepeatedPassword((showRepeatedPassword) => !showRepeatedPassword)}
-              iconName={showRepeatedPassword ? "eye" : "eye-off"}
-              editable={!loading}
+            <Input
+              className=''
               value={repeatedPassword}
+              forceTextInputFocus={false}
               onChangeText={setRepeatedPassword}
+              disabled={loading}
               secureTextEntry={!showRepeatedPassword}
-              placeholder={t("repeatPassword")}
+              label={t("repeatPassword")}
+              right={
+                <TextInput.Icon
+                  onPress={() => setShowRepeatedPassword((showRepeatedPassword) => !showRepeatedPassword)}
+                  icon={showRepeatedPassword ? "eye" : "eye-off"}
+                />
+              }
             />
             <Text className='pl-2 mb-2 text-error text-lg'>{repeatedPasswordError}</Text>
             <PrimaryButton

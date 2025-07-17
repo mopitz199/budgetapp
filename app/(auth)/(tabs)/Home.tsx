@@ -42,7 +42,7 @@ const Home = () => {
   }
 
   return (
-    <CustomSafeAreaView colorScheme={colorScheme} style={{ marginBottom: -insets.bottom }} className="bg-background dark:bg-darkMode-background">
+    <CustomSafeAreaView style={{ marginBottom: -insets.bottom }} className="bg-background dark:bg-darkMode-background">
       <View className="flex-1">
         <Text>{bottomTabBarHeight}</Text>
         <Text>Holaa</Text>

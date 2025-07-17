@@ -21,10 +21,11 @@ import {
   TouchableWithoutFeedback,
   View
 } from "react-native";
+import { TextInput } from 'react-native-paper';
 
 import { GoogleButton, PrimaryButton } from '@/components/buttons';
 import { CustomMainView } from '@/components/customMainView';
-import { Input, PasswordInput } from '@/components/inputs';
+import { Input } from '@/components/inputs';
 
 export default function Index() {
 
@@ -113,17 +114,29 @@ export default function Index() {
                 <View>
                   <View>
                     <KeyboardAvoidingView behavior="padding" className="">
-                      <Input className='mb-4' value={email} onChangeText={setEmail} keyboardType="email-address" placeholder={t("email")} />
-                      <PasswordInput
-                        onIconPress={() => setShowPassword((showPassword) => !showPassword)}
-                        iconName={showPassword ? "eye" : "eye-off"}
-                        editable={!loading}
-                        value={password}
-                        onChangeText={setPassword}
-                        secureTextEntry={!showPassword}
-                        placeholder={t("password")}
+                      <Input
+                        className='mb-4'
+                        value={email}
+                        onChangeText={setEmail}
+                        keyboardType="email-address"
+                        label={t("email")}
                       />
-                      <PrimaryButton className='mb-4 mt-4' onPress={signIn} text={t("logIn")}/>
+                      <Input
+                        className='mb-4'
+                        value={password}
+                        forceTextInputFocus={false}
+                        onChangeText={setPassword}
+                        disabled={loading}
+                        secureTextEntry={!showPassword}
+                        label={t("password")}
+                        right={
+                          <TextInput.Icon
+                            onPress={() => {setShowPassword((showPassword) => !showPassword)}}
+                            icon={showPassword ? "eye" : "eye-off"}
+                          />
+                        }
+                      />
+                      <PrimaryButton className='mb-4' onPress={signIn} text={t("logIn")}/>
                     </KeyboardAvoidingView>
                     <Pressable className="active:opacity-20" onPress={recoverPassword} hitSlop={15}>
                       <Text className="text-right text-textPrimary dark:text-darkMode-textPrimary">{t('forgotPassword')}</Text>

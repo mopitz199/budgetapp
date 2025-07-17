@@ -11,13 +11,14 @@ import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, BackHandler, Platform, Pressable, ScrollView, Text, useColorScheme, View } from 'react-native';
-import { Snackbar } from 'react-native-paper';
+import DropDownPicker from 'react-native-dropdown-picker';
+import { Snackbar, TextInput } from 'react-native-paper';
 
 type Transaction = {
   index: number;
   date: string;
   description: string;
-  amount: number;
+  amount: string;
   removed: boolean;
 };
 
@@ -38,7 +39,7 @@ export default function TransactionEdition() {
     index: -1,
     date: '',
     description: '',
-    amount: 0,
+    amount: '',
     removed: true
   });
 
@@ -123,18 +124,18 @@ export default function TransactionEdition() {
     // readTransactions()
     // Simulate fetching transactions from a database
     const fetchedTransactions: Transaction[] = [
-      { index: 0, date: '2023-10-02', description: 'Compra en tienda', amount: 50.0, removed: false },
-      { index: 1, date: '2023-10-02', description: 'Pago de servicios', amount: -30.0, removed: false },
-      { index: 2, date: '2023-10-03', description: 'Transferencia recibida por una persona con muchas persona con muchas', amount: 100000, removed: false },
-      { index: 3, date: '2023-10-02', description: 'Compra en tienda', amount: 50.0, removed: false },
-      { index: 4, date: '2023-10-02', description: 'Pago de servicios', amount: -30.0, removed: false },
-      { index: 5, date: '2023-10-03', description: 'Transferencia recibida por una persona con muchas persona con muchas', amount: 100000, removed: false },
-      { index: 6, date: '2023-10-02', description: 'Compra en tienda', amount: 50.0, removed: false },
-      { index: 7, date: '2023-10-02', description: 'Pago de servicios', amount: -30.0, removed: false },
-      { index: 8, date: '2023-10-03', description: 'Transferencia recibida por una persona con muchas persona con muchas', amount: 100000, removed: false },
-      { index: 9, date: '2023-10-02', description: 'Compra en tienda', amount: 50.0, removed: false },
-      { index: 10, date: '2023-10-02', description: 'Pago de servicios', amount: -30.0, removed: false },
-      { index: 11, date: '2023-10-03', description: 'Transferencia recibida por una persona con muchas persona con muchas', amount: 100000, removed: false },
+      { index: 0, date: '2023-10-02', description: 'Compra en tienda', amount: "50.0", removed: false },
+      { index: 1, date: '2023-10-02', description: 'Pago de servicios', amount: "-30.0", removed: false },
+      { index: 2, date: '2023-10-03', description: 'Transferencia recibida por una persona con muchas persona con muchas', amount: "100000", removed: false },
+      { index: 3, date: '2023-10-02', description: 'Compra en tienda', amount: "50.0", removed: false },
+      { index: 4, date: '2023-10-02', description: 'Pago de servicios', amount: "-30.0", removed: false },
+      { index: 5, date: '2023-10-03', description: 'Transferencia recibida por una persona con muchas persona con muchas', amount: "100000", removed: false },
+      { index: 6, date: '2023-10-02', description: 'Compra en tienda', amount: "50.0", removed: false },
+      { index: 7, date: '2023-10-02', description: 'Pago de servicios', amount: "-30.0", removed: false },
+      { index: 8, date: '2023-10-03', description: 'Transferencia recibida por una persona con muchas persona con muchas', amount: "100000", removed: false },
+      { index: 9, date: '2023-10-02', description: 'Compra en tienda', amount: "50.0", removed: false },
+      { index: 10, date: '2023-10-02', description: 'Pago de servicios', amount: "-30.0", removed: false },
+      { index: 11, date: '2023-10-03', description: 'Transferencia recibida por una persona con muchas persona con muchas', amount: "100000", removed: false },
     ]
     setTransactions(fetchedTransactions);
   }, []);
@@ -173,7 +174,7 @@ export default function TransactionEdition() {
                 <View className='flex flex-1 flex-col grow-[2] justify-between items-end'>
                   <View className=''>
                     <Text
-                      className={`font-bold text-2xl ${transaction.amount > 0 ? 'text-success' : 'text-error'} `}
+                      className={`font-bold text-2xl ${parseFloat(transaction.amount) > 0 ? 'text-success' : 'text-error'} `}
                     >{formatNumber(transaction.amount)}</Text>
                   </View>
                   <View className='flex-row'>
@@ -276,17 +277,24 @@ export default function TransactionEdition() {
         <View className='p-4 flex-1 justify-center'>
           <View className=''>
             <View className='mb-4'>
-              <Input
-                value={transactionToEdit.amount.toString()}
-                keyboardType="email-address"
-                placeholder={"Monto"}
-                onChangeText={(value) => {
-                  setTransactionToEdit({...transactionToEdit, amount: parseFloat(value)})
-                }}
-              />
+              <View className='rounded-xl overflow-hidden'>
+                <TextInput
+                  mode="flat"
+                  underlineStyle={{
+                    backgroundColor: 'transparent',
+                  }}
+                  value={transactionToEdit.amount.toString()}
+                  label="Monto"
+                  right={<TextInput.Icon icon="minus" />}
+                  keyboardType="numeric"
+                  onChangeText={(value) => {
+                    setTransactionToEdit({...transactionToEdit, amount: value ? value.toString() : ""})
+                  }}
+                />
+              </View>
             </View>
             <View className='mb-4'>
-              <Input value={"Descripcion del la transaccionn"} keyboardType="email-address" placeholder={"Monto"} />
+              <Input value={"Descripcion del la transaccionn"} keyboardType="email-address" label={"Monto"} />
             </View>
             <View className=''>
               <Pressable
@@ -302,7 +310,16 @@ export default function TransactionEdition() {
                 <Text className='text-xl font-light text-textPrimary'>{transactionToEdit.date}</Text>
               </Pressable>
             </View>
-            <View>
+            <View className='mt-4'>
+              <DropDownPicker
+                  open={open}
+                  value={value}
+                  items={items}
+                  setOpen={setOpen}
+                  setValue={setValue}
+                  setItems={setItems}
+                  placeholder={'Choose a fruit.'}
+              />
             </View>
           </View>
           <PrimaryButton className='mt-4' onPress={() => {

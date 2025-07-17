@@ -46,7 +46,13 @@ export default function Index() {
         </View>
         <KeyboardAvoidingView className="" behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
           <Text className='text-3xl mb-10 text-textPrimary dark:text-darkMode-textPrimary text-center'>{t("passwordRecovery")}</Text>
-          <Input className='mb-4 w-full' value={email} onChangeText={setEmail} keyboardType="email-address" placeholder={t("email")} />
+          <Input
+            className='mb-4 w-full'
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            label={t("email")}
+          />
           <View>
             <PrimaryButton
               className={`${loading ? 'opacity-50' : 'opacity-100'}`}

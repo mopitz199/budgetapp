@@ -42,8 +42,7 @@ export default function RootLayout() {
 
     if (user && !inAuthGroup) {
       if(user.emailVerified){
-        router.replace('/(auth)/EmailVerification');
-        //router.replace('/(auth)/(tabs)/Home');
+        router.replace('/(auth)/(tabs)/Home');
       }else {
         router.replace('/(auth)/EmailVerification');
       }
