@@ -44,6 +44,7 @@ const resources = {
       "transactionRemoved": "Transaction removed",
       "confirm": "Confirm",
       "confirming": "Confirming...",
+      "verifyYourTransactions": "Verify your transactions",
     }
   },
   es: {
@@ -85,6 +86,7 @@ const resources = {
       "transactionRemoved": "Transacción eliminada",
       "confirm": "Confirmar",
       "confirming": "Confirmando...",
+      "verifyYourTransactions": "Verificar tus transacciones",
     }
   }
 };

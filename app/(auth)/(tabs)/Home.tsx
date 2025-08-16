@@ -45,7 +45,7 @@ const Home = () => {
     <CustomSafeAreaView style={{ marginBottom: -insets.bottom }} className="bg-background dark:bg-darkMode-background">
       <View className="flex-1">
         <Text>{bottomTabBarHeight}</Text>
-        <Text>Holaa</Text>
+        <Text className="text-onSurface dark:text-darkMode-onSurface">Holaassslleel</Text>
         <Button title="Sign Out" onPress={() => auth.signOut()} />
         <BaseHome />
       </View>

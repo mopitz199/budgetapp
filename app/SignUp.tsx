@@ -99,7 +99,7 @@ export default function CreateAccount() {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <CustomMainView className='flex-1'>
         <View className='flex-1 p-10 flex-col justify-center'>
-          <Text className='text-center text-3xl text-textPrimary dark:text-darkMode-textPrimary mb-10'>{t("createAccount")}</Text>
+          <Text className='text-center text-3xl text-onSurface dark:text-darkMode-onSurface mb-10'>{t("createAccount")}</Text>
           <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}>
             <Input editable={!loading} value={email} onChangeText={setEmail} keyboardType="email-address" label={t("email")} />
             <Text className='pl-2 mb-2 text-error text-lg'>{emailError}</Text>

@@ -1,24 +1,23 @@
 import { View } from 'react-native';
-import { TextInput } from 'react-native-paper';
+import { TextInput, useTheme } from 'react-native-paper';
 
 export function Input({ className = '', ...otherProps }: any) {
+  const { colors } = useTheme();
+
   return (
     <View className={`rounded-xl overflow-hidden ${className}`}>
       <TextInput
         mode="flat"
         theme={{
           colors: {
-            primary: '#1D2430',     // Color del label activo (focused)
-            text: '#1D2430',        // Color del texto dentro del input
-            placeholder: '#1D2430', // Color del label en reposo
+            primary: colors.onSurface,     // Color del label activo (focused)
+            text: colors.onSurface,        // Color del texto dentro del input
           },
         }}
         underlineStyle={{
           backgroundColor: 'transparent',
         }}
-        selectionColor="#9AA1B3"
-        cursorColor="#1D2430"
-        textColor="#1D2430"
+        selectionColor={colors.onSurface}
         {...otherProps}
       />
     </View>

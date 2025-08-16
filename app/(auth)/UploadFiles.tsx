@@ -1,4 +1,4 @@
-import { PrimaryButton, SecondaryButton } from '@/components/buttons';
+import { PrimaryButton } from '@/components/buttons';
 import { CustomMainView } from '@/components/customMainView';
 import { headerSettings } from '@/utils';
 import { getAuth } from '@react-native-firebase/auth';
@@ -51,7 +51,7 @@ const UploadFiles = () => {
   }
   
   const readImages = async (token: string, images_urls: string[]) => {
-    const response = await fetch('http://192.168.1.98:8080/analyze-bank-transactions', {
+    const response = await fetch('http://192.168.1.89:8080/analyze-bank-transactions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`, // 👈 Enviar token como Bearer
@@ -131,7 +131,7 @@ const UploadFiles = () => {
               <View className='flex-1 flex-row p-8 flex-wrap justify-around items-start dark:bg-darkMode-background bg-background'>
                 {(images_uri.map((uri, index) => (
                   <View className='w-[50%] p-2 dark:bg-darkMode-background bg-background' key={index}>
-                    <View className=' bg-surfaceCard rounded-2xl p-2'>
+                    <View className=' bg-surface rounded-2xl p-2'>
                       <Image
                         className='h-60 rounded-2xl'
                         resizeMode='contain'
@@ -144,7 +144,7 @@ const UploadFiles = () => {
               </View>
             </ScrollView>
             <PrimaryButton className="mr-10 ml-10 mb-4 mt-4" text={loading ? t("loading") : t("upload")} disabled={loading} onPress={uploadImage} />
-            <SecondaryButton className="mr-10 ml-10 mb-10" text={t("selectAgain")} disabled={loading} onPress={pickImageAsync} />
+            <onSurfaceVariant className="mr-10 ml-10 mb-10" text={t("selectAgain")} disabled={loading} onPress={pickImageAsync} />
           </View> :
           <View className='flex-1 justify-center p-10'>
             <Image
@@ -152,7 +152,7 @@ const UploadFiles = () => {
               resizeMode='contain'
               className="h-36 w-full"
             />
-            <Text className='text-center text-xl text-textPrimary dark:text-darkMode-textPrimary'>{t("addYourImages")}</Text>
+            <Text className='text-center text-xl text-onSurface dark:text-darkMode-onSurface'>{t("addYourImages")}</Text>
             <PrimaryButton className="mt-4" text={loading ? t("loading") : t("select")} disabled={loading} onPress={pickImageAsync} />
           </View>
         }

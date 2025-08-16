@@ -139,7 +139,7 @@ export default function Index() {
                       <PrimaryButton className='mb-4' onPress={signIn} text={t("logIn")}/>
                     </KeyboardAvoidingView>
                     <Pressable className="active:opacity-20" onPress={recoverPassword} hitSlop={15}>
-                      <Text className="text-right text-textPrimary dark:text-darkMode-textPrimary">{t('forgotPassword')}</Text>
+                      <Text className="text-right text-onSurface dark:text-darkMode-onSurface">{t('forgotPassword')}</Text>
                     </Pressable>
                   </View>
                   <View className="flex-row">
@@ -150,7 +150,7 @@ export default function Index() {
                   <View>
                     <GoogleButton onPress={googleSignIn} className='mt-4'/>
                     <View className='flex-row items-start justify-center mt-4'>
-                      <Text className='text-md text-textPrimary dark:text-darkMode-textPrimary'>{t('doesNotHaveAnAccount')}</Text>
+                      <Text className='text-md text-onSurface dark:text-darkMode-onSurface'>{t('doesNotHaveAnAccount')}</Text>
                       <Pressable className="active:opacity-20" onPress={signUp} hitSlop={15}>
                         <Text className="text-md text-linkTextOverLight"> {t('signUp')}</Text>
                       </Pressable>

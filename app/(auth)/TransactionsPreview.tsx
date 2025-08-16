@@ -1,4 +1,4 @@
-import { PrimaryButton, SecondaryButton } from '@/components/buttons';
+import { PrimaryButton } from '@/components/buttons';
 import { CustomMainView, CustomSafeAreaView } from '@/components/customMainView';
 import { Input } from '@/components/inputs';
 import IOSDatePicker from '@/components/iosDatePicker';
@@ -12,7 +12,7 @@ import { useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, BackHandler, Platform, Pressable, ScrollView, Text, useColorScheme, View } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
-import { Snackbar, TextInput } from 'react-native-paper';
+import { IconButton, Snackbar, TextInput, Tooltip } from 'react-native-paper';
 
 type Transaction = {
   index: number;
@@ -63,7 +63,7 @@ export default function TransactionEdition() {
   useLayoutEffect(() => headerSettings(
       navigation,
       colorScheme,
-      "Sube tus imagenes",
+      t("verifyYourTransactions"),
       {
         headerShown: !hideBackButton,
         gestureEnabled: !hideBackButton,
@@ -135,7 +135,7 @@ export default function TransactionEdition() {
       { index: 8, date: '2023-10-03', description: 'Transferencia recibida por una persona con muchas persona con muchas', amount: "100000", removed: false },
       { index: 9, date: '2023-10-02', description: 'Compra en tienda', amount: "50.0", removed: false },
       { index: 10, date: '2023-10-02', description: 'Pago de servicios', amount: "-30.0", removed: false },
-      { index: 11, date: '2023-10-03', description: 'Transferencia recibida por una persona con muchas persona con muchas', amount: "100000", removed: false },
+      { index: 11, date: '2023-10-03', description: 'Transferenciaa recibida por una persona con muchas persona con muchas', amount: "100000", removed: false },
     ]
     setTransactions(fetchedTransactions);
   }, []);
@@ -163,21 +163,26 @@ export default function TransactionEdition() {
         <View className="flex-1 bg-background dark:bg-darkMode-background p-4">
           <ScrollView>
             {transactions.filter(transaction => !transaction.removed).map((transaction) => (
-              <View className="flex-row border p-4 bg-surfaceCard mb-4 rounded-2xl border-divider" key={transaction.index}>
-                <View className='flex-1 grow-[3] justify-between'>
-                  <Text className='text-lg font-light leading-6 mb-4 text-textPrimary'>{transaction.description}</Text>
-                  <View className='flex-row items-center'>
+              <View className="flex-row border p-4 bg-surface mb-1 rounded-md border-divider" key={transaction.index}>
+                <View className='flex-1 border grow-[3] justify-between'>
+                  <Tooltip title="Selected Camera">
+                    <IconButton icon="camera" selected size={24} onPress={() => {}} />
+                  </Tooltip>
+                  <Text className='border font-light leading-6 mb-4 text-onSurface'>{transaction.description}</Text>
+                  <View className='flex-row border items-center'>
                     <Text className='text-sm font-light mr-2 text-textSecondary'>{transaction.date}</Text>
-                    <Text className='text-sm font-sans rounded-md bg-slate-400 pt-1 pb-1 pr-2 pl-2 text-textPrimary'>General</Text>
+                    <Text className='text-sm font-sans rounded-md bg-success pt-1 pb-1 pr-2 pl-2 text-onSurface'>
+                      General
+                    </Text>
                   </View>
                 </View>
-                <View className='flex flex-1 flex-col grow-[2] justify-between items-end'>
-                  <View className=''>
+                <View className='flex flex-1 border flex-col grow-[2] justify-between items-end'>
+                  <View className='border'>
                     <Text
-                      className={`font-bold text-2xl ${parseFloat(transaction.amount) > 0 ? 'text-success' : 'text-error'} `}
+                      className={`text-xl ${parseFloat(transaction.amount) > 0 ? 'text-success' : 'text-error'} `}
                     >{formatNumber(transaction.amount)}</Text>
                   </View>
-                  <View className='flex-row'>
+                  <View className='flex-row border'>
                     <Pressable
                       className='justify-center items-center p-2 active:opacity-20'
                       onPress={() => { editTransaction(transaction) }}
@@ -300,14 +305,14 @@ export default function TransactionEdition() {
               <Pressable
                 className='
                   p-4
-                  bg-surfaceCard
+                  bg-surface
                   rounded-xl
                   border-divider
                   border
                 '
                 onPress={displayDatePickerView}
               >
-                <Text className='text-xl font-light text-textPrimary'>{transactionToEdit.date}</Text>
+                <Text className='text-xl font-light text-onSurface'>{transactionToEdit.date}</Text>
               </Pressable>
             </View>
             <View className='mt-4'>
@@ -325,7 +330,7 @@ export default function TransactionEdition() {
           <PrimaryButton className='mt-4' onPress={() => {
             Alert.alert("Edit Transaction", "This feature is not implemented yet")
           }} text={"Guardar"} />
-          <SecondaryButton className='mt-4' onPress={() => {
+          <onSurfaceVariant className='mt-4' onPress={() => {
             setShowTransactionEditModal(false)
             setHideBackButton(false);
           }} text={"Cancelar"} />

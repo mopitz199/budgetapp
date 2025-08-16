@@ -11,33 +11,30 @@ module.exports = {
         light: ['Roboto_Light'],  // fuente para títulos
       },
       colors: {
-        textPrimary: "#1D2430",
-        textSecondary: "#5C677D",
-        disableTextOverLight: "#9AA1B3",
-
-        divider: "#E5E7EB",
-        surfaceCard: "#FFFFFF",
-        background: "#F3F4F6",
-
-        linkTextOverLight: "#0066FF",
-
         primary: "#0057FF",
-        success: "#00C48C",
         error: "#FF5A5F",
-        warning: "#FFA928",
-        accent: "#FF57D9",
+        success: "#00C48C",
+        divider: "#E5E7EB",
+        linkTextOverLight: "#0066FF",
+        background: "#F3F4F6",
+        surface: "#FFFFFF",
+        surfaceVariant: "#FFFFFF",
+        onPrimary: "#eeeeee", // color del texto en vista azul
+        onSurface: "#1D2430",
+        onSurfaceVariant: "#5C677D",
 
-        
         darkMode: {
+          primary: "#0057FF",
+          error: "#FF5A5F",
+          success: "#00C48C",
+          divider: "#E5E7EB",
+          linkTextOverLight: "#0066FF",
           background: "#1D2430",
-          primaryButton: "#4C8DFF",
-          secondaryButton: "#30D9A3",
-          warning: "#FFC44D",
-          error: "#FF7A80",
-          surfaceCard: "#1B1F24",
-          textPrimary: "#FFFFFF",
-          textSecondary: "#9AA1B3",
-          accent: "#FF8BF0",
+          surface: "#2A3447",
+          surfaceVariant: "#2A3447",
+          onPrimary: "#eeeeee", // color del texto en vista azul
+          onSurface: "#eeeeee",
+          onSurfaceVariant: "#AAB3C2",
         }
       }
     },

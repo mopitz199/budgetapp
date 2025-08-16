@@ -30,9 +30,9 @@ const SelectTransactionType = () => {
       >
         <View className='flex-1'>
           <View className='flex-row items-center justify-end mb-8 mr-2'>
-            <Text className="m-4 text-xl text-textPrimary dark:text-darkMode-textPrimary">Manually</Text>
+            <Text className="m-4 text-xl text-onSurface dark:text-darkMode-onSurface">Manually</Text>
             <Pressable className='
-              bg-surfaceCard
+              bg-surface
               border-divider
               border
               w-16 h-16
@@ -46,9 +46,9 @@ const SelectTransactionType = () => {
             </Pressable>
           </View>
           <View className='flex-row items-center justify-end mb-8 mr-2'>
-            <Text className='m-4 text-xl text-textPrimary dark:text-darkMode-textPrimary'>Upload files</Text>
+            <Text className='m-4 text-xl text-onSurface dark:text-darkMode-onSurface'>Upload files</Text>
             <Pressable className='
-              bg-surfaceCard
+              bg-surface
               border-divider
               border
               w-16 h-16
