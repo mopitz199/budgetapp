@@ -13,9 +13,6 @@ const lightTheme = {
     ...MD3LightTheme.colors,
     primary: "#0057FF",
     error: "#FF7A80",
-    success: "#00C48C",
-    divider: "#E5E7EB",
-    linkTextOverLight: "#0066FF",
     background: "#F3F4F6",
     // Text colors
     onPrimary: "#FFFFFF", // color del texto en vista azul
@@ -25,6 +22,11 @@ const lightTheme = {
     // View background colors
     surface: "#FFFFFF",
     surfaceVariant: "#FFFFFF", // Color de fondo del input
+
+    // Custom
+    success: "#00C48C",
+    divider: "#E5E7EB",
+    linkTextOverLight: "#0066FF",
   },
 };
 
@@ -34,9 +36,6 @@ const darkTheme = {
     ...MD3DarkTheme.colors,
     primary: "#0057FF",
     error: "#FF7A80",
-    success: "#00C48C",
-    divider: "#E5E7EB",
-    linkTextOverLight: "#0066FF",
     background: "#1D2430",
     // Text colors
     onPrimary: "#eeeeee", // color del texto en vista azul
@@ -46,6 +45,11 @@ const darkTheme = {
     // View background colors
     surface: "#2A3447",
     surfaceVariant: "#2A3447",
+
+    // Custom
+    success: "#00C48C",
+    divider: "#E5E7EB",
+    linkTextOverLight: "#0066FF",
   },
 };
 
@@ -105,7 +109,13 @@ export default function RootLayout() {
   } else {
     return (
       <PaperProvider theme={isDark ? darkTheme : lightTheme}>
-        <Stack>
+        <Stack
+          screenOptions={{
+            // Fondo de la "card"/escena (evita el flash)
+            contentStyle: { backgroundColor: isDark ? darkTheme.colors.background : lightTheme.colors.background },
+            headerShadowVisible: false,
+          }}
+        >
           <Stack.Screen name='index' options={{headerShown: false, title: 'Login'}} />
           <Stack.Screen name='SignUp'/>
           <Stack.Screen name='PasswordRecovery' options={{title: t("passwordRecovery")}}/>
