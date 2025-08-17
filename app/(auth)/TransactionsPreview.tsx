@@ -20,6 +20,7 @@ type Transaction = {
   description: string;
   amount: number;
   removed: boolean;
+  negative: boolean;
 };
 
 
@@ -41,7 +42,8 @@ export default function TransactionEdition() {
     date: new Date(),
     description: '',
     amount: 0,
-    removed: true
+    removed: true,
+    negative: false
   });
 
   const [showTransactionEditModal, setShowTransactionEditModal] = useState(false);
@@ -80,6 +82,8 @@ export default function TransactionEdition() {
         return {
           ...transaction,
           date: new Date(transaction.date),
+          negative: transaction.amount < 0,
+          amount: Math.abs(transaction.amount),
           index: index,
         };
       });
@@ -193,8 +197,8 @@ export default function TransactionEdition() {
                 </View>
                 <View className='flex flex-1 flex-col grow-[2] justify-between items-end'>
                     <Text
-                      className={`text-xl ${transaction.amount > 0 ? 'text-success' : 'text-warning'} `}
-                    >{formatNumber(transaction.amount.toString())}</Text>
+                      className={`text-xl ${!transaction.negative ? 'text-success' : 'text-warning'} `}
+                    >{formatNumber(transaction.amount.toString(), transaction.negative)}</Text>
                   <View className='flex-row'>
                     <Pressable
                       className='justify-center items-center p-2 active:opacity-20'
@@ -302,9 +306,14 @@ export default function TransactionEdition() {
                     label="Monto"
                     right={
                       <TextInput.Icon
-                        onPress={() => {}}
-                        icon={`${transactionToEdit.amount < 0 ? "minus" : "plus"}`}
-                        color={transactionToEdit.amount < 0 ? colors.error : colors.success}
+                        onPress={() => {
+                          setTransactionToEdit({
+                            ...transactionToEdit,
+                            negative: !transactionToEdit.negative
+                          });
+                        }}
+                        icon={transactionToEdit.negative ? "minus" : "plus"}
+                        color={transactionToEdit.negative ? colors.error : colors.success}
                       />}
                     keyboardType="numeric"
                     onChangeText={(value: any) => {

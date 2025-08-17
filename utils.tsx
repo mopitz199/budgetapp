@@ -2,14 +2,14 @@ export function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export function formatNumber(value: string): string {
+export function formatNumber(value: string, negative: boolean): string {
   const parts = value.split('.');
   const integer = parts[0];
   const decimal = parts[1];
 
   let formatedInteger = integer.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-  if(formatedInteger.startsWith('-')) {
-    formatedInteger = '-' + "$"+ formatedInteger.slice(1);
+  if(negative) {
+    formatedInteger = '-' + "$"+ formatedInteger;
   }else {
     formatedInteger = "$" + formatedInteger;
   }
@@ -20,12 +20,6 @@ export function formatNumber(value: string): string {
   }
 
   return formatedInteger;
-}
-
-export function colorSchemeStyle(scheme: any, style: string, color: string): string {
-  const finalStyle = `${style}-${color} dark:${style}-${color}`;
-  console.log(finalStyle)
-  return finalStyle;
 }
 
 export function headerSettings(navigation: any, colorScheme: any, title: string, rest?: any): void {
