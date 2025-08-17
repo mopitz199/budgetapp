@@ -93,7 +93,7 @@ export default function Index() {
     } catch (e: any) {
       const err = e as FirebaseError;
       console.log("sign in error", err);
-      Alert.alert('Error', 'Wrong email or password', [{text: 'OK'}]);
+      Alert.alert('Error', t('wrongEmailOrPassword'), [{text: 'OK'}]);
     } finally {
       setLoading(false);
     }

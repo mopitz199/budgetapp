@@ -1,4 +1,4 @@
-import { PrimaryButton } from '@/components/buttons';
+import { PrimaryButton, SecondaryButton } from '@/components/buttons';
 import { CustomMainView } from '@/components/customMainView';
 import { headerSettings } from '@/utils';
 import { getAuth } from '@react-native-firebase/auth';
@@ -65,7 +65,7 @@ export default function EmailVerification() {
       </View>
       <View className='flex-[1] grow-[1]'>
         <PrimaryButton text={t("resendEmail")} className='mt-4' onPress={resend} />
-        <onSurfaceVariant onPress={retry} className='mt-4' text={t("verifyAgain")} />
+        <SecondaryButton onPress={retry} className='mt-4' text={t("verifyAgain")} />
         <View className='items-center mt-4'>
           <Pressable className="active:opacity-20" onPress={signOut}>
             <Text className=" text-linkTextOverLight dark:text-darkMode-onSurface">{t("signOut")}</Text>

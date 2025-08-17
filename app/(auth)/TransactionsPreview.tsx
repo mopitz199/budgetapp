@@ -1,4 +1,5 @@
-import { PrimaryButton } from '@/components/buttons';
+import { PrimaryButton, SecondaryButton } from '@/components/buttons';
+import CustomDropDownPicker from '@/components/customDropDown';
 import { CustomMainView, CustomSafeAreaView } from '@/components/customMainView';
 import { Input } from '@/components/inputs';
 import IOSDatePicker from '@/components/iosDatePicker';
@@ -11,8 +12,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, BackHandler, Platform, Pressable, ScrollView, Text, useColorScheme, View } from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
-import { IconButton, Snackbar, TextInput, Tooltip } from 'react-native-paper';
+import { Snackbar, TextInput, Tooltip, useTheme } from 'react-native-paper';
 
 type Transaction = {
   index: number;
@@ -27,6 +27,7 @@ export default function TransactionEdition() {
 
   // Use always to ensure the color scheme is applied correctly
   const colorScheme = useColorScheme();
+  const { colors } = useTheme();
 
   const navigation = useNavigation();
   const { t } = useTranslation();
@@ -163,37 +164,50 @@ export default function TransactionEdition() {
         <View className="flex-1 bg-background dark:bg-darkMode-background p-4">
           <ScrollView>
             {transactions.filter(transaction => !transaction.removed).map((transaction) => (
-              <View className="flex-row border p-4 bg-surface mb-1 rounded-md border-divider" key={transaction.index}>
-                <View className='flex-1 border grow-[3] justify-between'>
-                  <Tooltip title="Selected Camera">
-                    <IconButton icon="camera" selected size={24} onPress={() => {}} />
+              <View
+                className="
+                  flex-row
+                  p-4
+                  bg-surface
+                  dark:bg-darkMode-surface
+                  mb-1
+                  rounded-md
+                  border-divider
+                  dark:border-darkMode-surface"
+                key={transaction.index}
+              >
+                <View className='flex-1 grow-[3] justify-between'>
+                  <Tooltip title={transaction.description}>
+                    <Text
+                      className='text-lg pt-1 font-light leading-5 mb-4 text-onSurface dark:text-darkMode-onSurface'
+                      numberOfLines={1}
+                    >
+                      {transaction.description}
+                    </Text>
                   </Tooltip>
-                  <Text className='border font-light leading-6 mb-4 text-onSurface'>{transaction.description}</Text>
-                  <View className='flex-row border items-center'>
-                    <Text className='text-sm font-light mr-2 text-textSecondary'>{transaction.date}</Text>
+                  <View className='flex-row items-center'>
+                    <Text className='text-sm font-light mr-2 text-onSurfaceVariant dark:text-darkMode-onSurfaceVariant'>{transaction.date}</Text>
                     <Text className='text-sm font-sans rounded-md bg-success pt-1 pb-1 pr-2 pl-2 text-onSurface'>
                       General
                     </Text>
                   </View>
                 </View>
-                <View className='flex flex-1 border flex-col grow-[2] justify-between items-end'>
-                  <View className='border'>
+                <View className='flex flex-1 flex-col grow-[2] justify-between items-end'>
                     <Text
-                      className={`text-xl ${parseFloat(transaction.amount) > 0 ? 'text-success' : 'text-error'} `}
+                      className={`text-xl ${parseFloat(transaction.amount) > 0 ? 'text-success' : 'text-warning'} `}
                     >{formatNumber(transaction.amount)}</Text>
-                  </View>
-                  <View className='flex-row border'>
+                  <View className='flex-row'>
                     <Pressable
                       className='justify-center items-center p-2 active:opacity-20'
                       onPress={() => { editTransaction(transaction) }}
                     >
-                      <Ionicons name={"create-outline"} size={28} color="#0057FF" className=''/>
+                      <Ionicons name={"create-outline"} size={28} color={colors.onSurface} className=''/>
                     </Pressable>
                     <Pressable
                       className='justify-center items-center p-2 pr-0 active:opacity-20'
                       onPress={() => removeTransaction(transaction.index)}
                     >
-                      <Ionicons name={"close-circle-outline"} size={28} color="#5C677D" className=''/>
+                      <Ionicons name={"close-circle-outline"} size={28} color={colors.error} className=''/>
                     </Pressable>
                   </View>
                 </View>
@@ -274,12 +288,12 @@ export default function TransactionEdition() {
   const editTransactionModal = () => {
     return (
       <CustomSafeAreaView
-        className='pr-10 pl-10'
+        className='pr-10 pl-10 pt-10'
         screenWithHeader={hideBackButton}
       >
         {iosPicker()}
 
-        <View className='p-4 flex-1 justify-center'>
+        <View className='p-4 flex-1'>
           <View className=''>
             <View className='mb-4'>
               <View className='rounded-xl overflow-hidden'>
@@ -316,21 +330,21 @@ export default function TransactionEdition() {
               </Pressable>
             </View>
             <View className='mt-4'>
-              <DropDownPicker
-                  open={open}
-                  value={value}
-                  items={items}
-                  setOpen={setOpen}
-                  setValue={setValue}
-                  setItems={setItems}
-                  placeholder={'Choose a fruit.'}
+              <CustomDropDownPicker
+                open={open}
+                value={value}
+                items={items}
+                setOpen={setOpen}
+                setValue={setValue}
+                setItems={setItems}
+                placeholder={'Categoria'}
               />
             </View>
           </View>
           <PrimaryButton className='mt-4' onPress={() => {
             Alert.alert("Edit Transaction", "This feature is not implemented yet")
           }} text={"Guardar"} />
-          <onSurfaceVariant className='mt-4' onPress={() => {
+          <SecondaryButton className='mt-4' onPress={() => {
             setShowTransactionEditModal(false)
             setHideBackButton(false);
           }} text={"Cancelar"} />

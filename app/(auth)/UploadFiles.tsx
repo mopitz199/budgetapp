@@ -1,4 +1,4 @@
-import { PrimaryButton } from '@/components/buttons';
+import { PrimaryButton, SecondaryButton } from '@/components/buttons';
 import { CustomMainView } from '@/components/customMainView';
 import { headerSettings } from '@/utils';
 import { getAuth } from '@react-native-firebase/auth';
@@ -144,7 +144,7 @@ const UploadFiles = () => {
               </View>
             </ScrollView>
             <PrimaryButton className="mr-10 ml-10 mb-4 mt-4" text={loading ? t("loading") : t("upload")} disabled={loading} onPress={uploadImage} />
-            <onSurfaceVariant className="mr-10 ml-10 mb-10" text={t("selectAgain")} disabled={loading} onPress={pickImageAsync} />
+            <SecondaryButton className="mr-10 ml-10 mb-10" text={t("selectAgain")} disabled={loading} onPress={pickImageAsync} />
           </View> :
           <View className='flex-1 justify-center p-10'>
             <Image

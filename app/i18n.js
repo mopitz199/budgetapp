@@ -45,6 +45,7 @@ const resources = {
       "confirm": "Confirm",
       "confirming": "Confirming...",
       "verifyYourTransactions": "Verify your transactions",
+      "wrongEmailOrPassword": "Wrong email or password",
     }
   },
   es: {
@@ -87,6 +88,7 @@ const resources = {
       "confirm": "Confirmar",
       "confirming": "Confirmando...",
       "verifyYourTransactions": "Verificar tus transacciones",
+      "wrongEmailOrPassword": "Correo o contraseña incorrectos",
     }
   }
 };
