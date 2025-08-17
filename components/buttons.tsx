@@ -18,7 +18,7 @@ export function PrimaryButton({ text, onPress , className, ...props }: Touchable
 
 export function SecondaryButton({ text, onPress , className, ...props }: TouchableOpacityProps & Props ) {
   return (
-    <TouchableOpacity onPress={onPress} className={`bg-surfaceCard p-4 rounded-xl border border-divider ${className}`} {...props}>
+    <TouchableOpacity onPress={onPress} className={`bg-surface p-4 rounded-xl border border-divider ${className}`} {...props}>
       <Text className='text-textPrimary text-center text-xl'>{text}</Text>
     </TouchableOpacity>
   );

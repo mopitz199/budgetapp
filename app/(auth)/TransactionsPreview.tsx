@@ -3,7 +3,7 @@ import CustomDropDownPicker from '@/components/customDropDown';
 import { CustomMainView, CustomSafeAreaView } from '@/components/customMainView';
 import { Input } from '@/components/inputs';
 import IOSDatePicker from '@/components/iosDatePicker';
-import { headerSettings } from '@/utils';
+import { formatNumber, headerSettings } from '@/utils';
 import { Ionicons } from '@expo/vector-icons';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { doc, getDoc, getFirestore } from '@react-native-firebase/firestore';
@@ -11,14 +11,14 @@ import { useNavigation } from '@react-navigation/native';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, BackHandler, Platform, Pressable, ScrollView, Text, useColorScheme, View } from 'react-native';
+import { Alert, BackHandler, Keyboard, Platform, Pressable, ScrollView, Text, TouchableWithoutFeedback, useColorScheme, View } from 'react-native';
 import { Snackbar, TextInput, Tooltip, useTheme } from 'react-native-paper';
 
 type Transaction = {
   index: number;
   date: Date;
   description: string;
-  amount: string;
+  amount: number;
   removed: boolean;
 };
 
@@ -27,7 +27,7 @@ export default function TransactionEdition() {
 
   // Use always to ensure the color scheme is applied correctly
   const colorScheme = useColorScheme();
-  const { colors } = useTheme();
+  const { colors } = useTheme() as any;
 
   const navigation = useNavigation();
   const { t } = useTranslation();
@@ -40,7 +40,7 @@ export default function TransactionEdition() {
     index: -1,
     date: new Date(),
     description: '',
-    amount: '',
+    amount: 0,
     removed: true
   });
 
@@ -193,8 +193,8 @@ export default function TransactionEdition() {
                 </View>
                 <View className='flex flex-1 flex-col grow-[2] justify-between items-end'>
                     <Text
-                      className={`text-xl ${parseFloat(transaction.amount) > 0 ? 'text-success' : 'text-warning'} `}
-                    >{transaction.amount}</Text>
+                      className={`text-xl ${transaction.amount > 0 ? 'text-success' : 'text-warning'} `}
+                    >{formatNumber(transaction.amount.toString())}</Text>
                   <View className='flex-row'>
                     <Pressable
                       className='justify-center items-center p-2 active:opacity-20'
@@ -286,70 +286,73 @@ export default function TransactionEdition() {
 
   const editTransactionModal = () => {
     return (
-      <CustomSafeAreaView
-        className='pr-10 pl-10 pt-10'
-        screenWithHeader={hideBackButton}
-      >
-        {iosPicker()}
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <CustomSafeAreaView
+          className='pr-10 pl-10 pt-10'
+          screenWithHeader={hideBackButton}
+        >
+          {iosPicker()}
 
-        <View className='p-4 flex-1'>
-          <View className=''>
-            <View className='mb-4'>
-              <View className='rounded-xl overflow-hidden'>
-                <TextInput
-                  mode="flat"
-                  underlineStyle={{
-                    backgroundColor: 'transparent',
-                  }}
-                  value={transactionToEdit.amount.toString()}
-                  label="Monto"
-                  right={<TextInput.Icon icon="minus" />}
-                  keyboardType="numeric"
-                  onChangeText={(value) => {
-                    setTransactionToEdit({...transactionToEdit, amount: value ? value.toString() : ""})
-                  }}
+          <View className='p-4 flex-1'>
+            <View className=''>
+              <View className='mb-4'>
+                <View className='rounded-xl overflow-hidden'>
+                  <Input
+                    value={transactionToEdit.amount.toString()}
+                    label="Monto"
+                    right={
+                      <TextInput.Icon
+                        onPress={() => {}}
+                        icon={`${transactionToEdit.amount < 0 ? "minus" : "plus"}`}
+                        color={transactionToEdit.amount < 0 ? colors.error : colors.success}
+                      />}
+                    keyboardType="numeric"
+                    onChangeText={(value: any) => {
+                      setTransactionToEdit({...transactionToEdit, amount: value ? parseFloat(value) : 0})
+                    }}
+                  />
+                </View>
+              </View>
+              <View className='mb-4'>
+                <Input value={transactionToEdit.description} keyboardType="email-address" label={"Descripcion"} />
+              </View>
+              <View className=''>
+                <Pressable
+                  className='
+                    p-4
+                    bg-surface
+                    dark:bg-darkMode-surface
+                    rounded-xl                  
+                  '
+                  onPress={displayDatePickerView}
+                >
+                  <Text className='text-xl font-light text-onSurface dark:text-darkMode-onSurface'>
+                    {transactionToEdit.date.toDateString()}
+                  </Text>
+                </Pressable>
+              </View>
+              <View className='mt-4'>
+                <CustomDropDownPicker
+                  open={open}
+                  value={value}
+                  items={items}
+                  setOpen={setOpen}
+                  setValue={setValue}
+                  setItems={setItems}
+                  placeholder={'Categoria'}
                 />
               </View>
             </View>
-            <View className='mb-4'>
-              <Input value={"Descripcion del la transaccionn"} keyboardType="email-address" label={"Monto"} />
-            </View>
-            <View className=''>
-              <Pressable
-                className='
-                  p-4
-                  bg-surface
-                  dark:bg-darkMode-surface
-                  rounded-xl                  
-                '
-                onPress={displayDatePickerView}
-              >
-                <Text className='text-xl font-light text-onSurface dark:text-darkMode-onSurface'>
-                  {transactionToEdit.date.toDateString()}
-                </Text>
-              </Pressable>
-            </View>
-            <View className='mt-4'>
-              <CustomDropDownPicker
-                open={open}
-                value={value}
-                items={items}
-                setOpen={setOpen}
-                setValue={setValue}
-                setItems={setItems}
-                placeholder={'Categoria'}
-              />
-            </View>
+            <PrimaryButton className='mt-4' onPress={() => {
+              Alert.alert("Edit Transaction", "This feature is not implemented yet")
+            }} text={"Guardar"} />
+            <SecondaryButton className='mt-4' onPress={() => {
+              setShowTransactionEditModal(false)
+              setHideBackButton(false);
+            }} text={"Cancelar"} />
           </View>
-          <PrimaryButton className='mt-4' onPress={() => {
-            Alert.alert("Edit Transaction", "This feature is not implemented yet")
-          }} text={"Guardar"} />
-          <SecondaryButton className='mt-4' onPress={() => {
-            setShowTransactionEditModal(false)
-            setHideBackButton(false);
-          }} text={"Cancelar"} />
-        </View>
-      </CustomSafeAreaView>
+        </CustomSafeAreaView>
+      </TouchableWithoutFeedback>
     )
   }
 
