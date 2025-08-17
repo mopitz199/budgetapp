@@ -3,7 +3,7 @@ import CustomDropDownPicker from '@/components/customDropDown';
 import { CustomMainView, CustomSafeAreaView } from '@/components/customMainView';
 import { Input } from '@/components/inputs';
 import IOSDatePicker from '@/components/iosDatePicker';
-import { formatNumber, headerSettings } from '@/utils';
+import { headerSettings } from '@/utils';
 import { Ionicons } from '@expo/vector-icons';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { doc, getDoc, getFirestore } from '@react-native-firebase/firestore';
@@ -16,7 +16,7 @@ import { Snackbar, TextInput, Tooltip, useTheme } from 'react-native-paper';
 
 type Transaction = {
   index: number;
-  date: string;
+  date: Date;
   description: string;
   amount: string;
   removed: boolean;
@@ -38,19 +38,15 @@ export default function TransactionEdition() {
 
   const [transactionToEdit, setTransactionToEdit] = useState<Transaction>({
     index: -1,
-    date: '',
+    date: new Date(),
     description: '',
     amount: '',
     removed: true
   });
 
   const [showTransactionEditModal, setShowTransactionEditModal] = useState(false);
-
   const [lastIndexElementRemoved, setIndexLastElementRemoved] = useState<number | null>(null);
-
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [transactionDate, setTransactionDate] = useState<Date>(new Date());
-
   const [hideBackButton, setHideBackButton] = useState<boolean>(false);
 
   const [open, setOpen] = useState(false);
@@ -80,9 +76,10 @@ export default function TransactionEdition() {
 
     if (docSnap.exists()) {
       const jsonOutput = docSnap.data()?.json_output;
-      const responseTransactions = jsonOutput.transactions.map((transaction: Transaction, index: number) => {
+      const responseTransactions = jsonOutput.transactions.map((transaction: any, index: number) => {
         return {
           ...transaction,
+          date: new Date(transaction.date),
           index: index,
         };
       });
@@ -122,23 +119,23 @@ export default function TransactionEdition() {
   }
 
   useEffect(() => {
-    // readTransactions()
+    readTransactions()
     // Simulate fetching transactions from a database
-    const fetchedTransactions: Transaction[] = [
-      { index: 0, date: '2023-10-02', description: 'Compra en tienda', amount: "50.0", removed: false },
-      { index: 1, date: '2023-10-02', description: 'Pago de servicios', amount: "-30.0", removed: false },
-      { index: 2, date: '2023-10-03', description: 'Transferencia recibida por una persona con muchas persona con muchas', amount: "100000", removed: false },
-      { index: 3, date: '2023-10-02', description: 'Compra en tienda', amount: "50.0", removed: false },
-      { index: 4, date: '2023-10-02', description: 'Pago de servicios', amount: "-30.0", removed: false },
-      { index: 5, date: '2023-10-03', description: 'Transferencia recibida por una persona con muchas persona con muchas', amount: "100000", removed: false },
-      { index: 6, date: '2023-10-02', description: 'Compra en tienda', amount: "50.0", removed: false },
-      { index: 7, date: '2023-10-02', description: 'Pago de servicios', amount: "-30.0", removed: false },
-      { index: 8, date: '2023-10-03', description: 'Transferencia recibida por una persona con muchas persona con muchas', amount: "100000", removed: false },
-      { index: 9, date: '2023-10-02', description: 'Compra en tienda', amount: "50.0", removed: false },
-      { index: 10, date: '2023-10-02', description: 'Pago de servicios', amount: "-30.0", removed: false },
-      { index: 11, date: '2023-10-03', description: 'Transferenciaa recibida por una persona con muchas persona con muchas', amount: "100000", removed: false },
+    /*const fetchedTransactions: Transaction[] = [
+      { index: 0, date: new Date('2023-10-02'), description: 'Compra en tienda', amount: "50.0", removed: false },
+      { index: 1, date: new Date('2023-10-02'), description: 'Pago de servicios', amount: "-30.0", removed: false },
+      { index: 2, date: new Date('2023-10-03'), description: 'Transferencia recibida por una persona con muchas persona con muchas', amount: "100000", removed: false },
+      { index: 3, date: new Date('2023-10-02'), description: 'Compra en tienda', amount: "50.0", removed: false },
+      { index: 4, date: new Date('2023-10-02'), description: 'Pago de servicios', amount: "-30.0", removed: false },
+      { index: 5, date: new Date('2023-10-03'), description: 'Transferencia recibida por una persona con muchas persona con muchas', amount: "100000", removed: false },
+      { index: 6, date: new Date('2023-10-02'), description: 'Compra en tienda', amount: "50.0", removed: false },
+      { index: 7, date: new Date('2023-10-02'), description: 'Pago de servicios', amount: "-30.0", removed: false },
+      { index: 8, date: new Date('2023-10-03'), description: 'Transferencia recibida por una persona con muchas persona con muchas', amount: "100000", removed: false },
+      { index: 9, date: new Date('2023-10-02'), description: 'Compra en tienda', amount: "50.0", removed: false },
+      { index: 10, date: new Date('2023-10-02'), description: 'Pago de servicios', amount: "-30.0", removed: false },
+      { index: 11, date: new Date('2023-10-03'), description: 'Transferenciaa recibida por una persona con muchas persona con muchas', amount: "100000", removed: false },
     ]
-    setTransactions(fetchedTransactions);
+    setTransactions(fetchedTransactions);*/
   }, []);
 
   useEffect(() => {
@@ -163,17 +160,17 @@ export default function TransactionEdition() {
       >
         <View className="flex-1 bg-background dark:bg-darkMode-background p-4">
           <ScrollView>
-            {transactions.filter(transaction => !transaction.removed).map((transaction) => (
+            {transactions.filter(transaction => !transaction.removed).map((transaction, index, transaccions) => (
               <View
-                className="
+                className={`
                   flex-row
                   p-4
                   bg-surface
                   dark:bg-darkMode-surface
-                  mb-1
+                  ${transaccions.length - 1 === index ? 'mb-24' : 'mb-1'}
                   rounded-md
                   border-divider
-                  dark:border-darkMode-surface"
+                  dark:border-darkMode-surface`}
                 key={transaction.index}
               >
                 <View className='flex-1 grow-[3] justify-between'>
@@ -186,7 +183,9 @@ export default function TransactionEdition() {
                     </Text>
                   </Tooltip>
                   <View className='flex-row items-center'>
-                    <Text className='text-sm font-light mr-2 text-onSurfaceVariant dark:text-darkMode-onSurfaceVariant'>{transaction.date}</Text>
+                    <Text className='text-sm font-light mr-2 text-onSurfaceVariant dark:text-darkMode-onSurfaceVariant'>
+                      {transaction.date.toDateString()}
+                    </Text>
                     <Text className='text-sm font-sans rounded-md bg-success pt-1 pb-1 pr-2 pl-2 text-onSurface'>
                       General
                     </Text>
@@ -195,7 +194,7 @@ export default function TransactionEdition() {
                 <View className='flex flex-1 flex-col grow-[2] justify-between items-end'>
                     <Text
                       className={`text-xl ${parseFloat(transaction.amount) > 0 ? 'text-success' : 'text-warning'} `}
-                    >{formatNumber(transaction.amount)}</Text>
+                    >{transaction.amount}</Text>
                   <View className='flex-row'>
                     <Pressable
                       className='justify-center items-center p-2 active:opacity-20'
@@ -261,8 +260,8 @@ export default function TransactionEdition() {
   const iosPicker = () => {
     if (Platform.OS == 'ios' && showDatePicker) {
       return <IOSDatePicker
-        value={transactionDate}
-        onChange={(date) => setTransactionDate(date)}
+        value={new Date(transactionToEdit.date)}
+        onChange={(date) => setTransactionToEdit({...transactionToEdit, date: date} as Transaction)}
         onClose={() => setShowDatePicker(false)}
       />;
     }
@@ -273,10 +272,10 @@ export default function TransactionEdition() {
       setShowDatePicker(true);
     } else {
       DateTimePickerAndroid.open({
-        value: transactionDate,
+        value: new Date(transactionToEdit.date),
         onChange: (event, date) => {
           if (date) {
-            setTransactionDate(date);
+            setTransactionToEdit({...transactionToEdit, date: date} as Transaction);
           }
         },
         mode: 'date',
@@ -320,13 +319,14 @@ export default function TransactionEdition() {
                 className='
                   p-4
                   bg-surface
-                  rounded-xl
-                  border-divider
-                  border
+                  dark:bg-darkMode-surface
+                  rounded-xl                  
                 '
                 onPress={displayDatePickerView}
               >
-                <Text className='text-xl font-light text-onSurface'>{transactionToEdit.date}</Text>
+                <Text className='text-xl font-light text-onSurface dark:text-darkMode-onSurface'>
+                  {transactionToEdit.date.toDateString()}
+                </Text>
               </Pressable>
             </View>
             <View className='mt-4'>
@@ -354,6 +354,6 @@ export default function TransactionEdition() {
   }
 
   return (
-    showTransactionEditModal ? editTransactionModal() : transactionListPreview()
+      showTransactionEditModal ? editTransactionModal() : transactionListPreview()
   )
 }
