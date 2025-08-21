@@ -9,7 +9,7 @@ import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { doc, getDoc, getFirestore } from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 import { useLocalSearchParams } from 'expo-router';
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, BackHandler, Keyboard, Platform, Pressable, ScrollView, Text, TouchableWithoutFeedback, useColorScheme, View } from 'react-native';
 import { Snackbar, TextInput, Tooltip, useTheme } from 'react-native-paper';
@@ -21,6 +21,7 @@ type Transaction = {
   amount: string;
   removed: boolean;
   negative: boolean;
+  category: string;
 };
 
 
@@ -35,13 +36,6 @@ export default function TransactionEdition() {
   let { transactionsId } = useLocalSearchParams();
   transactionsId = transactionsId as string;
 
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const onChangeText = useCallback((formatted: any, extracted: any) => {
-    console.log("Formatted:", formatted);
-    console.log("Extracted:", extracted);
-    setPhoneNumber(formatted);
-  }, []);
-
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [snackBarVisible, setSnackBarVisible] = useState(false);
 
@@ -51,7 +45,8 @@ export default function TransactionEdition() {
     description: '',
     amount: "0",
     removed: true,
-    negative: false
+    negative: false,
+    category: '',
   });
 
   const [showTransactionEditModal, setShowTransactionEditModal] = useState(false);
@@ -199,7 +194,7 @@ export default function TransactionEdition() {
                       {transaction.date.toDateString()}
                     </Text>
                     <Text className='text-sm font-sans rounded-md bg-success pt-1 pb-1 pr-2 pl-2 text-onSurface'>
-                      General
+                      {transaction.category}
                     </Text>
                   </View>
                 </View>
@@ -345,7 +340,12 @@ export default function TransactionEdition() {
                 </View>
               </View>
               <View className='mb-4'>
-                <Input value={transactionToEdit.description} keyboardType="email-address" label={"Descripcion"} />
+                <Input
+                  value={transactionToEdit.description}
+                  onChangeText={(value: any) => {
+                    setTransactionToEdit({...transactionToEdit, description: value})
+                  }}
+                  label={"Descripcion"} />
               </View>
               <View className=''>
                 <Pressable
@@ -365,17 +365,24 @@ export default function TransactionEdition() {
               <View className='mt-4'>
                 <CustomDropDownPicker
                   open={open}
-                  value={value}
+                  value={transactionToEdit.category}
                   items={items}
                   setOpen={setOpen}
                   setValue={setValue}
+                  onSelectItem={(item: any) => {
+                    setTransactionToEdit({...transactionToEdit, category: item.value})
+                  }}
                   setItems={setItems}
                   placeholder={'Categoria'}
                 />
               </View>
             </View>
             <PrimaryButton className='mt-4' onPress={() => {
-              Alert.alert("Edit Transaction", "This feature is not implemented yet")
+              transactions[transactionToEdit.index] = transactionToEdit;
+              setTransactions(transactions)
+              setShowTransactionEditModal(false)
+              setHideBackButton(false);
+              // Alert.alert("Edit Transaction", "This feature is not implemented yet")
             }} text={"Guardar"} />
             <SecondaryButton className='mt-4' onPress={() => {
               setShowTransactionEditModal(false)
