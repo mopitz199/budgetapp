@@ -42,6 +42,7 @@
     "react-dom": "19.0.0",
     "react-i18next": "^15.5.3",
     "react-native": "0.79.3",
+    "react-native-advanced-input-mask": "^1.4.4",
     "react-native-dropdown-picker": "^5.4.6",
     "react-native-gesture-handler": "~2.24.0",
     "react-native-paper": "^5.14.5",

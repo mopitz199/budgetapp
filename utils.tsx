@@ -3,23 +3,11 @@ export function sleep(ms: number): Promise<void> {
 }
 
 export function formatNumber(value: string, negative: boolean): string {
-  const parts = value.split('.');
-  const integer = parts[0];
-  const decimal = parts[1];
-
-  let formatedInteger = integer.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-  if(negative) {
-    formatedInteger = '-' + "$"+ formatedInteger;
-  }else {
-    formatedInteger = "$" + formatedInteger;
+  if(negative){
+    return "-"+value
+  }else {
+    return value
   }
-
-  if (decimal && parseInt(decimal) !== 0) {
-    const cutDecimal = (Number('0.' + decimal)).toFixed(2).split('.')[1];
-    return `${formatedInteger},${cutDecimal}`;
-  }
-
-  return formatedInteger;
 }
 
 export function headerSettings(navigation: any, colorScheme: any, title: string, rest?: any): void {

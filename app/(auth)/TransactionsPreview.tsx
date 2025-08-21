@@ -9,7 +9,7 @@ import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { doc, getDoc, getFirestore } from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 import { useLocalSearchParams } from 'expo-router';
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, BackHandler, Keyboard, Platform, Pressable, ScrollView, Text, TouchableWithoutFeedback, useColorScheme, View } from 'react-native';
 import { Snackbar, TextInput, Tooltip, useTheme } from 'react-native-paper';
@@ -18,7 +18,7 @@ type Transaction = {
   index: number;
   date: Date;
   description: string;
-  amount: number;
+  amount: string;
   removed: boolean;
   negative: boolean;
 };
@@ -34,6 +34,14 @@ export default function TransactionEdition() {
   const { t } = useTranslation();
   let { transactionsId } = useLocalSearchParams();
   transactionsId = transactionsId as string;
+
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const onChangeText = useCallback((formatted: any, extracted: any) => {
+    console.log("Formatted:", formatted);
+    console.log("Extracted:", extracted);
+    setPhoneNumber(formatted);
+  }, []);
+
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [snackBarVisible, setSnackBarVisible] = useState(false);
 
@@ -41,7 +49,7 @@ export default function TransactionEdition() {
     index: -1,
     date: new Date(),
     description: '',
-    amount: 0,
+    amount: "0",
     removed: true,
     negative: false
   });
@@ -83,7 +91,7 @@ export default function TransactionEdition() {
           ...transaction,
           date: new Date(transaction.date),
           negative: transaction.amount < 0,
-          amount: Math.abs(transaction.amount),
+          amount: formatCLP(Math.abs(transaction.amount).toString()),
           index: index,
         };
       });
@@ -198,7 +206,7 @@ export default function TransactionEdition() {
                 <View className='flex flex-1 flex-col grow-[2] justify-between items-end'>
                     <Text
                       className={`text-xl ${!transaction.negative ? 'text-success' : 'text-warning'} `}
-                    >{formatNumber(transaction.amount.toString(), transaction.negative)}</Text>
+                    >{formatNumber(transaction.amount, transaction.negative)}</Text>
                   <View className='flex-row'>
                     <Pressable
                       className='justify-center items-center p-2 active:opacity-20'
@@ -271,6 +279,20 @@ export default function TransactionEdition() {
     }
   }
 
+  const formatCLP = (text: string) => {
+    // quitar todo lo que no sea dígito
+    const numericValue = text.replace(/\D/g, "");
+    if (!numericValue) return "";
+
+    // usar Intl.NumberFormat para formato chileno
+    return new Intl.NumberFormat("es-CL", {
+      style: "currency",
+      currency: "CLP",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(Number(numericValue));
+  };
+
   const displayDatePickerView = () => {
     if (Platform.OS === 'ios') {
       setShowDatePicker(true);
@@ -302,7 +324,7 @@ export default function TransactionEdition() {
               <View className='mb-4'>
                 <View className='rounded-xl overflow-hidden'>
                   <Input
-                    value={transactionToEdit.amount.toString()}
+                    value={formatCLP(transactionToEdit.amount.toString())}
                     label="Monto"
                     right={
                       <TextInput.Icon
@@ -317,7 +339,7 @@ export default function TransactionEdition() {
                       />}
                     keyboardType="numeric"
                     onChangeText={(value: any) => {
-                      setTransactionToEdit({...transactionToEdit, amount: value ? parseFloat(value) : 0})
+                      setTransactionToEdit({...transactionToEdit, amount: value ? formatCLP(value) : ""})
                     }}
                   />
                 </View>

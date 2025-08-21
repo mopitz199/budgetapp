@@ -51,7 +51,7 @@ const UploadFiles = () => {
   }
   
   const readImages = async (token: string, images_urls: string[]) => {
-    const response = await fetch('http://192.168.1.89:8080/analyze-bank-transactions', {
+    const response = await fetch('http://192.168.1.86:8080/analyze-bank-transactions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`, // 👈 Enviar token como Bearer
