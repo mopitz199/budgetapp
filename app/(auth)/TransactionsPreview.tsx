@@ -1,18 +1,15 @@
-import { PrimaryButton, SecondaryButton } from '@/components/buttons';
-import CustomDropDownPicker from '@/components/customDropDown';
-import { CustomMainView, CustomSafeAreaView } from '@/components/customMainView';
-import { Input } from '@/components/inputs';
-import IOSDatePicker from '@/components/iosDatePicker';
+import { PrimaryButton } from '@/components/buttons';
+import { CustomMainView } from '@/components/customMainView';
+import { EditTransactionView } from '@/components/editTransactionModel';
 import { formatNumber, headerSettings } from '@/utils';
 import { Ionicons } from '@expo/vector-icons';
-import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { doc, getDoc, getFirestore } from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, BackHandler, Keyboard, Platform, Pressable, ScrollView, Text, TouchableWithoutFeedback, useColorScheme, View } from 'react-native';
-import { Snackbar, TextInput, Tooltip, useTheme } from 'react-native-paper';
+import { Alert, BackHandler, Pressable, ScrollView, Text, useColorScheme, View } from 'react-native';
+import { Snackbar, Tooltip, useTheme } from 'react-native-paper';
 
 type Transaction = {
   index: number;
@@ -37,29 +34,28 @@ export default function TransactionEdition() {
   transactionsId = transactionsId as string;
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [snackBarVisible, setSnackBarVisible] = useState(false);
 
-  const [transactionToEdit, setTransactionToEdit] = useState<Transaction>({
-    index: -1,
-    date: new Date(),
-    description: '',
-    amount: "0",
-    removed: true,
-    negative: false,
-    category: '',
-  });
+  const [groupedTransactions, setGroupedTransactions] = useState<{ [key: string]: Transaction[] }>({});
+  const [sortedDates, setSortedDates] = useState<string[]>([]);
+
+  // States to handle the undo snackbar when removing a transaction
+  const [snackBarVisible, setSnackBarVisible] = useState(false);
+  const [lastIndexElementRemoved, setIndexLastElementRemoved] = useState<number | null>(null);
+
+  const [transactionToEdit, setTransactionToEdit] = useState<Transaction>(null as any);
 
   const [showTransactionEditModal, setShowTransactionEditModal] = useState(false);
-  const [lastIndexElementRemoved, setIndexLastElementRemoved] = useState<number | null>(null);
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  
   const [hideBackButton, setHideBackButton] = useState<boolean>(false);
 
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
   const [items, setItems] = useState([
-      {label: 'Apple', value: 'apple'},
-      {label: 'Banana', value: 'banana'},
-      {label: 'Pear', value: 'pear'},
+      {label: 'GENERAL', value: 'GENERAL'},
+      {label: 'COSTOS FIJOS', value: 'COSTOS FIJOS'},
+      {label: 'OCIO', value: 'OCIO'},
+      {label: 'EMERGENCIA', value: 'EMERGENCIA'},
+      {label: 'SUELDO', value: 'SUELDO'},
+      {label: 'OTROS INGRESOS', value: 'OTROS INGRESOS'},
+      {label: 'OTROS GASTOS', value: 'OTROS GASTOS'},
   ]);
 
   useLayoutEffect(() => headerSettings(
@@ -91,6 +87,7 @@ export default function TransactionEdition() {
         };
       });
       setTransactions(responseTransactions);
+      groupTransactionsByDate(responseTransactions);
       console.log("Document data:", docSnap.data());
     } else {
       console.log("No such document!");
@@ -123,6 +120,27 @@ export default function TransactionEdition() {
       });
       setIndexLastElementRemoved(null);
     }
+  }
+
+  const groupTransactionsByDate = (transactions: Transaction[]) => {
+    let sortedDates = transactions
+      .map(t => t.date.toDateString())
+      .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
+
+
+    let uniqueSortedDates = sortedDates.filter((s, i) => sortedDates.indexOf(s) === i);
+
+    let groupedDates =  transactions.reduce((groups: any, transaction) => {
+      const date = transaction.date.toDateString();
+      if (!groups[date]) {
+        groups[date] = [];
+      }
+      groups[date].push(transaction);
+      return groups;
+    }, {});
+    setGroupedTransactions(groupedDates);
+    console.log("sortedDates", uniqueSortedDates)
+    setSortedDates(uniqueSortedDates);
   }
 
   useEffect(() => {
@@ -167,56 +185,59 @@ export default function TransactionEdition() {
       >
         <View className="flex-1 bg-background dark:bg-darkMode-background p-4">
           <ScrollView>
-            {transactions.filter(transaction => !transaction.removed).map((transaction, index, transaccions) => (
-              <View
-                className={`
-                  flex-row
-                  p-4
-                  bg-surface
-                  dark:bg-darkMode-surface
-                  ${transaccions.length - 1 === index ? 'mb-24' : 'mb-1'}
-                  rounded-md
-                  border-divider
-                  dark:border-darkMode-surface`}
-                key={transaction.index}
-              >
-                <View className='flex-1 grow-[3] justify-between'>
-                  <Tooltip title={transaction.description}>
-                    <Text
-                      className='text-lg pt-1 font-light leading-5 mb-4 text-onSurface dark:text-darkMode-onSurface'
-                      numberOfLines={1}
-                    >
-                      {transaction.description}
-                    </Text>
-                  </Tooltip>
-                  <View className='flex-row items-center'>
-                    <Text className='text-sm font-light mr-2 text-onSurfaceVariant dark:text-darkMode-onSurfaceVariant'>
-                      {transaction.date.toDateString()}
-                    </Text>
-                    <Text className='text-sm font-sans rounded-md bg-success pt-1 pb-1 pr-2 pl-2 text-onSurface'>
-                      {transaction.category}
-                    </Text>
+            {sortedDates.map((date, dateIndex, dates) => (
+              <View key={dateIndex} className={`${dates.length - 1 === dateIndex ? 'mb-24' : 'mb-6'}`}>
+                <Text className='text-sm font-light mr-2 mb-2 text-onSurfaceVariant dark:text-darkMode-onSurfaceVariant'>
+                  {date}
+                </Text>
+                {groupedTransactions[date].map((transaction, index, transaccions) => (
+                  <View
+                    className={`
+                      flex-row
+                      bg-surface
+                      dark:bg-darkMode-surface
+                      rounded-md
+                      border-divider
+                      dark:border-darkMode-surface
+                      mb-2`}
+                    key={transaction.index}
+                  >
+                    <View className='flex-1 grow-[2] justify-between mt-4 mb-4 ml-4'>
+                      <Tooltip title={transaction.description}>
+                        <Text
+                          className='text-lg pt-1 font-light leading-5 mb-4 text-onSurface dark:text-darkMode-onSurface'
+                          numberOfLines={1}
+                        >
+                          {transaction.description}
+                        </Text>
+                      </Tooltip>
+                      <View className='items-start'>
+                        <Text className='text-xs font-sans rounded-md bg-success pt-1 pb-1 pr-2 pl-2 text-onSurface'>
+                          {transaction.category}
+                        </Text>
+                      </View>
+                    </View>
+                    <View className='flex-1 flex-col items-end mt-4 mb-4 pr-4'>
+                      <Text
+                          className={`text-lg ${!transaction.negative ? 'text-success' : 'text-warning'} `}
+                        >{formatNumber(transaction.amount, transaction.negative)}</Text>
+                    </View>
+                    <View className='flex-col justify-between items-end'>
+                      <Pressable
+                        className='flex-1 justify-center items-center px-4 active:opacity-20 border-l border-b border-background dark:border-darkMode-background'
+                        onPress={() => { editTransaction(transaction) }}
+                      >
+                        <Ionicons name={"create-outline"} size={22} color={colors.onSurface} className=''/>
+                      </Pressable>
+                      <Pressable
+                        className='flex-1 justify-center items-center px-4 active:opacity-20 border-l border-background dark:border-darkMode-background'
+                        onPress={() => removeTransaction(transaction.index)}
+                      >
+                        <Ionicons name={"trash"} size={22} color={colors.error} className=''/>
+                      </Pressable>
+                    </View>
                   </View>
-                </View>
-                <View className='flex flex-1 flex-col grow-[2] justify-between items-end'>
-                    <Text
-                      className={`text-xl ${!transaction.negative ? 'text-success' : 'text-warning'} `}
-                    >{formatNumber(transaction.amount, transaction.negative)}</Text>
-                  <View className='flex-row'>
-                    <Pressable
-                      className='justify-center items-center p-2 active:opacity-20'
-                      onPress={() => { editTransaction(transaction) }}
-                    >
-                      <Ionicons name={"create-outline"} size={28} color={colors.onSurface} className=''/>
-                    </Pressable>
-                    <Pressable
-                      className='justify-center items-center p-2 pr-0 active:opacity-20'
-                      onPress={() => removeTransaction(transaction.index)}
-                    >
-                      <Ionicons name={"close-circle-outline"} size={28} color={colors.error} className=''/>
-                    </Pressable>
-                  </View>
-                </View>
+                ))}
               </View>
             ))}
           </ScrollView>
@@ -264,16 +285,6 @@ export default function TransactionEdition() {
     )
   }
 
-  const iosPicker = () => {
-    if (Platform.OS == 'ios' && showDatePicker) {
-      return <IOSDatePicker
-        value={new Date(transactionToEdit.date)}
-        onChange={(date) => setTransactionToEdit({...transactionToEdit, date: date} as Transaction)}
-        onClose={() => setShowDatePicker(false)}
-      />;
-    }
-  }
-
   const formatCLP = (text: string) => {
     // quitar todo lo que no sea dígito
     const numericValue = text.replace(/\D/g, "");
@@ -288,24 +299,31 @@ export default function TransactionEdition() {
     }).format(Number(numericValue));
   };
 
-  const displayDatePickerView = () => {
-    if (Platform.OS === 'ios') {
-      setShowDatePicker(true);
-    } else {
-      DateTimePickerAndroid.open({
-        value: new Date(transactionToEdit.date),
-        onChange: (event, date) => {
-          if (date) {
-            setTransactionToEdit({...transactionToEdit, date: date} as Transaction);
-          }
-        },
-        mode: 'date',
-        is24Hour: true,
-      });
-    }
-  }
-
   const editTransactionModal = () => {
+    return (
+      <EditTransactionView
+        hideBackButton={hideBackButton}
+        colors={colors}
+        formatCLP={formatCLP}
+
+        categories={items}
+        setCategories={setItems}
+        transactionToEditDefault={transactionToEdit}
+
+        onSaveEditTransaction={(transaction: Transaction) => {
+          transactions[transaction.index] = transaction;
+          setTransactions(transactions)
+          groupTransactionsByDate(transactions);
+          setShowTransactionEditModal(false)
+          setHideBackButton(false);
+        }}
+        onCancelEditTransaction={() => {
+          setShowTransactionEditModal(false)
+          setHideBackButton(false);
+        }}
+      />
+    )
+    /*
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <CustomSafeAreaView
@@ -380,6 +398,7 @@ export default function TransactionEdition() {
             <PrimaryButton className='mt-4' onPress={() => {
               transactions[transactionToEdit.index] = transactionToEdit;
               setTransactions(transactions)
+              groupTransactionsByDate(transactions);
               setShowTransactionEditModal(false)
               setHideBackButton(false);
               // Alert.alert("Edit Transaction", "This feature is not implemented yet")
@@ -392,6 +411,7 @@ export default function TransactionEdition() {
         </CustomSafeAreaView>
       </TouchableWithoutFeedback>
     )
+    */
   }
 
   return (
