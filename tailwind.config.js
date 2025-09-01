@@ -24,6 +24,9 @@ module.exports = {
         onSurface: "#1D2430",
         onSurfaceVariant: "#5C677D",
 
+        //Fixed
+        onSurfaceDarkText: "#1D2430",
+
         darkMode: {
           primary: "#0057FF",
           error: "#FF5A5F",
@@ -37,6 +40,9 @@ module.exports = {
           onPrimary: "#eeeeee", // color del texto en vista azul
           onSurface: "#eeeeee",
           onSurfaceVariant: "#AAB3C2",
+
+          //Fixed
+          onSurfaceDarkText: "#1D2430",
         }
       }
     },

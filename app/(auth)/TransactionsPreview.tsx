@@ -43,10 +43,8 @@ export default function TransactionEdition() {
   const [lastIndexElementRemoved, setIndexLastElementRemoved] = useState<number | null>(null);
 
   const [transactionToEdit, setTransactionToEdit] = useState<Transaction>(null as any);
-
-  const [showTransactionEditModal, setShowTransactionEditModal] = useState(false);
   
-  const [hideBackButton, setHideBackButton] = useState<boolean>(false);
+  const [modalOpened, setModalOpened] = useState<boolean>(false);
 
   const [items, setItems] = useState([
       {label: 'GENERAL', value: 'GENERAL'},
@@ -63,10 +61,10 @@ export default function TransactionEdition() {
       colorScheme,
       t("verifyYourTransactions"),
       {
-        headerShown: !hideBackButton,
-        gestureEnabled: !hideBackButton,
+        headerShown: !modalOpened,
+        gestureEnabled: !modalOpened,
       }
-    ), [navigation, colorScheme, hideBackButton]
+    ), [navigation, colorScheme, modalOpened]
   );
 
 
@@ -84,11 +82,11 @@ export default function TransactionEdition() {
           negative: transaction.amount < 0,
           amount: formatCLP(Math.abs(transaction.amount).toString()),
           index: index,
+          category: 'GENERAL',
         };
       });
       setTransactions(responseTransactions);
       groupTransactionsByDate(responseTransactions);
-      console.log("Document data:", docSnap.data());
     } else {
       console.log("No such document!");
     }
@@ -106,9 +104,8 @@ export default function TransactionEdition() {
   }
 
   const editTransaction = (transaction: Transaction) => {
-    setHideBackButton(true);
+    setModalOpened(true);
     setTransactionToEdit(transaction);
-    setShowTransactionEditModal(true);
   }
 
   const undoRemoveTransaction = () => {
@@ -139,32 +136,15 @@ export default function TransactionEdition() {
       return groups;
     }, {});
     setGroupedTransactions(groupedDates);
-    console.log("sortedDates", uniqueSortedDates)
     setSortedDates(uniqueSortedDates);
   }
 
   useEffect(() => {
     readTransactions()
-    // Simulate fetching transactions from a database
-    /*const fetchedTransactions: Transaction[] = [
-      { index: 0, date: new Date('2023-10-02'), description: 'Compra en tienda', amount: "50.0", removed: false },
-      { index: 1, date: new Date('2023-10-02'), description: 'Pago de servicios', amount: "-30.0", removed: false },
-      { index: 2, date: new Date('2023-10-03'), description: 'Transferencia recibida por una persona con muchas persona con muchas', amount: "100000", removed: false },
-      { index: 3, date: new Date('2023-10-02'), description: 'Compra en tienda', amount: "50.0", removed: false },
-      { index: 4, date: new Date('2023-10-02'), description: 'Pago de servicios', amount: "-30.0", removed: false },
-      { index: 5, date: new Date('2023-10-03'), description: 'Transferencia recibida por una persona con muchas persona con muchas', amount: "100000", removed: false },
-      { index: 6, date: new Date('2023-10-02'), description: 'Compra en tienda', amount: "50.0", removed: false },
-      { index: 7, date: new Date('2023-10-02'), description: 'Pago de servicios', amount: "-30.0", removed: false },
-      { index: 8, date: new Date('2023-10-03'), description: 'Transferencia recibida por una persona con muchas persona con muchas', amount: "100000", removed: false },
-      { index: 9, date: new Date('2023-10-02'), description: 'Compra en tienda', amount: "50.0", removed: false },
-      { index: 10, date: new Date('2023-10-02'), description: 'Pago de servicios', amount: "-30.0", removed: false },
-      { index: 11, date: new Date('2023-10-03'), description: 'Transferenciaa recibida por una persona con muchas persona con muchas', amount: "100000", removed: false },
-    ]
-    setTransactions(fetchedTransactions);*/
   }, []);
 
   useEffect(() => {
-    if(!hideBackButton) return;
+    if(!modalOpened) return;
 
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
@@ -174,13 +154,13 @@ export default function TransactionEdition() {
       }
     );
     return () => backHandler.remove();
-  }, [hideBackButton]);
+  }, [modalOpened]);
 
 
   const transactionListPreview = () => {
     return (
       <CustomMainView
-        screenWithHeader={hideBackButton}
+        screenWithHeader={modalOpened}
         className='pb-8'
       >
         <View className="flex-1 bg-background dark:bg-darkMode-background p-4">
@@ -242,20 +222,8 @@ export default function TransactionEdition() {
             ))}
           </ScrollView>
           <PrimaryButton
-            className={
-            `
-              ${false ? 'opacity-50' : 'opacity-100'}
-              rounded-2xl
-              items-center
-              absolute
-              bottom-10
-              right-10
-              left-10
-              shadow-sm'
-            `}
-            onPress={() => {
-              Alert.alert("Create Account", "This feature is not implemented yet")
-            }}
+            className={`${false ? 'opacity-50' : 'opacity-100'} rounded-2xl items-center absolute bottom-10 right-10 left-10 shadow-sm'`}
+            onPress={() => {Alert.alert("Create Account", "This feature is not implemented yet") }}
             disabled={false}
             text={false ? t("confirming") : t("confirm")}
           />
@@ -263,7 +231,7 @@ export default function TransactionEdition() {
         <Snackbar
           visible={snackBarVisible}
           style={{
-            backgroundColor: '#1D2430',
+            backgroundColor: colors.warning,
             alignItems: 'center',
             marginHorizontal: 16,
             borderRadius: 12,
@@ -276,10 +244,10 @@ export default function TransactionEdition() {
               undoRemoveTransaction()
               setSnackBarVisible(false)
             },
-            textColor: '#FFFFFF'
+            textColor: colors.onSurfaceDarkText
           }}
         >
-          <Text className='font-sans color-white'>{t("transactionRemoved")}</Text>
+          <Text className='font-sans color-onSurfaceDarkText'>{t("transactionRemoved")}</Text>
         </Snackbar>
       </CustomMainView>
     )
@@ -302,7 +270,7 @@ export default function TransactionEdition() {
   const editTransactionModal = () => {
     return (
       <EditTransactionView
-        hideBackButton={hideBackButton}
+        modalOpened={modalOpened}
         colors={colors}
         formatCLP={formatCLP}
 
@@ -314,107 +282,16 @@ export default function TransactionEdition() {
           transactions[transaction.index] = transaction;
           setTransactions(transactions)
           groupTransactionsByDate(transactions);
-          setShowTransactionEditModal(false)
-          setHideBackButton(false);
+          setModalOpened(false);
         }}
         onCancelEditTransaction={() => {
-          setShowTransactionEditModal(false)
-          setHideBackButton(false);
+          setModalOpened(false);
         }}
       />
     )
-    /*
-    return (
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <CustomSafeAreaView
-          className='pr-10 pl-10 pt-10'
-          screenWithHeader={hideBackButton}
-        >
-          {iosPicker()}
-
-          <View className='p-4 flex-1'>
-            <View className=''>
-              <View className='mb-4'>
-                <View className='rounded-xl overflow-hidden'>
-                  <Input
-                    value={formatCLP(transactionToEdit.amount.toString())}
-                    label="Monto"
-                    right={
-                      <TextInput.Icon
-                        onPress={() => {
-                          setTransactionToEdit({
-                            ...transactionToEdit,
-                            negative: !transactionToEdit.negative
-                          });
-                        }}
-                        icon={transactionToEdit.negative ? "minus" : "plus"}
-                        color={transactionToEdit.negative ? colors.error : colors.success}
-                      />}
-                    keyboardType="numeric"
-                    onChangeText={(value: any) => {
-                      setTransactionToEdit({...transactionToEdit, amount: value ? formatCLP(value) : ""})
-                    }}
-                  />
-                </View>
-              </View>
-              <View className='mb-4'>
-                <Input
-                  value={transactionToEdit.description}
-                  onChangeText={(value: any) => {
-                    setTransactionToEdit({...transactionToEdit, description: value})
-                  }}
-                  label={"Descripcion"} />
-              </View>
-              <View className=''>
-                <Pressable
-                  className='
-                    p-4
-                    bg-surface
-                    dark:bg-darkMode-surface
-                    rounded-xl                  
-                  '
-                  onPress={displayDatePickerView}
-                >
-                  <Text className='text-xl font-light text-onSurface dark:text-darkMode-onSurface'>
-                    {transactionToEdit.date.toDateString()}
-                  </Text>
-                </Pressable>
-              </View>
-              <View className='mt-4'>
-                <CustomDropDownPicker
-                  open={open}
-                  value={transactionToEdit.category}
-                  items={items}
-                  setOpen={setOpen}
-                  setValue={setValue}
-                  onSelectItem={(item: any) => {
-                    setTransactionToEdit({...transactionToEdit, category: item.value})
-                  }}
-                  setItems={setItems}
-                  placeholder={'Categoria'}
-                />
-              </View>
-            </View>
-            <PrimaryButton className='mt-4' onPress={() => {
-              transactions[transactionToEdit.index] = transactionToEdit;
-              setTransactions(transactions)
-              groupTransactionsByDate(transactions);
-              setShowTransactionEditModal(false)
-              setHideBackButton(false);
-              // Alert.alert("Edit Transaction", "This feature is not implemented yet")
-            }} text={"Guardar"} />
-            <SecondaryButton className='mt-4' onPress={() => {
-              setShowTransactionEditModal(false)
-              setHideBackButton(false);
-            }} text={"Cancelar"} />
-          </View>
-        </CustomSafeAreaView>
-      </TouchableWithoutFeedback>
-    )
-    */
   }
 
   return (
-      showTransactionEditModal ? editTransactionModal() : transactionListPreview()
+      modalOpened ? editTransactionModal() : transactionListPreview()
   )
 }

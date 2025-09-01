@@ -6,6 +6,7 @@ import { Input } from '@/components/inputs';
 import IOSDatePicker from '@/components/iosDatePicker';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Keyboard, Platform, Pressable, Text, TouchableWithoutFeedback, View } from 'react-native';
 import { TextInput } from 'react-native-paper';
 
@@ -32,8 +33,9 @@ export function EditTransactionView(
   }: any
 ) {
 
-  const [categoryOption, setCategoryOption] = useState(transactionToEditDefault.category);
+  const { t, i18n } = useTranslation();
 
+  const [categoryOption, setCategoryOption] = useState(transactionToEditDefault.category);
   const [openCategoryPicker, setOpenCategoryPicker] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [transactionToEdit, setTransactionToEdit] = useState<Transaction>(transactionToEditDefault);
@@ -49,19 +51,28 @@ export function EditTransactionView(
   }
 
   const displayDatePickerView = () => {
-      if (Platform.OS === 'ios') {
-        setShowDatePicker(true);
-      } else {
-        DateTimePickerAndroid.open({
-          value: new Date(transactionToEdit.date),
-          onChange: (event, date) => {
-            setTransactionToEdit({...transactionToEdit, date: date} as Transaction);
-          },
-          mode: 'date',
-          is24Hour: true,
-        });
-      }
+    Keyboard.dismiss();
+    if (Platform.OS === 'ios') {
+      setShowDatePicker(true);
+    } else {
+      DateTimePickerAndroid.open({
+        value: new Date(transactionToEdit.date),
+        onChange: (event, date) => {
+          setTransactionToEdit({...transactionToEdit, date: date} as Transaction);
+        },
+        mode: 'date',
+        is24Hour: true,
+      });
     }
+  }
+
+  const displayDate = (date: Date) => {
+    return date.toLocaleDateString(i18n.language, {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  }
 
   return (
     <TouchableWithoutFeedback onPress={() => {
@@ -81,7 +92,7 @@ export function EditTransactionView(
               <View className='rounded-xl overflow-hidden'>
                 <Input
                   value={formatCLP(transactionToEdit.amount.toString())}
-                  label="Monto"
+                  label={t("amount")}
                   right={
                     <TextInput.Icon
                       onPress={() => {
@@ -92,6 +103,10 @@ export function EditTransactionView(
                       }}
                       icon={transactionToEdit.negative ? "minus" : "plus"}
                       color={transactionToEdit.negative ? colors.error : colors.success}
+                      style={{
+                        borderColor: transactionToEdit.negative ? colors.error : colors.success,
+                        borderWidth: 1
+                      }}
                     />}
                   keyboardType="numeric"
                   onChangeText={(value: any) => {
@@ -106,20 +121,15 @@ export function EditTransactionView(
                 onChangeText={(value: any) => {
                   setTransactionToEdit({...transactionToEdit, description: value})
                 }}
-                label={"Descripcion"} />
+                label={t("description")} />
             </View>
             <View className=''>
               <Pressable
-                className='
-                  p-4
-                  bg-surface
-                  dark:bg-darkMode-surface
-                  rounded-xl                  
-                '
+                className='p-4 bg-surface dark:bg-darkMode-surface rounded-xl'
                 onPress={displayDatePickerView}
               >
                 <Text className='text-xl font-light text-onSurface dark:text-darkMode-onSurface'>
-                  {transactionToEdit.date.toDateString()}
+                  {displayDate(transactionToEdit.date)}
                 </Text>
               </Pressable>
             </View>
@@ -128,18 +138,21 @@ export function EditTransactionView(
                 open={openCategoryPicker}
                 value={categoryOption}
                 items={categories}
-                setOpen={setOpenCategoryPicker}
+                setOpen={() => {
+                  Keyboard.dismiss();
+                  setOpenCategoryPicker(true)
+                }}
                 setValue={setCategoryOption}
                 onSelectItem={(item: any) => {
                   setTransactionToEdit({...transactionToEdit, category: item.value})
                 }}
                 setItems={setCategories}
-                placeholder={'Categoria'}
+                placeholder={t("category")}
               />
             </View>
           </View>
-          <PrimaryButton className='mt-4' onPress={() => onSaveEditTransaction(transactionToEdit)} text={"Guardar"} />
-          <SecondaryButton className='mt-4' onPress={() => onCancelEditTransaction(transactionToEdit)} text={"Cancelar"} />
+          <PrimaryButton className='mt-4' onPress={() => onSaveEditTransaction(transactionToEdit)} text={t("save")} />
+          <SecondaryButton className='mt-4' onPress={() => onCancelEditTransaction(transactionToEdit)} text={t("cancel")} />
         </View>
       </CustomSafeAreaView>
     </TouchableWithoutFeedback>

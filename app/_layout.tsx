@@ -13,6 +13,7 @@ const lightTheme = {
     ...MD3LightTheme.colors,
     primary: "#0057FF",
     error: "#FF7A80",
+    warning: "#FFA928",
     background: "#F3F4F6",
     // Text colors
     onPrimary: "#FFFFFF", // color del texto en vista azul
@@ -27,6 +28,9 @@ const lightTheme = {
     success: "#00C48C",
     divider: "#E5E7EB",
     linkTextOverLight: "#0066FF",
+
+    //Fixed
+    onSurfaceDarkText: "#1D2430",
   },
 };
 
@@ -36,6 +40,7 @@ const darkTheme = {
     ...MD3DarkTheme.colors,
     primary: "#0057FF",
     error: "#FF7A80",
+    warning: "#FFA928",
     background: "#1D2430",
     // Text colors
     onPrimary: "#eeeeee", // color del texto en vista azul
@@ -50,6 +55,9 @@ const darkTheme = {
     success: "#00C48C",
     divider: "#E5E7EB",
     linkTextOverLight: "#0066FF",
+
+    //Fixed
+    onSurfaceDarkText: "#1D2430",
   },
 };
 

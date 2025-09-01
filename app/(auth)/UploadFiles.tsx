@@ -25,7 +25,7 @@ const UploadFiles = () => {
   useLayoutEffect(() => headerSettings(
       navigation,
       colorScheme,
-      "Sube tus imagenes",
+      t("uploadYourImages"),
     ), [navigation, colorScheme]
   );
 
@@ -37,7 +37,6 @@ const UploadFiles = () => {
     })
 
     if(!result.canceled){
-      console.log("result picker", result)
       let aux_images_uri = []
       for (const asset of result.assets) {
         aux_images_uri.push(asset.uri)
@@ -73,7 +72,6 @@ const UploadFiles = () => {
       setLoading(true)
 
       let images_urls = []
-      console.log("images_uri", images_uri)
       for (const uri of images_uri) {
         const path = `/statements/${user?.uid}/${uuid.v4()}`
         const storage = getStorage()
@@ -97,7 +95,6 @@ const UploadFiles = () => {
           setImagesURI([]); // Clear images after successful upload
         }else{
           const errorData = await response.json();
-          console.error("Error processing images:", errorData);
           Alert.alert("Error", "An error occurred while processing the images. Please try again later.");
         }
       } catch (err) {
