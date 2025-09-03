@@ -33,6 +33,7 @@ module.exports = {
           success: "#00C48C",
           warning: "#FFA928",
           divider: "#E5E7EB",
+          divider: "#1D2430",
           linkTextOverLight: "#0066FF",
           background: "#1D2430",
           surface: "#2A3447",
