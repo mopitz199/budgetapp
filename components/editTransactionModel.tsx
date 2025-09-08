@@ -4,7 +4,7 @@ import CustomDropDownPicker from '@/components/customDropDown';
 import { CustomSafeAreaView } from '@/components/customMainView';
 import { Input } from '@/components/inputs';
 import IOSDatePicker from '@/components/iosDatePicker';
-import currencyList from '@/currencyList';
+import currencyMap from '@/currencyMap';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -27,7 +27,7 @@ export function EditTransactionView(
     hideBackButton, // if we want to hide the back button in the header
     transactionToEditDefault, // Transaction to edit, if null, we are creating a new transaction
     colors, // Colors from the theme
-    formatCLP, // Method to format a number to CLP currency format
+    formatCurrency, // Method to format a number to CLP currency format
     categories, // Categories array for the dropdown
     setCategories, // Method to store the categories array
     onSaveEditTransaction, // Function to execute when saving the edited transaction
@@ -40,7 +40,7 @@ export function EditTransactionView(
   const [categoryOption, setCategoryOption] = useState(transactionToEditDefault.category);
   const [openCategoryPicker, setOpenCategoryPicker] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [selectedCurrency, setSelectedCurrency] = useState("CLP");
+  const [selectedCurrency, setSelectedCurrency] = useState("USD");
   const [transactionToEdit, setTransactionToEdit] = useState<Transaction>(transactionToEditDefault);
   const [showCurrencyModal, setShowCurrencyModal] = useState(false);
 
@@ -79,6 +79,14 @@ export function EditTransactionView(
   }
 
 
+  const getCurrencyList = () => {
+    let currencyList: string[] = [];
+    for (const key in currencyMap) {
+      currencyList.push(key);
+    }
+    return currencyList;
+  }
+
   const modal = () => {
     return (
       <Portal>
@@ -94,7 +102,7 @@ export function EditTransactionView(
             borderRadius: 10
           }} onDismiss={() => {setShowCurrencyModal(false)}}>
             <ScrollView indicatorStyle="black">
-              {currencyList.map((currency) => (
+              {getCurrencyList().map((currency) => (
                 <TouchableOpacity
                   className={`
                     border-divider 
@@ -135,7 +143,7 @@ export function EditTransactionView(
             <View className='mb-4'>
               <View className='rounded-xl overflow-hidden'>
                 <Input
-                  value={formatCLP(transactionToEdit.amount.toString())}
+                  value={formatCurrency(transactionToEdit.amount.toString(), "USD")}
                   label={t("amount")}
                   left={
                     <TextInput.Icon
@@ -175,9 +183,9 @@ export function EditTransactionView(
                         borderWidth: 1
                       }}
                     />}
-                  keyboardType="numeric"
+                  //keyboardType="numeric"
                   onChangeText={(value: any) => {
-                    setTransactionToEdit({...transactionToEdit, amount: value ? formatCLP(value) : ""})
+                    setTransactionToEdit({...transactionToEdit, amount: value ? formatCurrency(value, "USD") : ""})
                   }}
                 />
               </View>

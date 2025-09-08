@@ -1,6 +1,7 @@
 import { PrimaryButton } from '@/components/buttons';
 import { CustomMainView } from '@/components/customMainView';
 import { EditTransactionView } from '@/components/editTransactionModel';
+import currencyMap from '@/currencyMap';
 import { formatNumber, headerSettings } from '@/utils';
 import { Ionicons } from '@expo/vector-icons';
 import { doc, getDoc, getFirestore } from '@react-native-firebase/firestore';
@@ -74,13 +75,28 @@ export default function TransactionEdition() {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      const jsonOutput = docSnap.data()?.json_output;
+      //const jsonOutput = docSnap.data()?.json_output;
+      const jsonOutput = {
+        "transactions": [
+          {"amount": -2425693.2, "date": "2025-08-28", "description": "Paypal *uber bv compras int.vi"},
+          {"amount": 2425693.2, "date": "2025-08-28", "description": "Paypal *uber bv compras int.vi"},
+          {"amount": -2238.58, "date": "2025-08-28", "description": "Paypal temu 35314369001 ie"},
+          {"amount": 2238.58, "date": "2025-08-28", "description": "Paypal temu 35314369001 ie"},
+          {"amount": 20.79, "date": "2025-08-28", "description": "Paypal temu 35314369001 ie"},
+          {"amount": -20.79, "date": "2025-08-28", "description": "Paypal temu 35314369001 ie"},
+          {"amount": -2.22, "date": "2025-08-28", "description": "Paypal uber bv 35314369001 nl"},
+          {"amount": 2.22, "date": "2025-08-28", "description": "Paypal uber bv 35314369001 nl"},
+          {"amount": -0.35, "date": "2025-08-28", "description": "Paypal spotifyp39ff89 35314369001 gb"},
+          {"amount": 0.35, "date": "2025-08-28", "description": "Paypal spotifyp39ff89 35314369001 gb"}
+        ]
+      }
+      // console.log(jsonOutput)
       const responseTransactions = jsonOutput.transactions.map((transaction: any, index: number) => {
         return {
           ...transaction,
           date: new Date(transaction.date),
           negative: transaction.amount < 0,
-          amount: formatCLP(Math.abs(transaction.amount).toString()),
+          amount: formatCurrency(Math.abs(transaction.amount).toString(), "USD"),
           index: index,
           category: 'GENERAL',
         };
@@ -253,27 +269,36 @@ export default function TransactionEdition() {
     )
   }
 
-  const formatCLP = (text: string) => {
-    // quitar todo lo que no sea dígito
-    const numericValue = text.replace(/\D/g, "");
-    if (!numericValue) return "";
+  const formatCurrency = (text: string, currency: string) => {
+    const currencyTool = currencyMap[currency]
+    const lastCharacter = text.charAt(text.length - 1);
 
-    // usar Intl.NumberFormat para formato chileno
-    return new Intl.NumberFormat("es-CL", {
-      style: "currency",
-      currency: "CLP",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(Number(numericValue));
-  };
+    if(lastCharacter === "." && text.split(".").length > 2){
+      text = text.slice(0, -1);
+    }
+    else if(lastCharacter === "," && text.split(",").length > 2){
+      text = text.slice(0, -1);
+    }
+    text = text.replace(/[^0-9,.]/g, "");
+
+    console.log(text);
+    text = currencyTool.removeThousandSeparator(text);
+    console.log(text);
+    text = currencyTool.replaceDecimalSeparator(text);
+    console.log(text);
+    text = currencyTool.addThousandSeparator(text);
+    console.log(text);
+
+    return text;
+
+  }
 
   const editTransactionModal = () => {
     return (
       <EditTransactionView
         modalOpened={modalOpened}
         colors={colors}
-        formatCLP={formatCLP}
-
+        formatCurrency={formatCurrency}
         categories={items}
         setCategories={setItems}
         transactionToEditDefault={transactionToEdit}
