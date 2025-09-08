@@ -1,7 +1,7 @@
 import { PrimaryButton } from '@/components/buttons';
 import { CustomMainView } from '@/components/customMainView';
 import { EditTransactionView } from '@/components/editTransactionModel';
-import currencyMap from '@/currencyMap';
+import { formatCurrency } from '@/currencyMap';
 import { formatNumber, headerSettings } from '@/utils';
 import { Ionicons } from '@expo/vector-icons';
 import { doc, getDoc, getFirestore } from '@react-native-firebase/firestore';
@@ -267,30 +267,6 @@ export default function TransactionEdition() {
         </Snackbar>
       </CustomMainView>
     )
-  }
-
-  const formatCurrency = (text: string, currency: string) => {
-    const currencyTool = currencyMap[currency]
-    const lastCharacter = text.charAt(text.length - 1);
-
-    if(lastCharacter === "." && text.split(".").length > 2){
-      text = text.slice(0, -1);
-    }
-    else if(lastCharacter === "," && text.split(",").length > 2){
-      text = text.slice(0, -1);
-    }
-    text = text.replace(/[^0-9,.]/g, "");
-
-    console.log(text);
-    text = currencyTool.removeThousandSeparator(text);
-    console.log(text);
-    text = currencyTool.replaceDecimalSeparator(text);
-    console.log(text);
-    text = currencyTool.addThousandSeparator(text);
-    console.log(text);
-
-    return text;
-
   }
 
   const editTransactionModal = () => {

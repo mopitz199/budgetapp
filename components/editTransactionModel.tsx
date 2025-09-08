@@ -4,7 +4,7 @@ import CustomDropDownPicker from '@/components/customDropDown';
 import { CustomSafeAreaView } from '@/components/customMainView';
 import { Input } from '@/components/inputs';
 import IOSDatePicker from '@/components/iosDatePicker';
-import currencyMap from '@/currencyMap';
+import { currencyMap, formatCurrency } from '@/currencyMap';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -27,7 +27,6 @@ export function EditTransactionView(
     hideBackButton, // if we want to hide the back button in the header
     transactionToEditDefault, // Transaction to edit, if null, we are creating a new transaction
     colors, // Colors from the theme
-    formatCurrency, // Method to format a number to CLP currency format
     categories, // Categories array for the dropdown
     setCategories, // Method to store the categories array
     onSaveEditTransaction, // Function to execute when saving the edited transaction

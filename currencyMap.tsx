@@ -1,56 +1,56 @@
-const currencyMap: Record<string, any> = {
+export const currencyMap: Record<string, any> = {
     'USD': {
       'locale': 'en-US',
       'decimal': '.',
-      'symbol': '$',
-      'replaceDecimalSeparator': function puntoPorComa(stringNum: string) {
-        return stringNum.replace(".", ".");
-      },
-      'removeThousandSeparator': function quitarMiles(num: string) {
-        let [integer, decimal] = num.toString().split(".");
-        integer = integer.replace(/\,/g, "");
-        return decimal !== undefined ? `${integer}.${decimal}` : integer;
-      },
-      'addThousandSeparator': function formatearMiles(num: number) {
-        let [integer, decimal] = num.toString().split(".");
-        integer = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        return decimal !== undefined ? `${integer}.${decimal}` : integer;
-      }
+      'thousand': ',',
+      'symbol': '$'
     },
     'CLP': {
       'locale': 'es-CL',
       'decimal': ",",
-      'symbol': '$',
-      'replaceDecimalSeparator': function puntoPorComa(stringNum: string) {
-        return stringNum.replace(".", ",");
-      },
-      'removeThousandSeparator': function quitarMiles(stringNum: string) {
-        let [integer, decimal] = stringNum.toString().split(",");
-        integer = integer.replace(/\./g, "");
-        return decimal !== undefined ? `${integer},${decimal}` : integer;
-      },
-      'addThousandSeparator': function formatearMiles(stringNum: string) {
-        let [integer, decimal] = stringNum.toString().split(",");
-        integer = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-        return decimal !== undefined ? `${integer},${decimal}` : integer;
-      }
+      'thousand': ".",
+      'symbol': '$'
     },
     'EUR': {
       'locale': 'de-DE',
-      'decimal': null,
-      'symbol': '€',
-      'replaceDecimal': function puntoPorComa(stringNum: string) {
-        return stringNum.replace(".", ",");
-      },
-      'removeThousandSeparator': function quitarMiles(num: string) {
-        return num.replace(/\./g, "");
-      },
-      'addThousandSeparator': function formatearMiles(num: number) {
-        let str = num.toString();
-        return str.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-      }
+      'decimal': '.',
+      'thousand': ',',
+      'symbol': '€'
     }
 }
-  // Currency code to locale mapping
 
-export default currencyMap;
+
+function replaceDecimalSeparator(stringNum: string, from: string, to: string) {
+  return stringNum.replace(from, to);
+}
+
+function removeThousandSeparator(num: string, decimalSeparator: string, thousandSeparator: string) {
+  let [integer, decimal] = num.toString().split(decimalSeparator);
+  integer = integer.replace(new RegExp(`\\${thousandSeparator}`, "g"), "");
+  return decimal !== undefined ? `${integer}.${decimal}` : integer;
+}
+
+function addThousandSeparator(stringNum: string, decimalSeparator: string, thousandSeparator: string) {
+  let [integer, decimal] = stringNum.toString().split(decimalSeparator);
+  integer = integer.replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator);
+  return decimal !== undefined ? `${integer}${decimalSeparator}${decimal}` : integer;
+}
+
+export function formatCurrency(text: string, currency: string) {
+  const currencyTool = currencyMap[currency]
+  const lastCharacter = text.charAt(text.length - 1);
+
+  if(lastCharacter === "." && text.split(".").length > 2){
+    text = text.slice(0, -1);
+  }
+  else if(lastCharacter === "," && text.split(",").length > 2){
+    text = text.slice(0, -1);
+  }
+  text = text.replace(/[^0-9,.]/g, "");
+
+  text = removeThousandSeparator(text, currencyTool.decimal, currencyTool.thousand);
+  text = replaceDecimalSeparator(text, ".", currencyTool.decimal);
+  text = addThousandSeparator(text, currencyTool.decimal, currencyTool.thousand);
+
+  return text;
+}
