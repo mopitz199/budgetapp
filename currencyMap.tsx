@@ -2,20 +2,17 @@ export const currencyMap: Record<string, any> = {
     'USD': {
       'locale': 'en-US',
       'decimal': '.',
-      'thousand': ',',
-      'symbol': '$'
+      'thousand': ','
     },
     'CLP': {
       'locale': 'es-CL',
       'decimal': ",",
-      'thousand': ".",
-      'symbol': '$'
+      'thousand': "."
     },
     'EUR': {
       'locale': 'de-DE',
       'decimal': '.',
-      'thousand': ',',
-      'symbol': '€'
+      'thousand': ','
     }
 }
 
@@ -53,4 +50,20 @@ export function formatCurrency(text: string, currency: string) {
   text = addThousandSeparator(text, currencyTool.decimal, currencyTool.thousand);
 
   return text;
+}
+
+export function cleanNumber (text: string, currency: string) {
+  const currencyTool = currencyMap[currency]
+  const lastCharacter = text.charAt(text.length - 1);
+
+  if(lastCharacter === "." && text.split(".").length > 2){
+    text = text.slice(0, -1);
+  }
+  else if(lastCharacter === "," && text.split(",").length > 2){
+    text = text.slice(0, -1);
+  }
+  text = text.replace(/[^0-9,.]/g, "");
+  text = removeThousandSeparator(text, currencyTool.decimal, currencyTool.thousand);
+  text = replaceDecimalSeparator(text, currencyTool.decimal, ".");
+  return Number(text);
 }

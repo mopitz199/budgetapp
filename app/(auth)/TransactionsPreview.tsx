@@ -17,9 +17,11 @@ type Transaction = {
   date: Date;
   description: string;
   amount: string;
+  numberAmount: number;
   removed: boolean;
   negative: boolean;
   category: string;
+  currency: string;
 };
 
 
@@ -90,6 +92,18 @@ export default function TransactionEdition() {
           {"amount": 0.35, "date": "2025-08-28", "description": "Paypal spotifyp39ff89 35314369001 gb"}
         ]
       }
+      /*const jsonOutput = {
+        "transactions": [
+          {"amount": 2425693, "date": "2025-08-28", "description": "Paypal *uber bv compras int.vi"},
+          {"amount": -2425693, "date": "2025-08-28", "description": "Paypal *uber bv compras int.vi"},
+          {"amount": -2238, "date": "2025-08-28", "description": "Paypal temu 35314369001 ie"},
+          {"amount": 2238, "date": "2025-08-28", "description": "Paypal temu 35314369001 ie"},
+          {"amount": 20, "date": "2025-08-28", "description": "Paypal temu 35314369001 ie"},
+          {"amount": -20, "date": "2025-08-28", "description": "Paypal temu 35314369001 ie"},
+          {"amount": -2.23, "date": "2025-08-28", "description": "Paypal uber bv 35314369001 nl"},
+          {"amount": 2.23, "date": "2025-08-28", "description": "Paypal uber bv 35314369001 nl"},
+        ]
+      }*/
       // console.log(jsonOutput)
       const responseTransactions = jsonOutput.transactions.map((transaction: any, index: number) => {
         return {
@@ -97,8 +111,10 @@ export default function TransactionEdition() {
           date: new Date(transaction.date),
           negative: transaction.amount < 0,
           amount: formatCurrency(Math.abs(transaction.amount).toString(), "USD"),
+          numberAmount: Math.abs(transaction.amount),
           index: index,
           category: 'GENERAL',
+          currency: 'USD',
         };
       });
       setTransactions(responseTransactions);

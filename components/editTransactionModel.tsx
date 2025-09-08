@@ -4,7 +4,7 @@ import CustomDropDownPicker from '@/components/customDropDown';
 import { CustomSafeAreaView } from '@/components/customMainView';
 import { Input } from '@/components/inputs';
 import IOSDatePicker from '@/components/iosDatePicker';
-import { currencyMap, formatCurrency } from '@/currencyMap';
+import { cleanNumber, currencyMap, formatCurrency } from '@/currencyMap';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -17,9 +17,11 @@ type Transaction = {
   date: Date;
   description: string;
   amount: string;
+  numberAmount: number;
   removed: boolean;
   negative: boolean;
   category: string;
+  currency: string;
 };
 
 export function EditTransactionView(
@@ -39,7 +41,6 @@ export function EditTransactionView(
   const [categoryOption, setCategoryOption] = useState(transactionToEditDefault.category);
   const [openCategoryPicker, setOpenCategoryPicker] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [selectedCurrency, setSelectedCurrency] = useState("USD");
   const [transactionToEdit, setTransactionToEdit] = useState<Transaction>(transactionToEditDefault);
   const [showCurrencyModal, setShowCurrencyModal] = useState(false);
 
@@ -108,11 +109,14 @@ export function EditTransactionView(
                     dark:border-darkMode-divider
                     border-b
                     p-4
-                    ${currency === selectedCurrency ? 'bg-primary dark:bg-darkMode-primary' : ''}
+                    ${currency === transactionToEdit.currency ? 'bg-primary dark:bg-darkMode-primary' : ''}
                   `}
                   key={currency}
                   onPress={() => {
-                    setSelectedCurrency(currency);
+                    setTransactionToEdit({
+                      ...transactionToEdit,
+                      currency: currency
+                    });
                     setShowCurrencyModal(false);
                   }}
                 >
@@ -142,7 +146,7 @@ export function EditTransactionView(
             <View className='mb-4'>
               <View className='rounded-xl overflow-hidden'>
                 <Input
-                  value={formatCurrency(transactionToEdit.amount.toString(), "USD")}
+                  value={formatCurrency(transactionToEdit.amount.toString(), transactionToEdit.currency)}
                   label={t("amount")}
                   left={
                     <TextInput.Icon
@@ -155,7 +159,7 @@ export function EditTransactionView(
                               setShowCurrencyModal(true);
                             }}
                           >
-                            <Text className='text-onSurface dark:text-darkMode-onSurface'>{selectedCurrency}</Text>
+                            <Text className='text-onSurface dark:text-darkMode-onSurface'>{transactionToEdit.currency}</Text>
                           </TouchableOpacity>
                         );
                       }}
@@ -184,7 +188,11 @@ export function EditTransactionView(
                     />}
                   //keyboardType="numeric"
                   onChangeText={(value: any) => {
-                    setTransactionToEdit({...transactionToEdit, amount: value ? formatCurrency(value, "USD") : ""})
+                    setTransactionToEdit({
+                      ...transactionToEdit,
+                      numberAmount: value ? cleanNumber(value, transactionToEdit.currency) : 0,
+                      amount: value ? formatCurrency(value, transactionToEdit.currency) : ""
+                    })
                   }}
                 />
               </View>
