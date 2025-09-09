@@ -17,7 +17,7 @@ type Transaction = {
   date: Date;
   description: string;
   amount: string;
-  numberAmount: number;
+  numberAmount: string;
   removed: boolean;
   negative: boolean;
   category: string;
@@ -146,7 +146,7 @@ export function EditTransactionView(
             <View className='mb-4'>
               <View className='rounded-xl overflow-hidden'>
                 <Input
-                  value={formatCurrency(transactionToEdit.amount.toString(), transactionToEdit.currency)}
+                  value={formatCurrency(transactionToEdit.numberAmount, transactionToEdit.currency)}
                   label={t("amount")}
                   left={
                     <TextInput.Icon
@@ -190,8 +190,7 @@ export function EditTransactionView(
                   onChangeText={(value: any) => {
                     setTransactionToEdit({
                       ...transactionToEdit,
-                      numberAmount: value ? cleanNumber(value, transactionToEdit.currency) : 0,
-                      amount: value ? formatCurrency(value, transactionToEdit.currency) : ""
+                      numberAmount: value ? cleanNumber(value, transactionToEdit.currency) : "0"
                     })
                   }}
                 />

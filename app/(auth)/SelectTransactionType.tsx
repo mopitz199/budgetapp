@@ -8,7 +8,6 @@ const SelectTransactionType = () => {
 
   // Use always to ensure the color scheme is applied correctly
   const colorScheme = useColorScheme();
-  console.log("colorScheme", colorScheme);
   const router = useRouter();
 
   const ButtonsSelection = () => {
@@ -87,7 +86,7 @@ const SelectTransactionType = () => {
   }
 
   return (
-    <CustomSafeAreaView className="flex-1" colorScheme={colorScheme}>
+    <CustomSafeAreaView className="flex-1">
       <View className="flex-1">
         <ButtonsSelection />
       </View>

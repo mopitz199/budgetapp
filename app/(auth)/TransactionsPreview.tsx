@@ -17,7 +17,7 @@ type Transaction = {
   date: Date;
   description: string;
   amount: string;
-  numberAmount: number;
+  numberAmount: string;
   removed: boolean;
   negative: boolean;
   category: string;
@@ -33,8 +33,9 @@ export default function TransactionEdition() {
 
   const navigation = useNavigation();
   const { t } = useTranslation();
-  let { transactionsId } = useLocalSearchParams();
+  let { transactionsId, selectedCurrency } = useLocalSearchParams();
   transactionsId = transactionsId as string;
+  selectedCurrency = selectedCurrency as string;
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
@@ -92,6 +93,7 @@ export default function TransactionEdition() {
           {"amount": 0.35, "date": "2025-08-28", "description": "Paypal spotifyp39ff89 35314369001 gb"}
         ]
       }
+
       /*const jsonOutput = {
         "transactions": [
           {"amount": 2425693, "date": "2025-08-28", "description": "Paypal *uber bv compras int.vi"},
@@ -110,11 +112,11 @@ export default function TransactionEdition() {
           ...transaction,
           date: new Date(transaction.date),
           negative: transaction.amount < 0,
-          amount: formatCurrency(Math.abs(transaction.amount).toString(), "USD"),
-          numberAmount: Math.abs(transaction.amount),
+          amount: formatCurrency(Math.abs(transaction.amount).toString(), selectedCurrency),
+          numberAmount: Math.abs(transaction.amount).toString(),
           index: index,
           category: 'GENERAL',
-          currency: 'USD',
+          currency: selectedCurrency,
         };
       });
       setTransactions(responseTransactions);
@@ -232,7 +234,10 @@ export default function TransactionEdition() {
                     <View className='flex-1 flex-col items-end mt-4 mb-4 pr-4'>
                       <Text
                           className={`text-lg ${!transaction.negative ? 'text-success' : 'text-warning'} `}
-                        >{formatNumber(transaction.amount, transaction.negative)}</Text>
+                        >{formatNumber(
+                          formatCurrency(transaction.numberAmount, transaction.currency),
+                          transaction.negative
+                        )}</Text>
                     </View>
                     <View className='flex-col justify-between items-end'>
                       <Pressable
@@ -290,7 +295,6 @@ export default function TransactionEdition() {
       <EditTransactionView
         modalOpened={modalOpened}
         colors={colors}
-        formatCurrency={formatCurrency}
         categories={items}
         setCategories={setItems}
         transactionToEditDefault={transactionToEdit}
