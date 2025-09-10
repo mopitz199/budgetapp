@@ -78,8 +78,8 @@ export default function TransactionEdition() {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      //const jsonOutput = docSnap.data()?.json_output;
-      const jsonOutput = {
+      const jsonOutput = docSnap.data()?.json_output;
+      /*const jsonOutput = {
         "transactions": [
           {"amount": -2425693.2, "date": "2025-08-28", "description": "Paypal *uber bv compras int.vi"},
           {"amount": 2425693.2, "date": "2025-08-28", "description": "Paypal *uber bv compras int.vi"},
@@ -92,7 +92,7 @@ export default function TransactionEdition() {
           {"amount": -0.35, "date": "2025-08-28", "description": "Paypal spotifyp39ff89 35314369001 gb"},
           {"amount": 0.35, "date": "2025-08-28", "description": "Paypal spotifyp39ff89 35314369001 gb"}
         ]
-      }
+      }*/
 
       /*const jsonOutput = {
         "transactions": [

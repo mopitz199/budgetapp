@@ -10,6 +10,7 @@ import { useRouter } from "expo-router";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Alert, Image, ScrollView, Text, useColorScheme, View } from "react-native";
+import { Icon } from 'react-native-paper';
 import uuid from 'react-native-uuid';
 
 const UploadFiles = () => {
@@ -165,8 +166,27 @@ const UploadFiles = () => {
               className="h-36 w-full"
             />
             <Text className='text-center text-xl text-onSurface dark:text-darkMode-onSurface'>{t("addYourImages")}</Text>
-            <SecondaryButton className="mt-4" text={selectedCurrency} disabled={loading} onPress={() => setShowCurrencyModal(true)} />
-            <PrimaryButton className="mt-4" text={loading ? t("loading") : t("select")} disabled={loading} onPress={pickImageAsync} />
+            <SecondaryButton
+              className="mt-4"
+              text={selectedCurrency}
+              disabled={loading}
+              onPress={() => setShowCurrencyModal(true)}
+              rightIcon={
+                <View className='absolute right-0'>
+                  <Icon
+                    source="arrow-down-drop-circle"
+                    color={colors.primary}
+                    size={25}
+                  />
+                </View>
+              }
+            />
+            <PrimaryButton
+              className="mt-4"
+              text={loading ? t("loading") : t("select")}
+              disabled={loading}
+              onPress={pickImageAsync}
+            />
           </View>
         }
       </View>

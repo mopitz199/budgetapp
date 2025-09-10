@@ -1,11 +1,12 @@
 
 import { useTranslation } from 'react-i18next';
-import { Image, Text, TouchableOpacity, TouchableOpacityProps } from 'react-native';
+import { Image, Text, TouchableOpacity, TouchableOpacityProps, View } from 'react-native';
 
 type Props = {
   text?: string;
   onPress: () => void;
   className: string;
+  rightIcon?: any;
 };
 
 export function PrimaryButton({ text, onPress , className, ...props }: TouchableOpacityProps & Props ) {
@@ -16,10 +17,13 @@ export function PrimaryButton({ text, onPress , className, ...props }: Touchable
   );
 }
 
-export function SecondaryButton({ text, onPress , className, ...props }: TouchableOpacityProps & Props ) {
+export function SecondaryButton({ text, onPress , className, rightIcon, ...props }: TouchableOpacityProps & Props ) {
   return (
     <TouchableOpacity onPress={onPress} className={`bg-surface p-4 rounded-xl border border-divider ${className}`} {...props}>
-      <Text className='text-textPrimary text-center text-xl'>{text}</Text>
+      <View className='flex-row justify-center'>
+        <Text className='text-textPrimary text-center text-xl'>{text}</Text>
+        {rightIcon ? rightIcon : null}
+      </View>
     </TouchableOpacity>
   );
 }
