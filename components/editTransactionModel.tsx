@@ -93,7 +93,7 @@ export function EditTransactionView(
         <Modal
           visible={showCurrencyModal}
           contentContainerStyle={{
-            height: '50%',
+            height: '40%',
             width: '80%',
             alignSelf: 'center',
             justifyContent: 'center',
@@ -101,21 +101,22 @@ export function EditTransactionView(
             margin: 28,
             borderRadius: 10
           }} onDismiss={() => {setShowCurrencyModal(false)}}>
-            <ScrollView indicatorStyle="black">
+            <ScrollView indicatorStyle="black" className='rounded-xl'>
               {getCurrencyList().map((currency) => (
                 <TouchableOpacity
                   className={`
                     border-divider 
                     dark:border-darkMode-divider
                     border-b
-                    p-4
+                    p-6
                     ${currency === transactionToEdit.currency ? 'bg-primary dark:bg-darkMode-primary' : ''}
                   `}
                   key={currency}
                   onPress={() => {
                     setTransactionToEdit({
                       ...transactionToEdit,
-                      currency: currency
+                      currency: currency,
+                      numberAmount: cleanNumber(transactionToEdit.numberAmount, currency),
                     });
                     setShowCurrencyModal(false);
                   }}
@@ -232,7 +233,12 @@ export function EditTransactionView(
               />
             </View>
           </View>
-          <PrimaryButton className='mt-4' onPress={() => onSaveEditTransaction(transactionToEdit)} text={t("save")} />
+          <PrimaryButton className='mt-4' onPress={() => onSaveEditTransaction(
+            {
+              ...transactionToEdit,
+              numberAmount: cleanNumber(transactionToEdit.numberAmount, transactionToEdit.currency, true)
+            }
+          )} text={t("save")} />
           <SecondaryButton className='mt-4' onPress={() => onCancelEditTransaction(transactionToEdit)} text={t("cancel")} />
         </View>
       </CustomSafeAreaView>
