@@ -1,6 +1,6 @@
 import { PrimaryButton } from '@/components/buttons';
 import { CustomMainView } from '@/components/customMainView';
-import { EditTransactionView } from '@/components/editTransactionModel';
+import { EditTransactionView } from '@/components/editTransactionModal';
 import { formatCurrency } from '@/currencyMap';
 import { formatNumber, headerSettings } from '@/utils';
 import { Ionicons } from '@expo/vector-icons';

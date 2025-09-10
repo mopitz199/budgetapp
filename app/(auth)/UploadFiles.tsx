@@ -1,6 +1,6 @@
 import { PrimaryButton, SecondaryButton } from '@/components/buttons';
+import { CurrencyPickerModal } from '@/components/currencyPickerModal';
 import { CustomMainView } from '@/components/customMainView';
-import { currencyMap } from '@/currencyMap';
 import { headerSettings } from '@/utils';
 import { getAuth } from '@react-native-firebase/auth';
 import { getStorage } from '@react-native-firebase/storage';
@@ -9,9 +9,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from "expo-router";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Alert, Image, ScrollView, Text, TouchableOpacity, useColorScheme, View } from "react-native";
-import { Modal, Portal } from 'react-native-paper';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ActivityIndicator, Alert, Image, ScrollView, Text, useColorScheme, View } from "react-native";
 import uuid from 'react-native-uuid';
 
 const UploadFiles = () => {
@@ -20,7 +18,6 @@ const UploadFiles = () => {
   const colorScheme = useColorScheme(); // 👉 'light' o 'dark'
   const { colors } = useTheme() as any;
 
-  const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [images_uri, setImagesURI] = useState<string[]>([]);
@@ -118,54 +115,6 @@ const UploadFiles = () => {
     //pickImageAsync();
   }, []);
 
-
-  const getCurrencyList = () => {
-    let currencyList: string[] = [];
-    for (const key in currencyMap) {
-      currencyList.push(key);
-    }
-    return currencyList;
-  }
-
-  const modal = () => {
-    return (
-      <Portal>
-        <Modal
-          visible={showCurrencyModal}
-          contentContainerStyle={{
-            height: '40%',
-            width: '80%',
-            alignSelf: 'center',
-            justifyContent: 'center',
-            backgroundColor: colors.surface,
-            margin: 28,
-            borderRadius: 10
-          }} onDismiss={() => {setShowCurrencyModal(false)}}>
-            <ScrollView indicatorStyle="black">
-              {getCurrencyList().map((currency) => (
-                <TouchableOpacity
-                  className={`
-                    border-divider 
-                    dark:border-darkMode-divider
-                    border-b
-                    p-4
-                    ${currency === selectedCurrency ? 'bg-primary dark:bg-darkMode-primary' : ''}
-                  `}
-                  key={currency}
-                  onPress={() => {
-                    setSelectedCurrency(currency);
-                    setShowCurrencyModal(false);
-                  }}
-                >
-                  <Text className='text-md color-onSurface dark:color-darkMode-onSurface'>{currency}</Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-        </Modal>
-      </Portal>
-    )
-  }
-
   return (
     <CustomMainView>
       {loading?
@@ -177,7 +126,15 @@ const UploadFiles = () => {
         </View>
       : null}
 
-      {modal()}
+      <CurrencyPickerModal
+        showCurrencyModal={showCurrencyModal}
+        setShowCurrencyModal={setShowCurrencyModal}
+        colors={colors}
+        currencyValue={selectedCurrency}
+        onCurrencyChange={(newCurrencyValue: string) => {
+          setSelectedCurrency(newCurrencyValue);
+        }}
+      />
 
       <View className="flex-1">
         {images_uri.length > 0 ?

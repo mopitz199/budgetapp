@@ -8,8 +8,9 @@ import { cleanNumber, currencyMap, formatCurrency } from '@/currencyMap';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Keyboard, Platform, Pressable, ScrollView, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
-import { Modal, Portal, TextInput } from 'react-native-paper';
+import { Keyboard, Platform, Pressable, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { TextInput } from 'react-native-paper';
+import { CurrencyPickerModal } from './currencyPickerModal';
 
 
 type Transaction = {
@@ -87,49 +88,6 @@ export function EditTransactionView(
     return currencyList;
   }
 
-  const modal = () => {
-    return (
-      <Portal>
-        <Modal
-          visible={showCurrencyModal}
-          contentContainerStyle={{
-            height: '40%',
-            width: '80%',
-            alignSelf: 'center',
-            justifyContent: 'center',
-            backgroundColor: colors.surface,
-            margin: 28,
-            borderRadius: 10
-          }} onDismiss={() => {setShowCurrencyModal(false)}}>
-            <ScrollView indicatorStyle="black" className='rounded-xl'>
-              {getCurrencyList().map((currency) => (
-                <TouchableOpacity
-                  className={`
-                    border-divider 
-                    dark:border-darkMode-divider
-                    border-b
-                    p-6
-                    ${currency === transactionToEdit.currency ? 'bg-primary dark:bg-darkMode-primary' : ''}
-                  `}
-                  key={currency}
-                  onPress={() => {
-                    setTransactionToEdit({
-                      ...transactionToEdit,
-                      currency: currency,
-                      numberAmount: cleanNumber(transactionToEdit.numberAmount, currency),
-                    });
-                    setShowCurrencyModal(false);
-                  }}
-                >
-                  <Text className='text-md color-onSurface dark:color-darkMode-onSurface'>{currency}</Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-        </Modal>
-      </Portal>
-    )
-  }
-
   return (
     <TouchableWithoutFeedback onPress={() => {
       Keyboard.dismiss();
@@ -141,7 +99,21 @@ export function EditTransactionView(
         screenWithHeader={hideBackButton}
       >
         {iosPicker()}
-        {modal()}
+
+        <CurrencyPickerModal
+          showCurrencyModal={showCurrencyModal}
+          setShowCurrencyModal={setShowCurrencyModal}
+          colors={colors}
+          currencyValue={transactionToEdit.currency}
+          onCurrencyChange={(newCurrencyValue: string) => {
+            setTransactionToEdit({
+              ...transactionToEdit,
+              currency: newCurrencyValue,
+              numberAmount: cleanNumber(transactionToEdit.numberAmount, newCurrencyValue),
+            });
+          }}
+        />
+
         <View className='p-4 flex-1'>
           <View className=''>
             <View className='mb-4'>
