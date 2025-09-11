@@ -132,7 +132,7 @@ const UploadFiles = () => {
         setShowCurrencyModal={setShowCurrencyModal}
         colors={colors}
         currencyValue={selectedCurrency}
-        onCurrencyChange={(newCurrencyValue: string) => {
+        onCurrencyChange={(previousCurrencyValue: string, newCurrencyValue: string) => {
           setSelectedCurrency(newCurrencyValue);
         }}
       />

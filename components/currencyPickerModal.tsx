@@ -53,7 +53,7 @@ export function CurrencyPickerModal(
                 `}
                 key={currency}
                 onPress={() => {
-                  onCurrencyChange(currency)
+                  onCurrencyChange(currencyValue, currency)
                   setShowCurrencyModal(false);
                 }}
               >

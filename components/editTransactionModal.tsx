@@ -4,7 +4,7 @@ import CustomDropDownPicker from '@/components/customDropDown';
 import { CustomSafeAreaView } from '@/components/customMainView';
 import { Input } from '@/components/inputs';
 import IOSDatePicker from '@/components/iosDatePicker';
-import { cleanNumber, currencyMap, formatCurrency } from '@/currencyMap';
+import { cleanNumber, currencyMap } from '@/currencyMap';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -105,11 +105,11 @@ export function EditTransactionView(
           setShowCurrencyModal={setShowCurrencyModal}
           colors={colors}
           currencyValue={transactionToEdit.currency}
-          onCurrencyChange={(newCurrencyValue: string) => {
+          onCurrencyChange={(previousCurrencyValue: string, newCurrencyValue: string) => {
             setTransactionToEdit({
               ...transactionToEdit,
               currency: newCurrencyValue,
-              numberAmount: cleanNumber(transactionToEdit.numberAmount, newCurrencyValue),
+              numberAmount: cleanNumber(transactionToEdit.numberAmount, previousCurrencyValue, newCurrencyValue),
             });
           }}
         />
@@ -119,7 +119,7 @@ export function EditTransactionView(
             <View className='mb-4'>
               <View className='rounded-xl overflow-hidden'>
                 <Input
-                  value={formatCurrency(transactionToEdit.numberAmount, transactionToEdit.currency)}
+                  value={transactionToEdit.numberAmount}
                   label={t("amount")}
                   left={
                     <TextInput.Icon
@@ -163,7 +163,7 @@ export function EditTransactionView(
                   onChangeText={(value: any) => {
                     setTransactionToEdit({
                       ...transactionToEdit,
-                      numberAmount: value ? cleanNumber(value, transactionToEdit.currency) : "0"
+                      numberAmount: value ? cleanNumber(value, transactionToEdit.currency, transactionToEdit.currency) : "0"
                     })
                   }}
                 />
@@ -208,7 +208,7 @@ export function EditTransactionView(
           <PrimaryButton className='mt-4' onPress={() => onSaveEditTransaction(
             {
               ...transactionToEdit,
-              numberAmount: cleanNumber(transactionToEdit.numberAmount, transactionToEdit.currency, true)
+              numberAmount: cleanNumber(transactionToEdit.numberAmount, transactionToEdit.currency, transactionToEdit.currency, true)
             }
           )} text={t("save")} />
           <SecondaryButton className='mt-4' onPress={() => onCancelEditTransaction(transactionToEdit)} text={t("cancel")} />

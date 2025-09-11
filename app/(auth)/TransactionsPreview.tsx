@@ -1,7 +1,7 @@
 import { PrimaryButton } from '@/components/buttons';
 import { CustomMainView } from '@/components/customMainView';
 import { EditTransactionView } from '@/components/editTransactionModal';
-import { formatCurrency } from '@/currencyMap';
+import { cleanNumber } from '@/currencyMap';
 import { formatNumber, headerSettings } from '@/utils';
 import { Ionicons } from '@expo/vector-icons';
 import { doc, getDoc, getFirestore } from '@react-native-firebase/firestore';
@@ -112,8 +112,7 @@ export default function TransactionEdition() {
           ...transaction,
           date: new Date(transaction.date),
           negative: transaction.amount < 0,
-          amount: formatCurrency(Math.abs(transaction.amount).toString(), selectedCurrency),
-          numberAmount: Math.abs(transaction.amount).toString(),
+          numberAmount: cleanNumber(Math.abs(transaction.amount).toString(), selectedCurrency, selectedCurrency),
           index: index,
           category: 'GENERAL',
           currency: selectedCurrency,
@@ -234,10 +233,9 @@ export default function TransactionEdition() {
                     <View className='flex-1 flex-col items-end mt-4 mb-4 pr-4'>
                       <Text
                           className={`text-lg ${!transaction.negative ? 'text-success' : 'text-warning'} `}
-                        >{formatNumber(
-                          formatCurrency(transaction.numberAmount, transaction.currency),
-                          transaction.negative
-                        )}</Text>
+                        >
+                          {formatNumber(transaction.numberAmount, transaction.negative)}
+                        </Text>
                     </View>
                     <View className='flex-col justify-between items-end'>
                       <Pressable
