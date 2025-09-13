@@ -39,9 +39,6 @@ export default function TransactionEdition() {
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-  const [groupedTransactions, setGroupedTransactions] = useState<{ [key: string]: Transaction[] }>({});
-  const [sortedDates, setSortedDates] = useState<string[]>([]);
-
   // States to handle the undo snackbar when removing a transaction
   const [snackBarVisible, setSnackBarVisible] = useState(false);
   const [lastIndexElementRemoved, setIndexLastElementRemoved] = useState<number | null>(null);
@@ -119,7 +116,6 @@ export default function TransactionEdition() {
         };
       });
       setTransactions(responseTransactions);
-      groupTransactionsByDate(responseTransactions);
     } else {
       console.log("No such document!");
     }
@@ -129,7 +125,7 @@ export default function TransactionEdition() {
   const removeTransaction = (index: number) => {
     setTransactions(prevTransactions => {
       const newTransactions = [...prevTransactions];
-      newTransactions[index].removed = true; // Mark the transaction as removedd
+      newTransactions[index].removed = true; // Mark the transaction as removed
       return newTransactions;
     });
     setIndexLastElementRemoved(index);
@@ -152,15 +148,18 @@ export default function TransactionEdition() {
     }
   }
 
-  const groupTransactionsByDate = (transactions: Transaction[]) => {
-    let sortedDates = transactions
+  const getUniqueSortedDates = () => {
+      let notRemovedTransactions = transactions.filter(t => !t.removed)
       .map(t => t.date.toDateString())
       .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
 
+      let uniqueSortedDates = notRemovedTransactions.filter((s, i) => notRemovedTransactions.indexOf(s) === i);
+      return uniqueSortedDates
+  }
 
-    let uniqueSortedDates = sortedDates.filter((s, i) => sortedDates.indexOf(s) === i);
-
-    let groupedDates =  transactions.reduce((groups: any, transaction) => {
+  const getGroupedTransactions = () => {
+    let notRemovedTransactions = transactions.filter(t => !t.removed)
+    let groupedTransactions =  notRemovedTransactions.reduce((groups: any, transaction) => {
       const date = transaction.date.toDateString();
       if (!groups[date]) {
         groups[date] = [];
@@ -168,8 +167,7 @@ export default function TransactionEdition() {
       groups[date].push(transaction);
       return groups;
     }, {});
-    setGroupedTransactions(groupedDates);
-    setSortedDates(uniqueSortedDates);
+    return groupedTransactions;
   }
 
   useEffect(() => {
@@ -189,7 +187,6 @@ export default function TransactionEdition() {
     return () => backHandler.remove();
   }, [modalOpened]);
 
-
   const transactionListPreview = () => {
     return (
       <CustomMainView
@@ -198,12 +195,12 @@ export default function TransactionEdition() {
       >
         <View className="flex-1 bg-background dark:bg-darkMode-background p-4">
           <ScrollView>
-            {sortedDates.map((date, dateIndex, dates) => (
+            {getUniqueSortedDates().map((date, dateIndex, dates) => (
               <View key={dateIndex} className={`${dates.length - 1 === dateIndex ? 'mb-24' : 'mb-6'}`}>
                 <Text className='text-sm font-light mr-2 mb-2 text-onSurfaceVariant dark:text-darkMode-onSurfaceVariant'>
                   {date}
                 </Text>
-                {groupedTransactions[date].map((transaction, index, transaccions) => (
+                {getGroupedTransactions()[date].map((transaction: Transaction) => (
                   <View
                     className={`
                       flex-row
@@ -231,11 +228,12 @@ export default function TransactionEdition() {
                       </View>
                     </View>
                     <View className='flex-1 flex-col items-end mt-4 mb-4 pr-4'>
-                      <Text
-                          className={`text-lg ${!transaction.negative ? 'text-success' : 'text-warning'} `}
-                        >
-                          {formatNumber(transaction.numberAmount, transaction.negative)}
+                        <Text
+                            className={`text-xl ${!transaction.negative ? 'text-success' : 'text-warning'}`}
+                          >
+                            {formatNumber(transaction.numberAmount, transaction.negative)}
                         </Text>
+                        <Text className='text-sm text-onSurface dark:text-darkMode-onSurface'>{transaction.currency}</Text>
                     </View>
                     <View className='flex-col justify-between items-end'>
                       <Pressable
@@ -300,7 +298,6 @@ export default function TransactionEdition() {
         onSaveEditTransaction={(transaction: Transaction) => {
           transactions[transaction.index] = transaction;
           setTransactions(transactions)
-          groupTransactionsByDate(transactions);
           setModalOpened(false);
         }}
         onCancelEditTransaction={() => {
