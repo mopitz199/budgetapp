@@ -199,12 +199,13 @@ export function EditTransactionView(
                 items={categories}
                 setItems={setCategories}
                 open={openCategoryPicker}
-                setOpen={() => {
+                onPress={(wasClosed: boolean) => {
                   Keyboard.dismiss();
-                  setOpenCategoryPicker(true)
+                  setOpenCategoryPicker(wasClosed)
                 }}
-                onSelectItem={(item: any) => {
-                  setTransactionToEdit({...transactionToEdit, category: item.value})
+                onChangeValue={(value: string) => {
+                  setOpenCategoryPicker(false)
+                  setTransactionToEdit({...transactionToEdit, category: value})
                 }}
                 placeholder={t("category")}
               />
