@@ -4,7 +4,7 @@ import CustomDropDownPicker from '@/components/customDropDown';
 import { CustomSafeAreaView } from '@/components/customMainView';
 import { Input } from '@/components/inputs';
 import IOSDatePicker from '@/components/iosDatePicker';
-import { cleanNumber, currencyMap } from '@/currencyMap';
+import { cleanNumber } from '@/currencyMap';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -25,17 +25,31 @@ type Transaction = {
   currency: string;
 };
 
+type Categories = Record<string, { value: string; color: string }>;
+
+
 export function EditTransactionView(
   {
     hideBackButton, // if we want to hide the back button in the header
     transactionToEditDefault, // Transaction to edit, if null, we are creating a new transaction
     colors, // Colors from the theme
-    categories, // Categories array for the dropdown
-    setCategories, // Method to store the categories array
+    mapCategories, // Map of categories
     onSaveEditTransaction, // Function to execute when saving the edited transaction
     onCancelEditTransaction // Function to execute when cancelling the edit transaction
   }: any
 ) {
+
+  const buildCategories = () => {
+    let categories = [];
+    for(const key in mapCategories){
+      const k = key as keyof typeof mapCategories;
+      categories.push({
+        label: t(mapCategories[k].value),
+        value: k
+      })
+    }
+    return categories;
+  }
 
   const { t, i18n } = useTranslation();
 
@@ -44,6 +58,7 @@ export function EditTransactionView(
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [transactionToEdit, setTransactionToEdit] = useState<Transaction>(transactionToEditDefault);
   const [showCurrencyModal, setShowCurrencyModal] = useState(false);
+  const [categories, setCategories] = useState(buildCategories());
 
   const iosPicker = () => {
     if (Platform.OS == 'ios' && showDatePicker) {
@@ -77,15 +92,6 @@ export function EditTransactionView(
       month: "long",
       day: "numeric",
     });
-  }
-
-
-  const getCurrencyList = () => {
-    let currencyList: string[] = [];
-    for (const key in currencyMap) {
-      currencyList.push(key);
-    }
-    return currencyList;
   }
 
   return (
@@ -159,7 +165,6 @@ export function EditTransactionView(
                         borderWidth: 1
                       }}
                     />}
-                  //keyboardType="numeric"
                   onChangeText={(value: any) => {
                     setTransactionToEdit({
                       ...transactionToEdit,
@@ -189,18 +194,18 @@ export function EditTransactionView(
             </View>
             <View className='mt-4'>
               <CustomDropDownPicker
-                open={openCategoryPicker}
                 value={categoryOption}
+                setValue={setCategoryOption}
                 items={categories}
+                setItems={setCategories}
+                open={openCategoryPicker}
                 setOpen={() => {
                   Keyboard.dismiss();
                   setOpenCategoryPicker(true)
                 }}
-                setValue={setCategoryOption}
                 onSelectItem={(item: any) => {
                   setTransactionToEdit({...transactionToEdit, category: item.value})
                 }}
-                setItems={setCategories}
                 placeholder={t("category")}
               />
             </View>

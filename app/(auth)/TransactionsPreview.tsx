@@ -24,6 +24,8 @@ type Transaction = {
   currency: string;
 };
 
+type Categories = Record<string, { value: string; color: string }>;
+
 
 export default function TransactionEdition() {
 
@@ -46,16 +48,11 @@ export default function TransactionEdition() {
   const [transactionToEdit, setTransactionToEdit] = useState<Transaction>(null as any);
   
   const [modalOpened, setModalOpened] = useState<boolean>(false);
+  const [mapCategories, setMapCategories] = useState<Categories>({});
 
-  const [items, setItems] = useState([
-      {label: 'GENERAL', value: 'GENERAL'},
-      {label: 'COSTOS FIJOS', value: 'COSTOS FIJOS'},
-      {label: 'OCIO', value: 'OCIO'},
-      {label: 'EMERGENCIA', value: 'EMERGENCIA'},
-      {label: 'SUELDO', value: 'SUELDO'},
-      {label: 'OTROS INGRESOS', value: 'OTROS INGRESOS'},
-      {label: 'OTROS GASTOS', value: 'OTROS GASTOS'},
-  ]);
+  const getCategoryInfo = (key: string) => {
+    return mapCategories[key as keyof typeof mapCategories];
+  }
 
   useLayoutEffect(() => headerSettings(
       navigation,
@@ -71,8 +68,17 @@ export default function TransactionEdition() {
 
   const readTransactions = async () => {
     const db = getFirestore();
+
     const docRef = doc(db, "analysis_requirement", transactionsId);
     const docSnap = await getDoc(docRef);
+
+    const categoriesRef = doc(db, "categories", "cP2dsMNnTfqK8EeG9Ai6");
+    const categoriesSnap = await getDoc(categoriesRef);
+    if(categoriesSnap.exists()){
+      const categoriesData = categoriesSnap.data();
+      let categories: Categories = categoriesData as Categories;
+      setMapCategories(categories);
+    }
 
     if (docSnap.exists()) {
       const jsonOutput = docSnap.data()?.json_output;
@@ -111,7 +117,7 @@ export default function TransactionEdition() {
           negative: transaction.amount < 0,
           numberAmount: cleanNumber(Math.abs(transaction.amount).toString(), selectedCurrency, selectedCurrency),
           index: index,
-          category: 'GENERAL',
+          category: "1",
           currency: selectedCurrency,
         };
       });
@@ -222,8 +228,8 @@ export default function TransactionEdition() {
                         </Text>
                       </Tooltip>
                       <View className='items-start'>
-                        <Text className='text-xs font-sans rounded-md bg-success pt-1 pb-1 pr-2 pl-2 text-onSurface'>
-                          {transaction.category}
+                        <Text className={`text-xs font-sans rounded-md bg-${getCategoryInfo(transaction.category).color} pt-1 pb-1 pr-2 pl-2 text-onSurface`}>
+                          {t(getCategoryInfo(transaction.category).value)}
                         </Text>
                       </View>
                     </View>
@@ -289,12 +295,10 @@ export default function TransactionEdition() {
   const editTransactionModal = () => {
     return (
       <EditTransactionView
-        modalOpened={modalOpened}
-        colors={colors}
-        categories={items}
-        setCategories={setItems}
         transactionToEditDefault={transactionToEdit}
-
+        colors={colors}
+        mapCategories={mapCategories}
+        hideBackButton={true}
         onSaveEditTransaction={(transaction: Transaction) => {
           transactions[transaction.index] = transaction;
           setTransactions(transactions)

@@ -52,6 +52,13 @@ const resources = {
       "cancel": "Cancel",
       "amount": "Amount",
       "uploadYourImages": "Upload your images",
+      "generalCategory": "GENERAL",
+      "fixedCostsCategory": "FIXED COSTS",
+      "leisureCategory": "LEISURE",
+      "emergencyCategory": "EMERGENCY",
+      "salaryCategory": "SALARY",
+      "otherIncomesCategory": "OTHER INCOMES",
+      "otherExpensesCategory": "OTHER EXPENSES",
     }
   },
   es: {
@@ -101,6 +108,13 @@ const resources = {
       "cancel": "Cancelar",
       "amount": "Monto",
       "uploadYourImages": "Sube tus imágenes",
+      "generalCategory": "GENERAL",
+      "fixedCostsCategory": "COSTOS FIJOS",
+      "leisureCategory": "OCIO",
+      "emergencyCategory": "EMERGENCIA",
+      "salaryCategory": "SUELDO",
+      "otherIncomesCategory": "OTROS INGRESOS",
+      "otherExpensesCategory": "OTROS GASTOS",
     }
   }
 };
