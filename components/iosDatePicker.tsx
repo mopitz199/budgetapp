@@ -7,9 +7,10 @@ type Props = {
   value: Date;
   onClose: () => void;
   onChange: (newDate: Date) => void;
+  displayCloseButton: boolean;
 };
 
-export default function IOSDatePicker({ value, onClose, onChange }: Props) {
+export default function IOSDatePicker({ value, onClose, onChange, displayCloseButton = true }: Props) {
 
   const { t, i18n } = useTranslation();
 
@@ -29,7 +30,7 @@ export default function IOSDatePicker({ value, onClose, onChange }: Props) {
             onChange(newDate)
           }}
         />
-        <PrimaryButton className='mt-4 mr-10 ml-10' onPress={onClose} text={"Close"} />
+        {displayCloseButton ? <PrimaryButton className='mt-4 mr-10 ml-10' onPress={onClose} text={"Close"} /> : null}
       </View>
     </View>
   )

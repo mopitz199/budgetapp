@@ -1,16 +1,18 @@
 import { PrimaryButton } from '@/components/buttons';
 import { CustomMainView } from '@/components/customMainView';
 import { EditTransactionView } from '@/components/editTransactionModal';
+import IOSDatePicker from '@/components/iosDatePicker';
 import { cleanNumber } from '@/currencyMap';
 import { formatNumber, headerSettings } from '@/utils';
 import { Ionicons } from '@expo/vector-icons';
+import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { doc, getDoc, getFirestore } from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, BackHandler, Pressable, ScrollView, Text, useColorScheme, View } from 'react-native';
-import { Snackbar, Tooltip, useTheme } from 'react-native-paper';
+import { Alert, BackHandler, Keyboard, Platform, Pressable, ScrollView, Text, useColorScheme, View } from 'react-native';
+import { Icon, Snackbar, Tooltip, useTheme } from 'react-native-paper';
 
 type Transaction = {
   index: number;
@@ -34,7 +36,7 @@ export default function TransactionEdition() {
   const { colors } = useTheme() as any;
 
   const navigation = useNavigation();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   let { transactionsId, selectedCurrency } = useLocalSearchParams();
   transactionsId = transactionsId as string;
   selectedCurrency = selectedCurrency as string;
@@ -50,23 +52,97 @@ export default function TransactionEdition() {
   const [modalOpened, setModalOpened] = useState<boolean>(false);
   const [mapCategories, setMapCategories] = useState<Categories>({});
 
+  const [filteredDate, setFilteredDate] = useState<Date | null>(new Date("2025-08-20"));
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
   const getCategoryInfo = (key: string) => {
     return mapCategories[key as keyof typeof mapCategories];
   }
 
+  const getCurrentMonth = () => {
+    if(!filteredDate) return null;
+    const locale: Record<string, string> = {
+      "en": 'en-US',
+      "es": 'es-ES'
+    }
+    const formatter = new Intl.DateTimeFormat(locale[i18n.language], {
+      month: "short", // "Jan", "Feb", ..., "Dec"
+      year: "numeric"
+    });
+    let result = formatter.format(filteredDate);
+    result = result.charAt(0).toUpperCase() + result.slice(1);
+    return result;
+  }
+
+
+  const displayDatePickerView = () => {
+    Keyboard.dismiss();
+    if (Platform.OS === 'ios') {
+      setShowDatePicker(true);
+    } else {
+      DateTimePickerAndroid.open({
+        value: filteredDate || new Date(),
+        onChange: (event, date) => {
+          if(date)setFilteredDate(date);
+        },
+        mode: 'date',
+        is24Hour: true,
+      });
+    }
+  }
+
+  const iosPicker = () => {
+    if (Platform.OS == 'ios' && showDatePicker) {
+      return <IOSDatePicker
+        value={filteredDate || new Date()}
+        onChange={(date) => {
+          setFilteredDate(date)
+        }}
+        onClose={() => setShowDatePicker(false)}
+        displayCloseButton={true}
+      />;
+    }
+  }
+
+
   useLayoutEffect(() => headerSettings(
       navigation,
       colorScheme,
-      t("verifyYourTransactions"),
+      t("transactions"),
       {
         headerShown: !modalOpened,
         gestureEnabled: !modalOpened,
+        headerRight: () => {
+          const currentDate = getCurrentMonth();
+          if (!currentDate) {
+            return null;
+          } else {
+            return (
+              <Pressable onPress={() => displayDatePickerView()}>
+                <View className='
+                  flex-row
+                  items-center
+                  bg-primary
+                  rounded-full p-2 pr-3 pl-3'
+                >
+                  <Text className='text-onPrimary mr-1'>{`${currentDate}`}</Text>
+                  <Icon
+                    source="arrow-down-drop-circle"
+                    color={colors.onPrimary}
+                    size={20}
+                  />
+                </View>
+              </Pressable>
+            );
+          }
       }
-    ), [navigation, colorScheme, modalOpened]
+      },
+    ), [navigation, colorScheme, modalOpened, filteredDate]
   );
 
 
   const readTransactions = async () => {
+    console.log("Reading transactions from Firestore...");
     const db = getFirestore();
 
     const docRef = doc(db, "analysis_requirement", transactionsId);
@@ -120,6 +196,12 @@ export default function TransactionEdition() {
           category: "1",
           currency: selectedCurrency,
         };
+      }).filter((transaction: any) => {
+        if(!filteredDate) return true;
+        return (
+          transaction.date.getFullYear() === filteredDate.getFullYear() &&
+          transaction.date.getMonth() === filteredDate.getMonth()
+        );
       });
       setTransactions(responseTransactions);
     } else {
@@ -178,7 +260,7 @@ export default function TransactionEdition() {
 
   useEffect(() => {
     readTransactions()
-  }, []);
+  }, [filteredDate]);
 
   useEffect(() => {
     if(!modalOpened) return;
@@ -199,6 +281,7 @@ export default function TransactionEdition() {
         screenWithHeader={modalOpened}
         className='pb-8'
       >
+        {iosPicker()}
         <View className="flex-1 bg-background dark:bg-darkMode-background p-4">
           <ScrollView>
             {getUniqueSortedDates().map((date, dateIndex, dates) => (
@@ -228,7 +311,12 @@ export default function TransactionEdition() {
                         </Text>
                       </Tooltip>
                       <View className='items-start'>
-                        <Text className={`text-xs font-sans rounded-md bg-${getCategoryInfo(transaction.category).color} pt-1 pb-1 pr-2 pl-2 text-onSurface`}>
+                        <Text
+                          style={{
+                            backgroundColor: getCategoryInfo(transaction.category).color
+                          }}
+                          className={`text-xs font-sans rounded-md pt-1 pb-1 pr-2 pl-2 text-onSurface`}
+                        >
                           {t(getCategoryInfo(transaction.category).value)}
                         </Text>
                       </View>

@@ -59,6 +59,7 @@ const resources = {
       "salaryCategory": "SALARY",
       "otherIncomesCategory": "OTHER INCOMES",
       "otherExpensesCategory": "OTHER EXPENSES",
+      "transactions": "Transactions",
     }
   },
   es: {
@@ -115,6 +116,7 @@ const resources = {
       "salaryCategory": "SUELDO",
       "otherIncomesCategory": "OTROS INGRESOS",
       "otherExpensesCategory": "OTROS GASTOS",
+      "transactions": "Transacciones",
     }
   }
 };
