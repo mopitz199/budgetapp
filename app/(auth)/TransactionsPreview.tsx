@@ -140,6 +140,15 @@ export default function TransactionEdition() {
     ), [navigation, colorScheme, modalOpened, filteredDate]
   );
 
+  const filterTransactionsByDate = () => {
+    return transactions.filter((transaction) => {
+      if(!filteredDate) return true;
+      return (
+        transaction.date.getFullYear() === filteredDate.getFullYear() &&
+        transaction.date.getMonth() === filteredDate.getMonth()
+      );
+    });
+  }
 
   const readTransactions = async () => {
     console.log("Reading transactions from Firestore...");
@@ -186,7 +195,7 @@ export default function TransactionEdition() {
         ]
       }*/
       // console.log(jsonOutput)
-      const responseTransactions = jsonOutput.transactions.map((transaction: any, index: number) => {
+      let responseTransactions = jsonOutput.transactions.map((transaction: any, index: number) => {
         return {
           ...transaction,
           date: new Date(transaction.date),
@@ -196,13 +205,7 @@ export default function TransactionEdition() {
           category: "1",
           currency: selectedCurrency,
         };
-      }).filter((transaction: any) => {
-        if(!filteredDate) return true;
-        return (
-          transaction.date.getFullYear() === filteredDate.getFullYear() &&
-          transaction.date.getMonth() === filteredDate.getMonth()
-        );
-      });
+      })
       setTransactions(responseTransactions);
     } else {
       console.log("No such document!");
@@ -236,8 +239,18 @@ export default function TransactionEdition() {
     }
   }
 
+  const getTransactions = () => {
+    return transactions.filter(t => !t.removed).filter(t => {
+      if(!filteredDate) return true;
+      return (
+        t.date.getFullYear() === filteredDate.getFullYear() &&
+        t.date.getMonth() === filteredDate.getMonth()
+      );
+    });
+  }
+
   const getUniqueSortedDates = () => {
-      let notRemovedTransactions = transactions.filter(t => !t.removed)
+      let notRemovedTransactions = getTransactions()
       .map(t => t.date.toDateString())
       .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
 
@@ -246,7 +259,7 @@ export default function TransactionEdition() {
   }
 
   const getGroupedTransactions = () => {
-    let notRemovedTransactions = transactions.filter(t => !t.removed)
+    let notRemovedTransactions = getTransactions()
     let groupedTransactions =  notRemovedTransactions.reduce((groups: any, transaction) => {
       const date = transaction.date.toDateString();
       if (!groups[date]) {
@@ -259,6 +272,7 @@ export default function TransactionEdition() {
   }
 
   useEffect(() => {
+    console.log("Read transactions effect");
     readTransactions()
   }, [filteredDate]);
 
