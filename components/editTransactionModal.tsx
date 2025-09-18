@@ -66,6 +66,8 @@ export function EditTransactionView(
         value={new Date(transactionToEdit.date)}
         onChange={(date) => setTransactionToEdit({...transactionToEdit, date: date} as Transaction)}
         onClose={() => setShowDatePicker(false)}
+        onButtonPress={() => setShowDatePicker(false)}
+        buttonName={t("close")}
         displayCloseButton={true}
       />;
     }

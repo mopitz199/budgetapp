@@ -60,6 +60,8 @@ const resources = {
       "otherIncomesCategory": "OTHER INCOMES",
       "otherExpensesCategory": "OTHER EXPENSES",
       "transactions": "Transactions",
+      "close": "Close",
+      "filter": "Filter",
     }
   },
   es: {
@@ -117,6 +119,8 @@ const resources = {
       "otherIncomesCategory": "OTROS INGRESOS",
       "otherExpensesCategory": "OTROS GASTOS",
       "transactions": "Transacciones",
+      "close": "Cerrar",
+      "filter": "Filtrar",
     }
   }
 };

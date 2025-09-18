@@ -53,6 +53,7 @@ export default function TransactionEdition() {
   const [mapCategories, setMapCategories] = useState<Categories>({});
 
   const [filteredDate, setFilteredDate] = useState<Date | null>(new Date("2025-08-20"));
+  const [pickerFilteredDate, setPickerFilteredDate] = useState<Date | null>(new Date("2025-08-20"));
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const getCategoryInfo = (key: string) => {
@@ -94,11 +95,20 @@ export default function TransactionEdition() {
   const iosPicker = () => {
     if (Platform.OS == 'ios' && showDatePicker) {
       return <IOSDatePicker
-        value={filteredDate || new Date()}
+        value={pickerFilteredDate || new Date()}
         onChange={(date) => {
-          setFilteredDate(date)
+          setPickerFilteredDate(date);
         }}
-        onClose={() => setShowDatePicker(false)}
+        onClose={() => {
+          console.log("Closing date picker", filteredDate)
+          setShowDatePicker(false)
+          setPickerFilteredDate(filteredDate);
+        }}
+        onButtonPress={() => {
+          setShowDatePicker(false)
+          setFilteredDate(pickerFilteredDate);
+        }}
+        buttonName={t("filter")}
         displayCloseButton={true}
       />;
     }
