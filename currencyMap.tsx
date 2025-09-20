@@ -59,8 +59,9 @@ function isNumber(str: any) {
   return !isNaN(str) && str.trim() !== "";
 }
 
+
 export function cleanNumber (text: string, fromCurrency: string, toCurrency: string, finalFormat: boolean = false) {
-  const fromCurrencyTool = currencyMap[fromCurrency]
+    const fromCurrencyTool = currencyMap[fromCurrency]
   const toCurrencyTool = currencyMap[toCurrency]
   let lastCharacter = text.charAt(text.length - 1);
 
@@ -98,8 +99,16 @@ export function cleanNumber (text: string, fromCurrency: string, toCurrency: str
   // Remove leading zeros
   text = text.replace(/^0+/, '');
 
+  return text;
+}
 
-  // HERE WE HAVE THE NUMBER CLEANED
+export function formatNumber (text: string, fromCurrency: string, toCurrency: string, finalFormat: boolean = false) {
+
+  const toCurrencyTool = currencyMap[toCurrency]
+  let lastCharacter = text.charAt(text.length - 1);
+  
+  text = cleanNumber(text, fromCurrency, toCurrency, finalFormat)
+
   text = replaceDecimalSeparator(text, ".", toCurrencyTool.decimal);
   text = addThousandSeparator(text, toCurrencyTool.decimal, toCurrencyTool.thousand);
 

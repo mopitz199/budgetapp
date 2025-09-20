@@ -8,7 +8,7 @@ export default function TabLayout() {
       screenOptions={() => {
         const isDark = useColorScheme() === 'dark';
         return {
-          headerShown: false,
+          headerShown: true,
           tabBarActiveTintColor: '#0057FF',
           tabBarInactiveTintColor: isDark ? '#FFFFFF' : '#1D2430',
           tabBarStyle: {
@@ -22,6 +22,7 @@ export default function TabLayout() {
         name="Home"
         options={{
           title: 'Inicio',
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" size={size} color={color} />
           ),
@@ -31,8 +32,19 @@ export default function TabLayout() {
         name="Stats"
         options={{
           title: 'Estadísticas',
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="stats-chart-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="Transactions"
+        options={{
+          title: 'Transacciones',
+          headerShown: true,
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="settings-outline" size={size} color={color} />
           ),
         }}
       />
@@ -40,6 +52,7 @@ export default function TabLayout() {
         name="Settings"
         options={{
           title: 'Ajustes',
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="settings-outline" size={size} color={color} />
           ),

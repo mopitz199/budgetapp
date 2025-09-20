@@ -2,7 +2,7 @@ export function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export function formatNumber(value: string, negative: boolean): string {
+export function formatNegative(value: string, negative: boolean): string {
   if(negative){
     return "-"+value
   }else {
