@@ -4,13 +4,13 @@ import { CustomMainView } from '@/components/customMainView';
 import { headerSettings } from '@/utils';
 import { getAuth } from '@react-native-firebase/auth';
 import { getStorage } from '@react-native-firebase/storage';
-import { useNavigation, useTheme } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from "expo-router";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Alert, Image, ScrollView, Text, useColorScheme, View } from "react-native";
-import { Icon } from 'react-native-paper';
+import { Icon, useTheme } from 'react-native-paper';
 import uuid from 'react-native-uuid';
 
 const UploadFiles = () => {
@@ -53,7 +53,7 @@ const UploadFiles = () => {
   }
   
   const readImages = async (token: string, images_urls: string[]) => {
-    const response = await fetch('http://172.20.10.3:8080/analyze-bank-transactions', {
+    const response = await fetch('http://192.168.1.84:8080/analyze-bank-transactions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`, // 👈 Enviar token como Bearer

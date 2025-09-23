@@ -60,7 +60,15 @@ function isNumber(str: any) {
 }
 
 
-export function cleanNumber (text: string, fromCurrency: string, toCurrency: string, finalFormat: boolean = false) {
+export function cleanNumberWithNegative (text: string, fromCurrency: string, toCurrency: string, finalFormat: boolean = false, negative: boolean = false) {
+    let cleanedNumber = Number(cleanNumber(text, fromCurrency, toCurrency))
+    if(negative){
+      cleanedNumber = cleanedNumber * -1
+    }
+    return cleanedNumber
+}
+
+export function cleanNumber (text: string, fromCurrency: string, toCurrency: string) {
     const fromCurrencyTool = currencyMap[fromCurrency]
   const toCurrencyTool = currencyMap[toCurrency]
   let lastCharacter = text.charAt(text.length - 1);
@@ -107,7 +115,7 @@ export function formatNumber (text: string, fromCurrency: string, toCurrency: st
   const toCurrencyTool = currencyMap[toCurrency]
   let lastCharacter = text.charAt(text.length - 1);
   
-  text = cleanNumber(text, fromCurrency, toCurrency, finalFormat)
+  text = cleanNumber(text, fromCurrency, toCurrency)
 
   text = replaceDecimalSeparator(text, ".", toCurrencyTool.decimal);
   text = addThousandSeparator(text, toCurrencyTool.decimal, toCurrencyTool.thousand);

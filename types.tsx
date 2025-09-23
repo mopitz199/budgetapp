@@ -2,8 +2,8 @@ export type Transaction = {
   index: number;
   date: Date;
   description: string;
-  amount: string;
-  numberAmount: string;
+  amount: Number;
+  stringAmount: string;
   removed: boolean;
   negative: boolean;
   category: string;

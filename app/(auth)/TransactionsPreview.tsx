@@ -139,7 +139,8 @@ export default function TransactionEdition() {
           date: new Date(transaction.date),
           negative: transaction.amount < 0,
           removed: false,
-          numberAmount: formatNumber(Math.abs(transaction.amount).toString(), selectedCurrency, selectedCurrency),
+          amount: transaction.amount,
+          stringAmount: formatNumber(Math.abs(transaction.amount).toString(), selectedCurrency, selectedCurrency),
           index: index,
           category: "1",
           currency: selectedCurrency,
@@ -149,7 +150,6 @@ export default function TransactionEdition() {
     } else {
       console.log("No such document!");
     }
-
   }
 
   const saveTransactions = async () => {
@@ -162,7 +162,7 @@ export default function TransactionEdition() {
         date: t.date,
         description: t.description,
         negative: t.negative,
-        numberAmount: t.numberAmount,
+        stringAmount: t.stringAmount,
       }))
     });
     console.log("user", user?.uid)
@@ -176,7 +176,7 @@ export default function TransactionEdition() {
   return (
     <CustomMainView
       screenWithHeader={true}
-      className='pb-8'
+      className='flex-1 pb-8'
     >
       {iosPicker()}
       <TransactionListEditor

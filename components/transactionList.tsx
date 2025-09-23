@@ -139,12 +139,12 @@ export default function TransactionListEditor({
   const transactionListPreview = () => {
     return (
       <View
-        className='flex-1 pb-8'
+        className='flex-1'
       >
         <View className="flex-1 bg-background dark:bg-darkMode-background p-4">
           <ScrollView>
             {getUniqueSortedDates().map((date, dateIndex, dates) => (
-              <View key={dateIndex} className={`${dates.length - 1 === dateIndex ? 'mb-24' : 'mb-6'}`}>
+              <View key={dateIndex} className={`${dates.length - 1 === dateIndex && floatButton ? 'mb-24' : 'mb-6'}`}>
                 <Text className='text-sm font-light mr-2 mb-2 text-onSurfaceVariant dark:text-darkMode-onSurfaceVariant'>
                   {date}
                 </Text>
@@ -184,7 +184,7 @@ export default function TransactionListEditor({
                         <Text
                             className={`text-xl ${!transaction.negative ? 'text-success' : 'text-warning'}`}
                           >
-                            {formatNegative(transaction.numberAmount, transaction.negative)}
+                            {formatNegative(transaction.stringAmount, transaction.negative)}
                         </Text>
                         <Text className='text-sm text-onSurface dark:text-darkMode-onSurface'>{transaction.currency}</Text>
                     </View>
