@@ -16,6 +16,7 @@ import type { Transaction } from "@/types";
 
 export function EditTransactionView(
   {
+    showCurrency,
     hideBackButton, // if we want to hide the back button in the header
     transactionToEditDefault, // Transaction to edit, if null, we are creating a new transaction
     colors, // Colors from the theme
@@ -125,7 +126,9 @@ export function EditTransactionView(
                             className='flex-1 w-full justify-center items-center'
                             onPress={() => {
                               Keyboard.dismiss();
-                              setShowCurrencyModal(true);
+                              if(showCurrency){
+                                setShowCurrencyModal(true);
+                              }
                             }}
                           >
                             <Text className='text-onSurface dark:text-darkMode-onSurface'>{transactionToEdit.currency}</Text>

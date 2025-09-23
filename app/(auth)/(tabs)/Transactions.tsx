@@ -163,6 +163,7 @@ export default function Transactions() {
         transactions={transactions}
         setTransactions={setTransactions}
         floatButton={null}
+        showCurrency={false}
       />
     </CustomMainView>
   );

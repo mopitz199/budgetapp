@@ -15,12 +15,14 @@ type Props = {
   transactions: Transaction[];
   setTransactions: (transactions: Transaction[]) => void;
   floatButton: any;
+  showCurrency?: boolean;
 };
 
 export default function TransactionListEditor({
   transactions,
   setTransactions,
   floatButton,
+  showCurrency = true
 }: Props) {
 
   // Use always to ensure the color scheme is applied correctly
@@ -186,7 +188,7 @@ export default function TransactionListEditor({
                           >
                             {formatNegative(transaction.stringAmount, transaction.negative)}
                         </Text>
-                        <Text className='text-sm text-onSurface dark:text-darkMode-onSurface'>{transaction.currency}</Text>
+                        {showCurrency && <Text className='text-sm text-onSurface dark:text-darkMode-onSurface'>{transaction.currency}</Text>}
                     </View>
                     <View className='flex-col justify-between items-end'>
                       <Pressable
@@ -237,6 +239,7 @@ export default function TransactionListEditor({
   const editTransactionModal = () => {
     return (
       <EditTransactionView
+        showCurrency={showCurrency}
         transactionToEditDefault={transactionToEdit}
         colors={colors}
         mapCategories={mapCategories}
