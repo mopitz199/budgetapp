@@ -105,6 +105,7 @@ export function EditTransactionView(
               ...transactionToEdit,
               currency: newCurrencyValue,
               stringAmount: formatNumber(transactionToEdit.stringAmount, previousCurrencyValue, newCurrencyValue),
+              amount: cleanNumberWithNegative(transactionToEdit.stringAmount, previousCurrencyValue, newCurrencyValue, transactionToEdit.negative)
             });
           }}
         />
@@ -144,7 +145,8 @@ export function EditTransactionView(
                       onPress={() => {
                         setTransactionToEdit({
                           ...transactionToEdit,
-                          negative: !transactionToEdit.negative
+                          negative: !transactionToEdit.negative,
+                          amount: transactionToEdit.amount * -1,
                         });
                       }}
                       icon={transactionToEdit.negative ? "minus" : "plus"}

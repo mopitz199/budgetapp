@@ -1,9 +1,8 @@
 import { CustomMainView } from "@/components/customMainView";
 import IOSDatePicker from "@/components/iosDatePicker";
 import TransactionListEditor from "@/components/transactionList";
-import { formatNumber } from "@/currencyMap";
 import { Transaction } from "@/types";
-import { headerSettings } from "@/utils";
+import { compareYearMonth, headerSettings } from "@/utils";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import { getAuth } from '@react-native-firebase/auth';
 import { doc, getDoc, getFirestore } from "@react-native-firebase/firestore";
@@ -16,8 +15,8 @@ import { Icon, useTheme } from "react-native-paper";
 export default function Transactions() {
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [filteredDate, setFilteredDate] = useState<Date | null>(new Date("2025-08-20"));
-  const [pickerFilteredDate, setPickerFilteredDate] = useState<Date | null>(new Date("2025-08-20"));
+  const [filteredDate, setFilteredDate] = useState<Date>(new Date("2025-08-20"));
+  const [pickerFilteredDate, setPickerFilteredDate] = useState<Date>(new Date("2025-08-20"));
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const auth = getAuth()
@@ -49,9 +48,7 @@ export default function Transactions() {
       DateTimePickerAndroid.open({
         value: filteredDate || new Date(),
         onChange: (event, date) => {
-          if(date)setFilteredDate((prevDate) => {
-            return date
-          });
+          if(date)setFilteredDate(date);
         },
         mode: 'date',
         is24Hour: true,
@@ -73,9 +70,7 @@ export default function Transactions() {
         }}
         onButtonPress={() => {
           setShowDatePicker(false)
-          setFilteredDate((prevDate) => {
-            return pickerFilteredDate;
-          });
+          setFilteredDate(pickerFilteredDate);
         }}
         buttonName={t("filter")}
         displayCloseButton={true}
@@ -84,63 +79,42 @@ export default function Transactions() {
   }
 
   const readTransactions = async () => {
+    let transactions: Transaction[] = [];
     const db = getFirestore();
     const user = auth.currentUser;
     const docRef = doc(db, "user_transactions", user?.uid || "");
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      const jsonOutput = docSnap.data()?.json_output;
-      let responseTransactions = jsonOutput.transactions.map((transaction: any, index: number) => {
-        return {
-          description: transaction.description,
-          date: new Date(transaction.date),
-          negative: transaction.amount < 0,
-          removed: false,
-          stringAmount: formatNumber(Math.abs(transaction.amount).toString(), transaction.curreency, transaction.curreency),
-          index: index,
-          category: "1",
-          currency: transaction.curreency,
-        };
-      })
+      const jsonOutput = docSnap.data();
+      let index = 0;
+      for (const transactionUUID in jsonOutput) {
+        if (jsonOutput.hasOwnProperty(transactionUUID)) {
+          const transaction = jsonOutput[transactionUUID];
+          if(compareYearMonth(transaction.date.toDate(), filteredDate) == 0){
+            transactions.push({
+              amount: transaction.amount,
+              description: transaction.description,
+              date: transaction.date.toDate(),
+              negative: transaction.negative,
+              removed: false,
+              stringAmount: transaction.stringAmount,
+              index: index,
+              category: transaction.category,
+              currency: transaction.currency,
+            });
+          }
+        }
+        index += 1;
+      }
     }
-
-    await db.collection("user_transactions").doc(user?.uid).set({
-      "transactions": transactions.filter(t => !t.removed).map(t => ({
-        category: t.category,
-        currency: t.currency,
-        date: t.date,
-        description: t.description,
-        negative: t.negative,
-        stringAmount: t.stringAmount,
-      }))
-    });
-
-
-    if (docSnap.exists()) {
-      /*const jsonOutput = docSnap.data()?.json_output;
-      let responseTransactions = jsonOutput.transactions.map((transaction: any, index: number) => {
-        return {
-          description: transaction.description,
-          date: new Date(transaction.date),
-          negative: transaction.amount < 0,
-          removed: false,
-          stringAmount: formatNumber(Math.abs(transaction.amount).toString(), selectedCurrency, selectedCurrency),
-          index: index,
-          category: "1",
-          currency: selectedCurrency,
-        };
-      })
-      setTransactions(responseTransactions);*/
-    } else {
-      console.log("No such document!");
-    }
+    setTransactions(transactions);
   }
 
   useEffect(() => {
     console.log("Read transactions effect");
-    // readTransactions()
-  }, []);
+    readTransactions()
+  }, [filteredDate]);
 
   useLayoutEffect(() => headerSettings(
       navigation,

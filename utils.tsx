@@ -21,3 +21,10 @@ export function headerSettings(navigation: any, colorScheme: any, title: string,
     ...(rest ?? {}),
   })
 }
+
+export function compareYearMonth(date1: Date, date2: Date): number {
+  const val1 = date1.getFullYear() * 100 + date1.getMonth();
+  const val2 = date2.getFullYear() * 100 + date2.getMonth();
+
+  return val1 - val2; // negativo: date1 < date2, positivo: date1 > date2, 0: mismo año y mes
+}
