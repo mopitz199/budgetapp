@@ -4,7 +4,7 @@ import CustomDropDownPicker from '@/components/customDropDown';
 import { CustomSafeAreaView } from '@/components/customMainView';
 import { Input } from '@/components/inputs';
 import IOSDatePicker from '@/components/iosDatePicker';
-import { cleanNumberWithNegative, formatNumber } from '@/currencyMap';
+import { cleanNumberWithNegative, formatNumber } from '@/currencyUtils';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +12,7 @@ import { Keyboard, Platform, Pressable, Text, TouchableOpacity, TouchableWithout
 import { TextInput } from 'react-native-paper';
 import { CurrencyPickerModal } from './currencyPickerModal';
 
-import type { Transaction } from "@/types";
+import type { TransactionToDisplay } from "@/types";
 
 export function EditTransactionView(
   {
@@ -43,7 +43,7 @@ export function EditTransactionView(
   const [categoryOption, setCategoryOption] = useState(transactionToEditDefault.category);
   const [openCategoryPicker, setOpenCategoryPicker] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [transactionToEdit, setTransactionToEdit] = useState<Transaction>(transactionToEditDefault);
+  const [transactionToEdit, setTransactionToEdit] = useState<TransactionToDisplay>(transactionToEditDefault);
   const [showCurrencyModal, setShowCurrencyModal] = useState(false);
   const [categories, setCategories] = useState(buildCategories());
 
@@ -51,7 +51,7 @@ export function EditTransactionView(
     if (Platform.OS == 'ios' && showDatePicker) {
       return <IOSDatePicker
         value={new Date(transactionToEdit.date)}
-        onChange={(date) => setTransactionToEdit({...transactionToEdit, date: date} as Transaction)}
+        onChange={(date) => setTransactionToEdit({...transactionToEdit, date: date} as TransactionToDisplay)}
         onClose={() => setShowDatePicker(false)}
         onButtonPress={() => setShowDatePicker(false)}
         buttonName={t("close")}
@@ -68,7 +68,7 @@ export function EditTransactionView(
       DateTimePickerAndroid.open({
         value: new Date(transactionToEdit.date),
         onChange: (event, date) => {
-          setTransactionToEdit({...transactionToEdit, date: date} as Transaction);
+          setTransactionToEdit({...transactionToEdit, date: date} as TransactionToDisplay);
         },
         mode: 'date',
         is24Hour: true,

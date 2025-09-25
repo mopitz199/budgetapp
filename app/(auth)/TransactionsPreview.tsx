@@ -1,129 +1,37 @@
 import { PrimaryButton } from '@/components/buttons';
 import { CustomMainView } from '@/components/customMainView';
-import IOSDatePicker from '@/components/iosDatePicker';
 import TransactionListEditor from '@/components/transactionList';
-import { currencyMap, formatNumber } from '@/currencyMap';
-import type { Transaction } from "@/types";
-import { currencyConvertor, headerSettings } from '@/utils';
-import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import { currencyConvertor, currencyMap, formatNumber } from '@/currencyUtils';
+import type { TransactionToDisplay } from "@/types";
+import { headerSettings } from '@/utils';
 import { getAuth } from '@react-native-firebase/auth';
 import { collection, doc, getDoc, getDocs, getFirestore } from '@react-native-firebase/firestore';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Keyboard, Platform, Pressable, Text, useColorScheme, View } from 'react-native';
-import { Icon, useTheme } from 'react-native-paper';
+import { Alert, useColorScheme } from 'react-native';
 import uuid from 'react-native-uuid';
  
 export default function TransactionEdition() {
 
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [filteredDate, setFilteredDate] = useState<Date | null>(new Date("2025-08-20"));
-  const [pickerFilteredDate, setPickerFilteredDate] = useState<Date | null>(new Date("2025-08-20"));
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [transactions, setTransactions] = useState<TransactionToDisplay[]>([]);
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
+  const auth = getAuth()
   const navigation = useNavigation();
   const colorScheme = useColorScheme();
-  const { colors } = useTheme() as any;
 
+  // Get parameters from the route
   let { transactionsId, selectedCurrency } = useLocalSearchParams();
   transactionsId = transactionsId as string;
   selectedCurrency = selectedCurrency as string;
-
-  const auth = getAuth()
 
   useLayoutEffect(() => headerSettings(
       navigation,
       colorScheme,
       t("transactions"),
-      {
-        headerShown: true,
-        gestureEnabled: true,
-        headerRight: () => {
-          const currentDate = getCurrentMonth();
-          if (!currentDate) {
-            return null;
-          } else {
-            return (
-              <Pressable onPress={() => displayDatePickerView()}>
-                <View className='
-                  flex-row
-                  items-center
-                  bg-primary
-                  rounded-full p-2 pr-3 pl-3'
-                >
-                  <Text className='text-onPrimary mr-1'>{`${currentDate}`}</Text>
-                  <Icon
-                    source="arrow-down-drop-circle"
-                    color={colors.onPrimary}
-                    size={20}
-                  />
-                </View>
-              </Pressable>
-            );
-          }
-        }
-      },
-    ), [navigation, colorScheme, filteredDate]
+    ), [navigation, colorScheme]
   );
-
-  const getCurrentMonth = () => {
-    if(!filteredDate) return null;
-    const locale: Record<string, string> = {
-      "en": 'en-US',
-      "es": 'es-ES'
-    }
-    const formatter = new Intl.DateTimeFormat(locale[i18n.language], {
-      month: "short", // "Jan", "Feb", ..., "Dec"
-      year: "numeric"
-    });
-    let result = formatter.format(filteredDate);
-    result = result.charAt(0).toUpperCase() + result.slice(1);
-    return result;
-  }
-
-  const displayDatePickerView = () => {
-    Keyboard.dismiss();
-    if (Platform.OS === 'ios') {
-      setShowDatePicker(true);
-    } else {
-      DateTimePickerAndroid.open({
-        value: filteredDate || new Date(),
-        onChange: (event, date) => {
-          if(date)setFilteredDate((prevDate) => {
-            return date
-          });
-        },
-        mode: 'date',
-        is24Hour: true,
-      });
-    }
-  }
-
-  const iosPicker = () => {
-    if (Platform.OS == 'ios' && showDatePicker) {
-      return <IOSDatePicker
-        value={pickerFilteredDate || new Date()}
-        onChange={(date) => {
-          setPickerFilteredDate(date);
-        }}
-        onClose={() => {
-          console.log("Closing date picker", filteredDate)
-          setShowDatePicker(false)
-          setPickerFilteredDate(filteredDate);
-        }}
-        onButtonPress={() => {
-          setShowDatePicker(false)
-          setFilteredDate((prevDate) => {
-            return pickerFilteredDate;
-          });
-        }}
-        buttonName={t("filter")}
-        displayCloseButton={true}
-      />;
-    }
-  }
 
   const getCurrencyConvertorValues = async () => {
     const db = getFirestore();
@@ -220,7 +128,6 @@ export default function TransactionEdition() {
       screenWithHeader={true}
       className='flex-1 pb-8'
     >
-      {iosPicker()}
       <TransactionListEditor
         transactions={transactions}
         setTransactions={setTransactions}

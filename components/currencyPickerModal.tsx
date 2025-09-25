@@ -1,4 +1,4 @@
-import { currencyMap } from '@/currencyMap';
+import { currencyMap } from '@/currencyUtils';
 import { ScrollView, Text, TouchableOpacity } from "react-native";
 import { Modal, Portal } from "react-native-paper";
 

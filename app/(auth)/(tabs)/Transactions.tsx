@@ -1,8 +1,8 @@
 import { CustomMainView } from "@/components/customMainView";
 import IOSDatePicker from "@/components/iosDatePicker";
 import TransactionListEditor from "@/components/transactionList";
-import { formatNumber } from "@/currencyMap";
-import { Transaction } from "@/types";
+import { formatNumber } from "@/currencyUtils";
+import { TransactionToDisplay } from "@/types";
 import { compareYearMonth, headerSettings } from "@/utils";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import { getAuth } from '@react-native-firebase/auth';
@@ -15,7 +15,7 @@ import { Icon, useTheme } from "react-native-paper";
 
 export default function Transactions() {
 
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [transactions, setTransactions] = useState<TransactionToDisplay[]>([]);
   const [filteredDate, setFilteredDate] = useState<Date>(new Date("2025-08-20"));
   const [pickerFilteredDate, setPickerFilteredDate] = useState<Date>(new Date("2025-08-20"));
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -80,7 +80,7 @@ export default function Transactions() {
   }
 
   const readTransactions = async () => {
-    let transactions: Transaction[] = [];
+    let transactions: TransactionToDisplay[] = [];
     const db = getFirestore();
     const user = auth.currentUser;
     const docRef = doc(db, "user_transactions", user?.uid || "");

@@ -1,4 +1,4 @@
-export type Transaction = {
+export type TransactionToDisplay = {
   index: number;
   date: Date;
   description: string;

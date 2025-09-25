@@ -134,3 +134,36 @@ export function formatNumber (text: string, fromCurrency: string, toCurrency: st
   // Here we will have an standard number with . as decimal separator but as string. Except but the decimal separator if there is no decimal part
   return text
 }
+
+export function currencyConvertor(amount: number, fromCurrency: string, toCurrency: string, conversionMap: Record<string, number>): number {
+
+  let fromRate = undefined;
+  let toRate = undefined;
+
+  if(fromCurrency === toCurrency){
+    return amount;
+  } else if (fromCurrency === 'USD'){
+    toRate = conversionMap[`USD-${toCurrency}`];
+    if(toRate === undefined){
+      throw new Error(`Conversion rate not found for currency: ${toCurrency}`);
+    }
+    return amount * toRate;
+  } else if (toCurrency === 'USD'){
+    fromRate = conversionMap[`USD-${fromCurrency}`];
+    if(fromRate === undefined){
+      throw new Error(`Conversion rate not found for currency: ${fromCurrency}`);
+    }
+    return amount / fromRate;
+  } else {
+    let fromRateKey = `USD-${fromCurrency}`;
+    let toRateKey = `USD-${toCurrency}`;
+    fromRate = conversionMap[fromRateKey];
+    toRate = conversionMap[toRateKey];
+
+    if(fromRate === undefined || toRate === undefined){
+      throw new Error(`Conversion rate not found for currency: ${fromCurrency} or ${toCurrency}`);
+    } else {
+      return (amount * toRate) / fromRate;
+    }
+  }
+}
