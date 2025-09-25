@@ -28,3 +28,36 @@ export function compareYearMonth(date1: Date, date2: Date): number {
 
   return val1 - val2; // negativo: date1 < date2, positivo: date1 > date2, 0: mismo año y mes
 }
+
+export function currencyConvertor(amount: number, fromCurrency: string, toCurrency: string, conversionMap: Record<string, number>): number {
+
+  let fromRate = undefined;
+  let toRate = undefined;
+
+  if(fromCurrency === toCurrency){
+    return amount;
+  } else if (fromCurrency === 'USD'){
+    toRate = conversionMap[`USD-${toCurrency}`];
+    if(toRate === undefined){
+      throw new Error(`Conversion rate not found for currency: ${toCurrency}`);
+    }
+    return amount * toRate;
+  } else if (toCurrency === 'USD'){
+    fromRate = conversionMap[`USD-${fromCurrency}`];
+    if(fromRate === undefined){
+      throw new Error(`Conversion rate not found for currency: ${fromCurrency}`);
+    }
+    return amount / fromRate;
+  } else {
+    let fromRateKey = `USD-${fromCurrency}`;
+    let toRateKey = `USD-${toCurrency}`;
+    fromRate = conversionMap[fromRateKey];
+    toRate = conversionMap[toRateKey];
+
+    if(fromRate === undefined || toRate === undefined){
+      throw new Error(`Conversion rate not found for currency: ${fromCurrency} or ${toCurrency}`);
+    } else {
+      return (amount * toRate) / fromRate;
+    }
+  }
+}

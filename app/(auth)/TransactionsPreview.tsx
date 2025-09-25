@@ -2,17 +2,18 @@ import { PrimaryButton } from '@/components/buttons';
 import { CustomMainView } from '@/components/customMainView';
 import IOSDatePicker from '@/components/iosDatePicker';
 import TransactionListEditor from '@/components/transactionList';
-import { formatNumber } from '@/currencyMap';
+import { currencyMap, formatNumber } from '@/currencyMap';
 import type { Transaction } from "@/types";
-import { headerSettings } from '@/utils';
+import { currencyConvertor, headerSettings } from '@/utils';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { getAuth } from '@react-native-firebase/auth';
-import { doc, getDoc, getFirestore } from '@react-native-firebase/firestore';
+import { collection, doc, getDoc, getDocs, getFirestore } from '@react-native-firebase/firestore';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Keyboard, Platform, Pressable, Text, useColorScheme, View } from 'react-native';
+import { Alert, Keyboard, Platform, Pressable, Text, useColorScheme, View } from 'react-native';
 import { Icon, useTheme } from 'react-native-paper';
+import uuid from 'react-native-uuid';
  
 export default function TransactionEdition() {
 
@@ -124,10 +125,42 @@ export default function TransactionEdition() {
     }
   }
 
-  const readTransactions = async () => {
-    console.log("Reading transactions from Firestore...");
+  const getCurrencyConvertorValues = async () => {
     const db = getFirestore();
+    const collectionRef = collection(db, "currency_conversion");
+    const docSnap = await getDocs(collectionRef);
 
+    let conversionMap: Record<string, number> = {};
+
+    docSnap.forEach((doc) => {
+      conversionMap[`${doc.id}`] = doc.data().value;
+    });
+    return conversionMap;
+  }
+
+  const getUserSettings = async () => {
+    const user = auth.currentUser;
+
+    if(!user){
+      Alert.alert(t("error"), "User not authenticated");
+      return
+    }
+
+    const db = getFirestore();
+    const docRef = doc(db, "user_settings", user.uid);
+    const docSnap = await getDoc(docRef); 
+
+    if(docSnap.exists()){
+      const userSettings = docSnap.data();
+      return userSettings;
+    }else{
+      Alert.alert(t("error"), "User settings not foundd");
+      return
+    }
+  }
+
+  const readTransactions = async () => {
+    const db = getFirestore();
     const docRef = doc(db, "analysis_requirement", transactionsId);
     const docSnap = await getDoc(docRef);
 
@@ -153,23 +186,32 @@ export default function TransactionEdition() {
   }
 
   const saveTransactions = async () => {
+    const conversionMap = await getCurrencyConvertorValues();
+    const userSettings = await getUserSettings();
+    if(!userSettings) return;
+
     const user = auth.currentUser;
     const db = getFirestore();
-    await db.collection("user_transactions").doc(user?.uid).set({
-      "transactions": transactions.filter(t => !t.removed).map(t => ({
+
+    const transactionsToSave = {} as Record<string, any>;
+    
+    transactions.filter(t => !t.removed).forEach(t => {
+      let id = uuid.v4()
+      transactionsToSave[id] = {
+        id: id,
         category: t.category,
-        currency: t.currency,
+        currency: userSettings["defaultCurrency"],
         date: t.date,
         description: t.description,
-        negative: t.negative,
-        stringAmount: t.stringAmount,
-      }))
-    });
-    console.log("user", user?.uid)
+        amount: currencyConvertor(t.amount, t.currency, userSettings["defaultCurrency"], conversionMap).toFixed(currencyMap[t.currency]),
+      }
+    })
+
+    await db.collection("user_transactions").doc(user?.uid).set(transactionsToSave)
   }
 
   useEffect(() => {
-    console.log("Read transactions effect");
+    console.log("Read transactions effectt");
     readTransactions()
   }, []);
 

@@ -2,31 +2,38 @@
 export const currencyMap: Record<string, any> = {
     'USD': {
       'decimal': '.',
-      'thousand': ','
+      'thousand': ',',
+      'numberDecimals': 2
     },
     'CLP': {
       'decimal': null,
-      'thousand': "."
+      'thousand': ".",
+      'numberDecimals': 0
     },
     'EUR': {
       'decimal': '.',
-      'thousand': ','
+      'thousand': ',',
+      'numberDecimals': 2
     },
     'MXN': {
       'decimal': '.',
-      'thousand': ','
+      'thousand': ',',
+      'numberDecimals': 2
     },
     'ARS': {
       'decimal': ',',
-      'thousand': '.'
+      'thousand': '.',
+      'numberDecimals': 0
     },
     'PEN': {
       'decimal': '.',
-      'thousand': ','
+      'thousand': ',',
+      'numberDecimals': 0
     },
     'COP': {
       'decimal': ',',
-      'thousand': '.'
+      'thousand': '.',
+      'numberDecimals': 0
     }
 }
 
@@ -60,7 +67,7 @@ function isNumber(str: any) {
 }
 
 
-export function cleanNumberWithNegative (text: string, fromCurrency: string, toCurrency: string, finalFormat: boolean = false, negative: boolean = false) {
+export function cleanNumberWithNegative (text: string, fromCurrency: string, toCurrency: string, negative: boolean = false) {
     let cleanedNumber = Number(cleanNumber(text, fromCurrency, toCurrency))
     if(negative){
       cleanedNumber = cleanedNumber * -1
