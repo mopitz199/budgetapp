@@ -62,6 +62,7 @@ const resources = {
       "transactions": "Transactions",
       "close": "Close",
       "filter": "Filter",
+      "saving": "Saving",
     }
   },
   es: {
@@ -121,6 +122,7 @@ const resources = {
       "transactions": "Transacciones",
       "close": "Cerrar",
       "filter": "Filtrar",
+      "saving": "Guardando",
     }
   }
 };

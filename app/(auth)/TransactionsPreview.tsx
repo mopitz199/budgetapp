@@ -5,7 +5,7 @@ import { currencyConvertor, currencyMap, formatNumberToDisplay } from '@/currenc
 import type { TransactionToDisplay } from "@/types";
 import { headerSettings } from '@/utils';
 import { getAuth } from '@react-native-firebase/auth';
-import { collection, doc, getDoc, getDocs, getFirestore } from '@react-native-firebase/firestore';
+import { collection, doc, getDoc, getDocs, getFirestore, setDoc } from '@react-native-firebase/firestore';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,6 +15,7 @@ import uuid from 'react-native-uuid';
 export default function TransactionEdition() {
 
   const [transactions, setTransactions] = useState<TransactionToDisplay[]>([]);
+  const [saving, setSaving] = useState<boolean>(false);
 
   const { t } = useTranslation();
   const auth = getAuth()
@@ -94,6 +95,7 @@ export default function TransactionEdition() {
   }
 
   const saveTransactions = async () => {
+    setSaving(true);
     const conversionMap = await getCurrencyConvertorValues();
     const userSettings = await getUserSettings();
     if(!userSettings) return;
@@ -115,7 +117,19 @@ export default function TransactionEdition() {
       }
     })
 
-    await db.collection("user_transactions").doc(user?.uid).set(transactionsToSave)
+
+    if(!user) {
+      Alert.alert(t("error"), "User not authenticated");
+      return
+    }
+
+    // const collectionRef = collection(db, "user_transactions")
+    const docRef = doc(db, "user_transactions", user.uid);
+    // await docRef.set(transactionsToSave, { merge: false });
+    await setDoc(docRef, transactionsToSave, { merge: false });
+    // await collection(db, "user_transactions").doc(user?.uid).set(transactionsToSave);
+    // router.replace('/(auth)/(tabs)/Home');
+    setSaving(false);
   }
 
   useEffect(() => {
@@ -135,8 +149,8 @@ export default function TransactionEdition() {
           <PrimaryButton
             className={`${false ? 'opacity-50' : 'opacity-100'} rounded-2xl items-center absolute bottom-10 right-10 left-10 shadow-sm'`}
             onPress={() => saveTransactions()}
-            disabled={false}
-            text={false ? t("confirming") : t("confirm")}
+            disabled={saving}
+            text={saving ? t("loading") : t("save")}
           />
         }
       />

@@ -9,11 +9,11 @@ import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, BackHandler, Pressable, ScrollView, Text, useColorScheme, View } from 'react-native';
 import { Snackbar, Tooltip, useTheme } from 'react-native-paper';
 
-import type { Categories, Transaction } from "@/types";
+import type { Categories, TransactionToDisplay } from "@/types";
 
 type Props = {
-  transactions: Transaction[];
-  setTransactions: (transactions: Transaction[]) => void;
+  transactions: TransactionToDisplay[];
+  setTransactions: (transactions: TransactionToDisplay[]) => void;
   floatButton: any;
   allowCurrencySelection?: boolean;
 };
@@ -39,7 +39,7 @@ export default function TransactionListEditor({
   const [snackBarVisible, setSnackBarVisible] = useState(false);
   const [lastIndexElementRemoved, setIndexLastElementRemoved] = useState<number | null>(null);
 
-  const [transactionToEdit, setTransactionToEdit] = useState<Transaction>(null as any);
+  const [transactionToEdit, setTransactionToEdit] = useState<TransactionToDisplay>(null as any);
   
   const [modalOpened, setModalOpened] = useState<boolean>(false);
 
@@ -80,7 +80,7 @@ export default function TransactionListEditor({
     setSnackBarVisible(true);
   }
 
-  const editTransaction = (transaction: Transaction) => {
+  const editTransaction = (transaction: TransactionToDisplay) => {
     setModalOpened(true);
     setTransactionToEdit(transaction);
   }
@@ -150,7 +150,7 @@ export default function TransactionListEditor({
                 <Text className='text-sm font-light mr-2 mb-2 text-onSurfaceVariant dark:text-darkMode-onSurfaceVariant'>
                   {date}
                 </Text>
-                {getGroupedTransactions()[date].map((transaction: Transaction) => (
+                {getGroupedTransactions()[date].map((transaction: TransactionToDisplay) => (
                   <View
                     className={`
                       flex-row
@@ -244,7 +244,7 @@ export default function TransactionListEditor({
         colors={colors}
         mapCategories={mapCategories}
         hideBackButton={true}
-        onSaveEditTransaction={(transaction: Transaction) => {
+        onSaveEditTransaction={(transaction: TransactionToDisplay) => {
           transactions[transaction.index] = transaction;
           setTransactions(transactions)
           setModalOpened(false);
