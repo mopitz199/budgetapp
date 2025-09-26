@@ -6,7 +6,7 @@ import type { TransactionToDisplay } from "@/types";
 import { headerSettings } from '@/utils';
 import { getAuth } from '@react-native-firebase/auth';
 import { collection, doc, getDoc, getDocs, getFirestore, setDoc } from '@react-native-firebase/firestore';
-import { useLocalSearchParams, useNavigation } from 'expo-router';
+import { router, useLocalSearchParams, useNavigation } from 'expo-router';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, useColorScheme } from 'react-native';
@@ -123,13 +123,10 @@ export default function TransactionEdition() {
       return
     }
 
-    // const collectionRef = collection(db, "user_transactions")
     const docRef = doc(db, "user_transactions", user.uid);
-    // await docRef.set(transactionsToSave, { merge: false });
     await setDoc(docRef, transactionsToSave, { merge: false });
-    // await collection(db, "user_transactions").doc(user?.uid).set(transactionsToSave);
-    // router.replace('/(auth)/(tabs)/Home');
     setSaving(false);
+    router.replace('/(auth)/(tabs)/Home');
   }
 
   useEffect(() => {
