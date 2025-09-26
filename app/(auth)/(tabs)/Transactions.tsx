@@ -1,7 +1,7 @@
 import { CustomMainView } from "@/components/customMainView";
 import IOSDatePicker from "@/components/iosDatePicker";
 import TransactionListEditor from "@/components/transactionList";
-import { formatNumber } from "@/currencyUtils";
+import { formatNumberToDisplay } from "@/currencyUtils";
 import { TransactionToDisplay } from "@/types";
 import { compareYearMonth, headerSettings } from "@/utils";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
@@ -99,7 +99,7 @@ export default function Transactions() {
               date: transaction.date.toDate(),
               removed: false,
               negative: transaction.amount < 0,
-              stringAmount: formatNumber(Math.abs(transaction.amount).toString(), transaction.currency, transaction.currency),
+              stringAmount: formatNumberToDisplay(Math.abs(transaction.amount).toString(), transaction.currency, transaction.currency),
               index: index,
               category: transaction.category,
               currency: transaction.currency,

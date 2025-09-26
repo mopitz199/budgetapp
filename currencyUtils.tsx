@@ -37,7 +37,6 @@ export const currencyMap: Record<string, any> = {
     }
 }
 
-
 function replaceDecimalSeparator(stringNum: string, from: string, to: string) {
   if(to === null && from === null){
     return stringNum;
@@ -66,73 +65,71 @@ function isNumber(str: any) {
   return !isNaN(str) && str.trim() !== "";
 }
 
+function transformNumberDecimal(value: number, toCurrency: string): number {
+  const currencyTool = currencyMap[toCurrency]
+  if(currencyTool.decimal){
+    return value
+  }else{
+    return Math.trunc(value)
+  }
+}
 
-export function cleanNumberWithNegative (text: string, fromCurrency: string, toCurrency: string, negative: boolean = false) {
-    let cleanedNumber = Number(cleanNumber(text, fromCurrency, toCurrency))
+function stringToNumber (text: string, currency: string, negative: boolean = false): number {
+  const currencyTool = currencyMap[currency]
+  let lastCharacter = text.charAt(text.length - 1);
+
+  // If the last character is not a number, we remove it to avoid issues when converting to number
+  if(!isNumber(lastCharacter)){
+    text = text.slice(0, -1);
+  }
+
+  // Remove all characters except numbers and decimal separators
+  if(!currencyTool.decimal && currencyTool.thousand){
+    // If the currency doesn't have decimal separator, we remove all characters except numbers and thousand separator
+    text = text.replace(new RegExp(`[^0-9\\${currencyTool.thousand}]`, 'g'), '');
+  }else{
+    text = text.replace(/[^0-9,.]/g, "");
+  }
+
+  // Remove thousand separators to keep the integer without them
+  text = removeThousandSeparatorAndResetDecimal(text, currencyTool.decimal, currencyTool.thousand);
+
+  // Remove leading zeros
+  text = text.replace(/^0+/, '');
+  let number = Number(text)
+
+  if(negative){
+    number = number * -1
+  }
+
+  return number;
+}
+
+export function cleanNumber(text: string, fromCurrency: string, toCurrency: string, negative: boolean = false) {
+    let cleanedNumber = transformNumberDecimal(stringToNumber(text, fromCurrency), toCurrency)
     if(negative){
       cleanedNumber = cleanedNumber * -1
     }
     return cleanedNumber
 }
 
-export function cleanNumber (text: string, fromCurrency: string, toCurrency: string) {
-    const fromCurrencyTool = currencyMap[fromCurrency]
-  const toCurrencyTool = currencyMap[toCurrency]
-  let lastCharacter = text.charAt(text.length - 1);
-
-  // Allow only one decimal separator with .
-  if(lastCharacter === "."){
-    if(text.split(".").length > 2){
-      text = text.slice(0, -1);
-    }
-  }
-
-  // Allow only one decimal separator with ,
-  if(lastCharacter === ","){
-    if(text.split(",").length > 2){
-      text = text.slice(0, -1);
-    }
-  }
-
-  // Remove all characters except numbers and decimal separators
-  if(!toCurrencyTool.decimal && toCurrencyTool.thousand){
-    // If the currency doesn't have decimal separator, we remove all characters except numbers and thousand separator
-    text = text.replace(new RegExp(`[^0-9\\${toCurrencyTool.thousand}]`, 'g'), '');
-  }else{
-    text = text.replace(/[^0-9,.]/g, "");
-  }
-
-  // If the last character is not a number, we remove it to avoid issues when converting to number
-  lastCharacter = text.charAt(text.length - 1);
-  if(!isNumber(lastCharacter)){
-    text = text.slice(0, -1);
-  }
-
-  // Remove thousand separators to keep the integer without them
-  text = removeThousandSeparatorAndResetDecimal(text, fromCurrencyTool.decimal, fromCurrencyTool.thousand);
-
-  // Remove leading zeros
-  text = text.replace(/^0+/, '');
-
-  return text;
-}
-
-export function formatNumber (text: string, fromCurrency: string, toCurrency: string, finalFormat: boolean = false) {
+export function formatNumberToDisplay(text: string, fromCurrency: string, toCurrency: string, finalFormat: boolean = false) {
 
   const toCurrencyTool = currencyMap[toCurrency]
   let lastCharacter = text.charAt(text.length - 1);
   
-  text = cleanNumber(text, fromCurrency, toCurrency)
+  let value = stringToNumber(text, fromCurrency);
+  value = transformNumberDecimal(value, toCurrency);
 
-  text = replaceDecimalSeparator(text, ".", toCurrencyTool.decimal);
-  text = addThousandSeparator(text, toCurrencyTool.decimal, toCurrencyTool.thousand);
+  let stringValue = value.toString();
+  stringValue = replaceDecimalSeparator(stringValue, ".", toCurrencyTool.decimal);
+  stringValue = addThousandSeparator(stringValue, toCurrencyTool.decimal, toCurrencyTool.thousand);
 
-  if(toCurrencyTool.decimal && !isNumber(lastCharacter) && lastCharacter == toCurrencyTool.decimal && !finalFormat){
-    text = text + toCurrencyTool.decimal;
+  if(lastCharacter == toCurrencyTool.decimal && !finalFormat){
+    stringValue = stringValue + toCurrencyTool.decimal;
   }
 
-  // Here we will have an standard number with . as decimal separator but as string. Except but the decimal separator if there is no decimal part
-  return text
+  return stringValue
 }
 
 export function currencyConvertor(amount: number, fromCurrency: string, toCurrency: string, conversionMap: Record<string, number>): number {

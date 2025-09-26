@@ -1,7 +1,7 @@
 import { PrimaryButton } from '@/components/buttons';
 import { CustomMainView } from '@/components/customMainView';
 import TransactionListEditor from '@/components/transactionList';
-import { currencyConvertor, currencyMap, formatNumber } from '@/currencyUtils';
+import { currencyConvertor, currencyMap, formatNumberToDisplay } from '@/currencyUtils';
 import type { TransactionToDisplay } from "@/types";
 import { headerSettings } from '@/utils';
 import { getAuth } from '@react-native-firebase/auth';
@@ -81,7 +81,7 @@ export default function TransactionEdition() {
           negative: transaction.amount < 0,
           removed: false,
           amount: transaction.amount,
-          stringAmount: formatNumber(Math.abs(transaction.amount).toString(), selectedCurrency, selectedCurrency),
+          stringAmount: formatNumberToDisplay(Math.abs(transaction.amount).toString(), selectedCurrency, selectedCurrency),
           index: index,
           category: "1",
           currency: selectedCurrency,
