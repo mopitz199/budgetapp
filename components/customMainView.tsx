@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, StatusBar, View, ViewProps } from 'react-native';
+import { ActivityIndicator, Platform, StatusBar, View, ViewProps } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface CustomComponentProps extends ViewProps {
@@ -11,9 +11,10 @@ export function CustomSafeAreaView(
   {
     children,
     screenWithHeader = true,
+    loading = false,
     className,
     ...rest
-  }: CustomComponentProps & { screenWithHeader?: boolean }
+  }: CustomComponentProps & { screenWithHeader?: boolean, loading?: boolean }
 ) {
   return (
     <SafeAreaView
@@ -35,9 +36,10 @@ export function CustomMainView(
   {
     children,
     screenWithHeader = true,
+    loading = false,
     className,
     ...rest
-  }: CustomComponentProps & { screenWithHeader?: boolean }
+  }: CustomComponentProps & { screenWithHeader?: boolean, loading?: boolean }
 ) {
   return (
     <View
@@ -47,6 +49,14 @@ export function CustomMainView(
       }}
       {...rest}
     >
+      {loading?
+        <View className='absolute top-0 left-0 right-0 inset-0 h-max z-10 justify-center'>
+          <View className='absolute top-0 left-0 right-0 opacity-20 bg-black inset-0 h-max z-10 justify-center' />
+          <View className="absolute top-0 left-0 right-0 inset-0 h-max z-20 justify-center">
+            <ActivityIndicator size="large" color="#FFFFFF" />
+          </View>
+        </View>
+      : null}
       {children}
     </View>
   );

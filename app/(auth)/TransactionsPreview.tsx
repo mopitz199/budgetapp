@@ -16,6 +16,7 @@ export default function TransactionEdition() {
 
   const [transactions, setTransactions] = useState<TransactionToDisplay[]>([]);
   const [saving, setSaving] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const { t } = useTranslation();
   const auth = getAuth()
@@ -69,6 +70,7 @@ export default function TransactionEdition() {
   }
 
   const readTransactions = async () => {
+    setLoading(true);    
     const db = getFirestore();
     const docRef = doc(db, "analysis_requirement", transactionsId);
     const docSnap = await getDoc(docRef);
@@ -92,10 +94,11 @@ export default function TransactionEdition() {
     } else {
       console.log("No such document!");
     }
+    setLoading(false);
   }
 
   const saveTransactions = async () => {
-    setSaving(true);
+    setLoading(true);
     const conversionMap = await getCurrencyConvertorValues();
     const userSettings = await getUserSettings();
     if(!userSettings) return;
@@ -125,17 +128,18 @@ export default function TransactionEdition() {
 
     const docRef = doc(db, "user_transactions", user.uid);
     await setDoc(docRef, transactionsToSave, { merge: false });
-    setSaving(false);
+    setLoading(false);
     router.replace('/(auth)/(tabs)/Home');
   }
 
   useEffect(() => {
-    console.log("Read transactions effectt");
+    console.log("Read transactions effect");
     readTransactions()
   }, []);
 
   return (
     <CustomMainView
+      loading={loading}
       screenWithHeader={true}
       className='flex-1 pb-8'
     >
@@ -146,8 +150,8 @@ export default function TransactionEdition() {
           <PrimaryButton
             className={`${false ? 'opacity-50' : 'opacity-100'} rounded-2xl items-center absolute bottom-10 right-10 left-10 shadow-sm'`}
             onPress={() => saveTransactions()}
-            disabled={saving}
-            text={saving ? t("loading") : t("save")}
+            disabled={loading}
+            text={t("save")}
           />
         }
       />

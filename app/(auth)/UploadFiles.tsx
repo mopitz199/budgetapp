@@ -7,9 +7,9 @@ import { getStorage } from '@react-native-firebase/storage';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from "expo-router";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Alert, Image, ScrollView, Text, useColorScheme, View } from "react-native";
+import { Alert, Image, ScrollView, Text, useColorScheme, View } from "react-native";
 import { Icon, useTheme } from 'react-native-paper';
 import uuid from 'react-native-uuid';
 
@@ -45,7 +45,6 @@ const UploadFiles = () => {
         aux_images_uri.push(asset.uri)
       }
       setImagesURI(aux_images_uri)
-      //uploadImage(result["assets"][0]["uri"])
     }else{
       console.log("picker canceled")
     }
@@ -112,21 +111,8 @@ const UploadFiles = () => {
     setLoading(false)
   }
 
-  useEffect(() => {
-    //pickImageAsync();
-  }, []);
-
   return (
-    <CustomMainView>
-      {loading?
-        <View className='absolute top-0 left-0 right-0 inset-0 h-max z-10 justify-center'>
-          <View className='absolute top-0 left-0 right-0 opacity-20 bg-black inset-0 h-max z-10 justify-center' />
-          <View className="absolute top-0 left-0 right-0 inset-0 h-max z-20 justify-center">
-            <ActivityIndicator size="large" color="#FFFFFF" />
-          </View>
-        </View>
-      : null}
-
+    <CustomMainView loading={loading}>
       <CurrencyPickerModal
         showCurrencyModal={showCurrencyModal}
         setShowCurrencyModal={setShowCurrencyModal}
