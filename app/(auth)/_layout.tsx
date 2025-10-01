@@ -5,7 +5,12 @@ const Layout = () => {
   const { t } = useTranslation();
 
   return (
-    <Stack>
+    <Stack
+      screenOptions={{
+        headerBackButtonDisplayMode: "minimal",
+        headerBackButtonMenuEnabled: false,
+      }}
+    >
       <Stack.Screen name='(tabs)' options={({ route }) => {
         const skip = (route.params as { skipAnimation?: string })?.skipAnimation;
         return {

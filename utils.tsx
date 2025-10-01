@@ -11,7 +11,7 @@ export function formatNegative(value: string, negative: boolean): string {
 }
 
 export function headerSettings(navigation: any, colorScheme: any, title: string, rest?: any): void {
-  return navigation.setOptions({
+  navigation.setOptions({
     title: title,
     headerStyle: {
       backgroundColor: colorScheme === 'dark' ? '#1D2430' : '#F3F4F6', // usa tu paleta

@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, BackHandler, Pressable, ScrollView, Text, useColorScheme, View } from 'react-native';
+import { BackHandler, Pressable, ScrollView, Text, useColorScheme, View } from 'react-native';
 import { Snackbar, Tooltip, useTheme } from 'react-native-paper';
 
 import type { Categories, TransactionToDisplay } from "@/types";
@@ -257,8 +257,6 @@ export default function TransactionListEditor({
   }
 
   return (
-    mapCategories && Object.keys(mapCategories).length === 0 ? (
-        <ActivityIndicator size="large" color="#FFFFFF" />
-      ) : modalOpened ? editTransactionModal() : transactionListPreview()
+    modalOpened ? editTransactionModal() : transactionListPreview()
   )
 }

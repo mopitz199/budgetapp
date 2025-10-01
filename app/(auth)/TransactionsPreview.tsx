@@ -15,7 +15,6 @@ import uuid from 'react-native-uuid';
 export default function TransactionEdition() {
 
   const [transactions, setTransactions] = useState<TransactionToDisplay[]>([]);
-  const [saving, setSaving] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
   const { t } = useTranslation();
@@ -27,7 +26,7 @@ export default function TransactionEdition() {
   let { transactionsId, selectedCurrency } = useLocalSearchParams();
   transactionsId = transactionsId as string;
   selectedCurrency = selectedCurrency as string;
-
+  
   useLayoutEffect(() => headerSettings(
       navigation,
       colorScheme,

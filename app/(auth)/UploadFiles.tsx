@@ -4,9 +4,9 @@ import { CustomMainView } from '@/components/customMainView';
 import { headerSettings } from '@/utils';
 import { getAuth } from '@react-native-firebase/auth';
 import { getStorage } from '@react-native-firebase/storage';
-import { useNavigation } from '@react-navigation/native';
+import { usePreventRemove } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
-import { useRouter } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import React, { useLayoutEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
 import { Alert, Image, ScrollView, Text, useColorScheme, View } from "react-native";
@@ -31,6 +31,12 @@ const UploadFiles = () => {
       t("uploadYourImages"),
     ), [navigation, colorScheme]
   );
+
+  usePreventRemove(loading, ({ data /*, action */ }) => {
+    // Aquí puedes mostrar un toast/alert si quieres.
+    // Si deseas permitir salir en algún caso, puedes re-despachar la acción:
+    navigation.dispatch(data.action);
+  });
 
   const pickImageAsync = async () => {
     setLoading(true)

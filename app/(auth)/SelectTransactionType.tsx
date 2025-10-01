@@ -1,13 +1,11 @@
 import { CustomSafeAreaView } from '@/components/customMainView';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Pressable, Text, useColorScheme, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const SelectTransactionType = () => {
 
-  // Use always to ensure the color scheme is applied correctly
-  const colorScheme = useColorScheme();
   const router = useRouter();
 
   const ButtonsSelection = () => {
