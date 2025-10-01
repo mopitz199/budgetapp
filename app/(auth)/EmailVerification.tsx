@@ -25,6 +25,7 @@ export default function EmailVerification() {
       navigation,
       colorScheme,
       t("verifyYourEmail"),
+      false,
     ), [navigation, colorScheme]
   );
 

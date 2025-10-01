@@ -31,6 +31,7 @@ export default function TransactionEdition() {
       navigation,
       colorScheme,
       t("transactions"),
+      false,
     ), [navigation, colorScheme]
   );
 

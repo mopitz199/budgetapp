@@ -20,7 +20,8 @@ export default function Index() {
   useLayoutEffect(() => headerSettings(
     navigation,
     colorScheme,
-    t("signUp")
+    t("signUp"),
+    false,
   ), [navigation, colorScheme]);
 
   const recoverPassword = async () => {

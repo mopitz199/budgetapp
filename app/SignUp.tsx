@@ -41,7 +41,8 @@ export default function CreateAccount() {
   useLayoutEffect(() => headerSettings(
     navigation,
     colorScheme,
-    t("signUp")
+    t("signUp"),
+    false,
   ), [navigation, colorScheme]);
 
   const validateEmail = (): boolean => {

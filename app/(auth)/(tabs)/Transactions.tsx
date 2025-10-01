@@ -118,9 +118,7 @@ export default function Transactions() {
   }, [filteredDate]);
 
   useLayoutEffect(() => headerSettings(
-      navigation,
-      colorScheme,
-      t("transactions"),
+      navigation, colorScheme, t("transactions"), true,
       {
         headerShown: true,
         gestureEnabled: true,
