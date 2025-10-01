@@ -31,6 +31,7 @@ export function headerSettings(
         />
       )
     },
+    headerShadowVisible: false,
     headerStyle: {
       backgroundColor: colorScheme === 'dark' ? '#1D2430' : '#F3F4F6', // usa tu paleta
     },

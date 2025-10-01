@@ -1,5 +1,5 @@
 import { EditTransactionView } from '@/components/editTransactionModal';
-import { formatNegative, headerSettings } from '@/utils';
+import { formatNegative } from '@/utils';
 import { Ionicons } from '@expo/vector-icons';
 import { doc, getDoc, getFirestore } from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
@@ -61,15 +61,12 @@ export default function TransactionListEditor({
     setMapCategories(categories);
   }
 
-  useLayoutEffect(() => headerSettings(
-      navigation,
-      colorScheme,
-      t("transactions"),
-      {
-        headerShown: !modalOpened,
-        gestureEnabled: !modalOpened,
-      },
-    ), [navigation, colorScheme, modalOpened]
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: !modalOpened,
+      gestureEnabled: !modalOpened,
+    })
+  }, [navigation, colorScheme, modalOpened]
   );
 
   const removeTransaction = (index: number) => {
