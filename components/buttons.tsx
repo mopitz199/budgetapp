@@ -19,9 +19,9 @@ export function PrimaryButton({ text, onPress , className, ...props }: Touchable
 
 export function SecondaryButton({ text, onPress , className, rightIcon, ...props }: TouchableOpacityProps & Props ) {
   return (
-    <TouchableOpacity onPress={onPress} className={`bg-surface p-4 rounded-xl border border-divider ${className}`} {...props}>
+    <TouchableOpacity onPress={onPress} className={`p-4 rounded-xl border border-darkMode-divider dark:border-divider ${className}`} {...props}>
       <View className='flex-row justify-center'>
-        <Text className='text-textPrimary text-center text-xl'>{text}</Text>
+        <Text className='text-textPrimary text-center text-xl text-onSurface dark:text-darkMode-onSurface'>{text}</Text>
         {rightIcon ? rightIcon : null}
       </View>
     </TouchableOpacity>

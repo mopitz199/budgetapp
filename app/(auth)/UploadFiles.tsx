@@ -114,7 +114,7 @@ const UploadFiles = () => {
   }
 
   return (
-    <CustomMainView loading={loading}>
+    <CustomMainView loading={loading} className='p-8 pb-14'>
       <CurrencyPickerModal
         showCurrencyModal={showCurrencyModal}
         setShowCurrencyModal={setShowCurrencyModal}
@@ -144,16 +144,18 @@ const UploadFiles = () => {
                 )))}
               </View>
             </ScrollView>
-            <PrimaryButton className="mr-10 ml-10 mb-4 mt-4" text={loading ? t("loading") : t("upload")} disabled={loading} onPress={uploadImage} />
-            <SecondaryButton className="mr-10 ml-10 mb-10" text={t("selectAgain")} disabled={loading} onPress={pickImageAsync} />
+            <SecondaryButton className="mt-4" text={t("selectAgain")} disabled={loading} onPress={pickImageAsync} />
+            <PrimaryButton className="mt-4" text={loading ? t("loading") : t("upload")} disabled={loading} onPress={uploadImage} />
           </View> :
-          <View className='flex-1 justify-center p-10'>
-            <Image
-              source={require('@/assets/images/image-icon.png')} 
-              resizeMode='contain'
-              className="h-36 w-full"
-            />
-            <Text className='text-center text-xl text-onSurface dark:text-darkMode-onSurface'>{t("addYourImages")}</Text>
+          <View className='flex-1'>
+            <View className='flex-1 p-8 flex-wrap justify-center dark:bg-darkMode-background bg-background border-dashed border-2 border-onSurface dark:border-darkMode-onSurface mt-4'>
+              <Image
+                source={require('@/assets/images/image-icon.png')} 
+                resizeMode='contain'
+                className="h-36 w-full"
+              />
+              <Text className='text-center text-xl text-onSurface dark:text-darkMode-onSurface'>{t("addYourImages")}</Text>
+            </View>
             <SecondaryButton
               className="mt-4"
               text={selectedCurrency}

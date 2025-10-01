@@ -111,7 +111,7 @@ export function EditTransactionView(
           }}
         />
 
-        <View className='p-4 flex-1'>
+        <View className='p-4 flex-1 justify-center'>
           <View className=''>
             <View className='mb-4'>
               <View className='rounded-xl overflow-hidden'>
@@ -206,13 +206,13 @@ export function EditTransactionView(
               />
             </View>
           </View>
+          <SecondaryButton className='mt-4' onPress={() => onCancelEditTransaction(transactionToEdit)} text={t("cancel")} />
           <PrimaryButton className='mt-4' onPress={() => onSaveEditTransaction(
             {
               ...transactionToEdit,
               stringAmount: formatNumberToDisplay(transactionToEdit.stringAmount, transactionToEdit.currency, transactionToEdit.currency, true)
             }
           )} text={t("save")} />
-          <SecondaryButton className='mt-4' onPress={() => onCancelEditTransaction(transactionToEdit)} text={t("cancel")} />
         </View>
       </CustomSafeAreaView>
     </TouchableWithoutFeedback>

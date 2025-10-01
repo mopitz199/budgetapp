@@ -148,7 +148,7 @@ export default function TransactionEdition() {
         setTransactions={setTransactions}
         floatButton={
           <PrimaryButton
-            className={`${false ? 'opacity-50' : 'opacity-100'} rounded-2xl items-center absolute bottom-10 right-10 left-10 shadow-sm'`}
+            className={`${false ? 'opacity-50' : 'opacity-100'} rounded-2xl items-center absolute bottom-6 right-8 left-8 shadow-sm'`}
             onPress={() => saveTransactions()}
             disabled={loading}
             text={t("save")}
