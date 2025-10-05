@@ -6,7 +6,7 @@ import type { Categories, TransactionToDisplay } from "@/types";
 import { headerSettings, logger } from "@/utils";
 import { getAuth } from "@react-native-firebase/auth";
 import { doc, getDoc, getFirestore, setDoc } from "@react-native-firebase/firestore";
-import { useNavigation } from 'expo-router';
+import { router, useNavigation } from 'expo-router';
 import { useEffect, useLayoutEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, useColorScheme } from "react-native";
@@ -69,9 +69,11 @@ export default function UploadManually() {
     }
     const db = getFirestore();
     const docRef = doc(db, "user_transactions", user.uid);
+    let id = uuid.v4()
 
-    let transactionsToSave = {
-      id: uuid.v4(),
+    let transactionToSave = {} as Record<string, any>;
+    transactionToSave[id] = {
+      id: id,
       category: transaction.category,
       currency: userSettings["defaultCurrency"],
       date: transaction.date,
@@ -83,7 +85,7 @@ export default function UploadManually() {
         currencyRatio
       ).toFixed(currencyRatio[transaction.currency]),
     }
-    await setDoc(docRef, transactionsToSave, { merge: false });
+    await setDoc(docRef, transactionToSave, { merge: false });
   }
 
   useEffect(() => {
@@ -100,6 +102,7 @@ export default function UploadManually() {
         hideBackButton={true}
         onSaveEditTransaction={(transaction: TransactionToDisplay) => {
           saveTransaction(transaction);
+          router.replace('/(auth)/(tabs)/Home');
         }}
         hideCancelButton={true}
       />
