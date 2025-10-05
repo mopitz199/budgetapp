@@ -1,6 +1,7 @@
 import { CustomSafeAreaView } from '@/components/customMainView';
 import { Ionicons } from '@expo/vector-icons';
-import { getAuth, signOut } from '@react-native-firebase/auth/lib/modular';
+import { getAuth, signOut } from '@react-native-firebase/auth';
+import { getCrashlytics, log, recordError } from '@react-native-firebase/crashlytics';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useRouter } from "expo-router";
 import { Button, Pressable, Text, useColorScheme, View } from "react-native";
@@ -15,6 +16,12 @@ const Home = () => {
   const router = useRouter();
   const bottomTabBarHeight = useBottomTabBarHeight();
   const insets = useSafeAreaInsets();
+
+  const sendLog = () => {
+    const crashlytics = getCrashlytics();
+    log(crashlytics, 'Updating user count.');
+    recordError(crashlytics, new Error('Ejemplo de pruebaaaa'));
+  }
 
   const BaseHome = () => {
     return (
@@ -45,6 +52,8 @@ const Home = () => {
       <View className="flex-1">
         <Text>{bottomTabBarHeight}</Text>
         <Text className="text-onSurface dark:text-darkMode-onSurface">Holaassslleel</Text>
+
+        <Button title="Crash" onPress={() => {sendLog()}} />
         <Button title="Sign Out" onPress={() => signOut(auth)} />
         <BaseHome />
       </View>

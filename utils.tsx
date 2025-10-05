@@ -1,3 +1,4 @@
+import { setAttributes, setUserId } from '@react-native-firebase/crashlytics';
 import { HeaderBackButton } from "@react-navigation/elements";
 
 export function sleep(ms: number): Promise<void> {
@@ -45,4 +46,13 @@ export function compareYearMonth(date1: Date, date2: Date): number {
   const val2 = date2.getFullYear() * 100 + date2.getMonth();
 
   return val1 - val2; // negativo: date1 < date2, positivo: date1 > date2, 0: mismo año y mes
+}
+
+export function initAuthenticatedLogs(user: any, crashlytics: any) {
+  setUserId(crashlytics, user.uid.toString());
+  setAttributes(crashlytics, {
+    email: user.email,
+    uuid: user.uid.toString(),
+  });
+  return crashlytics;
 }

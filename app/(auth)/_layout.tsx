@@ -1,5 +1,7 @@
 import { UserAuthenticatedContext } from "@/contexts/UserAuthenticatedContext";
+import { initAuthenticatedLogs } from "@/utils";
 import { getAuth } from "@react-native-firebase/auth";
+import { getCrashlytics } from "@react-native-firebase/crashlytics";
 import { doc, getDoc, getFirestore } from '@react-native-firebase/firestore';
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
@@ -38,7 +40,9 @@ const Layout = () => {
   useEffect(() => {
     let userSettings = getUserSettings()
     setUserSettings(userSettings)
-    console.log(userSettings)
+
+    // Initialize Crashlytics with user info
+    initAuthenticatedLogs(auth.currentUser, getCrashlytics());
   }, []);
 
 
