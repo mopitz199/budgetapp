@@ -14,3 +14,6 @@ export type User = {
   uid: string;
   email: string | null;
 }
+export type UserAuthenticatedContextType = {
+  userSettings: any
+}

@@ -1,13 +1,14 @@
 import { CustomSafeAreaView } from "@/components/customMainView";
 import { EditTransactionView } from "@/components/editTransactionModal";
+import { useUserSettingContext } from "@/contexts/UserAuthenticatedContext";
 import type { Categories, TransactionToDisplay } from "@/types";
-import { headerSettings } from "@/utils";
+import { headerSettings, logger } from "@/utils";
 import { getAuth } from "@react-native-firebase/auth";
 import { doc, getDoc, getFirestore } from "@react-native-firebase/firestore";
 import { useNavigation } from 'expo-router';
 import { useEffect, useLayoutEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert, useColorScheme } from "react-native";
+import { useColorScheme } from "react-native";
 import { useTheme } from "react-native-paper";
 
 export default function UploadManually() {
@@ -18,6 +19,8 @@ export default function UploadManually() {
   const { t } = useTranslation();
   const auth = getAuth()
   const { colors } = useTheme() as any;
+  const userSettings = useUserSettingContext();
+  logger("User settings in UploadManually", userSettings);
 
   useLayoutEffect(() => headerSettings(
       navigation,
@@ -36,30 +39,9 @@ export default function UploadManually() {
     removed: false,
     negative: false,
     category: '1',
-    currency: 'USD',
+    currency: userSettings.defaultCurrency,
   });
   const [mapCategories, setMapCategories] = useState<Categories>({});
-
-  const getUserSettings = async () => {
-    const user = auth.currentUser;
-
-    if(!user){
-      Alert.alert(t("error"), "User not authenticated");
-      return
-    }
-
-    const db = getFirestore();
-    const docRef = doc(db, "user_settings", user.uid);
-    const docSnap = await getDoc(docRef); 
-
-    if(docSnap.exists()){
-      const userSettings = docSnap.data();
-      return userSettings;
-    }else{
-      Alert.alert(t("error"), "User settings not foundd");
-      return
-    }
-  }
 
   const readCategories = async () => {
     const db = getFirestore();

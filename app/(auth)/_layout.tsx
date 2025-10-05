@@ -1,7 +1,7 @@
 import { UserAuthenticatedContext } from "@/contexts/UserAuthenticatedContext";
+import { UserAuthenticatedContextType } from "@/types";
 import { errorLogger, initAuthenticatedLogs } from "@/utils";
 import { getAuth } from "@react-native-firebase/auth";
-import { getCrashlytics } from "@react-native-firebase/crashlytics";
 import { doc, getDoc, getFirestore } from '@react-native-firebase/firestore';
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
@@ -13,46 +13,46 @@ const Layout = () => {
   const auth = getAuth()
 
 
-  const [userSettings, setUserSettings] = useState<any | null>(null);
+  const [userAuthenticatedContext, setUserAuthenticatedContext] = useState<UserAuthenticatedContextType | null>(null);
 
-  const getUserSettings = async () => {
+  const setUserSettings = async () => {
     const user = auth.currentUser;
-
     if(!user){
       errorLogger("User not authenticated", "User is not logged in");
       Alert.alert(t("error"), t('userNotAuthenticated'));
-      return
-    }
+    }else {
+      const db = getFirestore();
+      const docRef = doc(db, "user_settings", user.uid);
+      const docSnap = await getDoc(docRef); 
 
-    const db = getFirestore();
-    const docRef = doc(db, "user_settings", user.uid);
-    const docSnap = await getDoc(docRef); 
-
-    if(docSnap.exists()){
-      const userSettings = docSnap.data();
-      return userSettings;
-    }else{
-      errorLogger("User settings not found", "User settings document does not exist");
-      Alert.alert(t("error"), t('userSettingsNotFound'));
-      return
+      if(docSnap.exists()){
+        const userSettings = docSnap.data();
+        setUserAuthenticatedContext({
+          userSettings: userSettings
+        });
+      }else{
+        errorLogger("User settings not found", "User settings document does not exist");
+        Alert.alert(t("error"), t('userSettingsNotFound'));
+      }
     }
   }
 
-  useEffect(() => {
-    let userSettings = getUserSettings()
-    setUserSettings(userSettings)
 
+
+  useEffect(() => {
+    // Set global user settings
+    setUserSettings();
     // Initialize Crashlytics with user info
-    initAuthenticatedLogs(auth.currentUser, getCrashlytics());
+    initAuthenticatedLogs(auth.currentUser);
   }, []);
 
 
-  if (! userSettings) {
+  if (! userAuthenticatedContext) {
     return null; // or a loading spinner, etc.
   }
 
   return (
-    <UserAuthenticatedContext.Provider value={userSettings}>
+    <UserAuthenticatedContext.Provider value={userAuthenticatedContext}>
       <Stack>
         <Stack.Screen name='(tabs)' options={({ route }) => {
           const skip = (route.params as { skipAnimation?: string })?.skipAnimation;

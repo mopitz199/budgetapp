@@ -1,4 +1,4 @@
-import { getCrashlytics, recordError, setAttributes, setUserId } from '@react-native-firebase/crashlytics';
+import { getCrashlytics, setAttributes, setUserId } from '@react-native-firebase/crashlytics';
 import { HeaderBackButton } from "@react-navigation/elements";
 
 export function sleep(ms: number): Promise<void> {
@@ -48,7 +48,8 @@ export function compareYearMonth(date1: Date, date2: Date): number {
   return val1 - val2; // negativo: date1 < date2, positivo: date1 > date2, 0: mismo año y mes
 }
 
-export function initAuthenticatedLogs(user: any, crashlytics: any) {
+export function initAuthenticatedLogs(user: any) {
+  const crashlytics = getCrashlytics();
   setUserId(crashlytics, user.uid.toString());
   setAttributes(crashlytics, {
     email: user.email,
@@ -57,12 +58,16 @@ export function initAuthenticatedLogs(user: any, crashlytics: any) {
   return crashlytics;
 }
 
-export function logger(msg: string){
-  getCrashlytics().log(msg);
-  console.log(msg);
+export function logger(msg: string, value?: any){
+  if(value !== undefined){
+    console.log(msg, value);
+  }else{
+    console.log(msg);
+  }
+  //getCrashlytics().log(msg);
 }
 
 export function errorLogger(msg: string, error?: string){
-  getCrashlytics().log(msg);
-  recordError(getCrashlytics(), new Error(error));
+  /*getCrashlytics().log(msg);
+  recordError(getCrashlytics(), new Error(error));*/
 }
