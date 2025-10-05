@@ -42,7 +42,7 @@ export default function TransactionEdition() {
 
     let conversionMap: Record<string, number> = {};
 
-    docSnap.forEach((doc) => {
+    docSnap.forEach((doc: any) => {
       conversionMap[`${doc.id}`] = doc.data().value;
     });
     return conversionMap;
@@ -116,7 +116,12 @@ export default function TransactionEdition() {
         currency: userSettings["defaultCurrency"],
         date: t.date,
         description: t.description,
-        amount: currencyConvertor(t.amount, t.currency, userSettings["defaultCurrency"], conversionMap).toFixed(currencyMap[t.currency]),
+        amount: currencyConvertor(
+          t.amount,
+          t.currency,
+          userSettings["defaultCurrency"],
+          conversionMap
+        ).toFixed(currencyMap[t.currency]),
       }
     })
 

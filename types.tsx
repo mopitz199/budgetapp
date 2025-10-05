@@ -15,5 +15,6 @@ export type User = {
   email: string | null;
 }
 export type UserAuthenticatedContextType = {
-  userSettings: any
+  userSettings?: any,
+  currencyRatio?: any,
 }

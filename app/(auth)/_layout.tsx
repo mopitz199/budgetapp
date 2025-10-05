@@ -2,7 +2,7 @@ import { UserAuthenticatedContext } from "@/contexts/UserAuthenticatedContext";
 import { UserAuthenticatedContextType } from "@/types";
 import { errorLogger, initAuthenticatedLogs } from "@/utils";
 import { getAuth } from "@react-native-firebase/auth";
-import { doc, getDoc, getFirestore } from '@react-native-firebase/firestore';
+import { collection, doc, getDoc, getDocs, getFirestore } from '@react-native-firebase/firestore';
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
@@ -27,9 +27,7 @@ const Layout = () => {
 
       if(docSnap.exists()){
         const userSettings = docSnap.data();
-        setUserAuthenticatedContext({
-          userSettings: userSettings
-        });
+        return userSettings;        
       }else{
         errorLogger("User settings not found", "User settings document does not exist");
         Alert.alert(t("error"), t('userSettingsNotFound'));
@@ -37,12 +35,31 @@ const Layout = () => {
     }
   }
 
+  const setCurrencyRatio = async () => {
+    const db = getFirestore();
+    const collectionRef = collection(db, "currency_conversion");
+    const docSnap = await getDocs(collectionRef);
 
+    let conversionMap: Record<string, number> = {};
+
+    docSnap.forEach((doc: any) => {
+      conversionMap[`${doc.id}`] = doc.data().value;
+    });
+    return conversionMap;
+  }
+
+
+  const setAuthenticatedContext = async () => {
+    const userSettings = await setUserSettings();
+    const currencyRatio = await setCurrencyRatio();
+    setUserAuthenticatedContext({
+      userSettings: userSettings,
+      currencyRatio: currencyRatio
+    });
+  }
 
   useEffect(() => {
-    // Set global user settings
-    setUserSettings();
-    // Initialize Crashlytics with user info
+    setAuthenticatedContext();
     initAuthenticatedLogs(auth.currentUser);
   }, []);
 

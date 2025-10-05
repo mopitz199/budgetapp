@@ -1,15 +1,17 @@
 import { CustomSafeAreaView } from "@/components/customMainView";
 import { EditTransactionView } from "@/components/editTransactionModal";
-import { useUserSettingContext } from "@/contexts/UserAuthenticatedContext";
+import { useCurrencyRatioContext, useUserSettingContext } from "@/contexts/UserAuthenticatedContext";
+import { currencyConvertor } from "@/currencyUtils";
 import type { Categories, TransactionToDisplay } from "@/types";
 import { headerSettings, logger } from "@/utils";
 import { getAuth } from "@react-native-firebase/auth";
-import { doc, getDoc, getFirestore } from "@react-native-firebase/firestore";
+import { doc, getDoc, getFirestore, setDoc } from "@react-native-firebase/firestore";
 import { useNavigation } from 'expo-router';
 import { useEffect, useLayoutEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useColorScheme } from "react-native";
+import { Alert, useColorScheme } from "react-native";
 import { useTheme } from "react-native-paper";
+import uuid from 'react-native-uuid';
 
 export default function UploadManually() {
 
@@ -20,6 +22,8 @@ export default function UploadManually() {
   const auth = getAuth()
   const { colors } = useTheme() as any;
   const userSettings = useUserSettingContext();
+  const currencyRatio = useCurrencyRatioContext();
+
   logger("User settings in UploadManually", userSettings);
 
   useLayoutEffect(() => headerSettings(
@@ -55,12 +59,39 @@ export default function UploadManually() {
     setMapCategories(categories);
   }
 
+  const saveTransaction = async (transaction: TransactionToDisplay) => {
+    const user = auth.currentUser;
+
+    if(!user){
+      logger("User not authenticated in saveTransaction");
+      Alert.alert(t("error"), "User not authenticated");
+      return
+    }
+    const db = getFirestore();
+    const docRef = doc(db, "user_transactions", user.uid);
+
+    let transactionsToSave = {
+      id: uuid.v4(),
+      category: transaction.category,
+      currency: userSettings["defaultCurrency"],
+      date: transaction.date,
+      description: transaction.description,
+      amount: currencyConvertor(
+        transaction.amount,
+        transaction.currency,
+        userSettings["defaultCurrency"],
+        currencyRatio
+      ).toFixed(currencyRatio[transaction.currency]),
+    }
+    await setDoc(docRef, transactionsToSave, { merge: false });
+  }
+
   useEffect(() => {
     readCategories()
   }, []);
 
   return (
-    <CustomSafeAreaView>
+    <CustomSafeAreaView loading={false}>
       <EditTransactionView
         allowCurrencySelection={true}
         transactionToEditDefault={transactionToEdit}
@@ -68,7 +99,7 @@ export default function UploadManually() {
         mapCategories={mapCategories}
         hideBackButton={true}
         onSaveEditTransaction={(transaction: TransactionToDisplay) => {
-          console.log("Save transaction in Firestore", transaction);
+          saveTransaction(transaction);
         }}
         hideCancelButton={true}
       />

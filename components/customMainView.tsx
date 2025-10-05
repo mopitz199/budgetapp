@@ -24,6 +24,14 @@ export function CustomSafeAreaView(
       }}
     >
       <View className={`flex-1 ${className || ''}`} {...rest}>
+        {loading?
+          <View className='absolute top-0 left-0 right-0 inset-0 h-max z-10 justify-center'>
+            <View className='absolute top-0 left-0 right-0 opacity-20 bg-black inset-0 h-max z-10 justify-center' />
+            <View className="absolute top-0 left-0 right-0 inset-0 h-max z-20 justify-center">
+              <ActivityIndicator size="large" color="#FFFFFF" />
+            </View>
+          </View>
+        : null}
         {children}
       </View>
     </SafeAreaView>
