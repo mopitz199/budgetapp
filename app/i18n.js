@@ -63,6 +63,7 @@ const resources = {
       "close": "Close",
       "filter": "Filter",
       "saving": "Saving",
+      "userNotAuthenticated": "User not authenticated",
     }
   },
   es: {
@@ -123,6 +124,7 @@ const resources = {
       "close": "Cerrar",
       "filter": "Filtrar",
       "saving": "Guardando",
+      "userNotAuthenticated": "Usuario no autenticado",
     }
   }
 };

@@ -70,13 +70,11 @@ export default function UploadManually() {
       const categoriesData = categoriesSnap.data();
       categories = categoriesData as Categories;
     }
-    console.log("Categories read from Firestore", categories);
     setMapCategories(categories);
   }
 
   useEffect(() => {
     readCategories()
-    console.log("Read transactions effect");
   }, []);
 
   return (

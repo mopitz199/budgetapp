@@ -1,7 +1,8 @@
 import { CustomSafeAreaView } from '@/components/customMainView';
+import { logger } from '@/utils';
 import { Ionicons } from '@expo/vector-icons';
 import { getAuth, signOut } from '@react-native-firebase/auth';
-import { getCrashlytics, log, recordError } from '@react-native-firebase/crashlytics';
+import { getCrashlytics, recordError } from '@react-native-firebase/crashlytics';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useRouter } from "expo-router";
 import { Button, Pressable, Text, useColorScheme, View } from "react-native";
@@ -19,7 +20,7 @@ const Home = () => {
 
   const sendLog = () => {
     const crashlytics = getCrashlytics();
-    log(crashlytics, 'Updating user count.');
+    logger("Send the logs to Crashlytics");
     recordError(crashlytics, new Error('Ejemplo de pruebaaaa'));
   }
 

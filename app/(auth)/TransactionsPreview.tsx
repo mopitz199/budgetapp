@@ -3,7 +3,7 @@ import { CustomMainView } from '@/components/customMainView';
 import TransactionListEditor from '@/components/transactionList';
 import { currencyConvertor, currencyMap, formatNumberToDisplay } from '@/currencyUtils';
 import type { TransactionToDisplay } from "@/types";
-import { headerSettings } from '@/utils';
+import { errorLogger, headerSettings } from '@/utils';
 import { getAuth } from '@react-native-firebase/auth';
 import { collection, doc, getDoc, getDocs, getFirestore, setDoc } from '@react-native-firebase/firestore';
 import { router, useLocalSearchParams, useNavigation } from 'expo-router';
@@ -92,7 +92,7 @@ export default function TransactionEdition() {
       })
       setTransactions(responseTransactions);
     } else {
-      console.log("No such document!");
+      errorLogger("Read transactions error", `No document found for transactionsId: ${transactionsId}`);
     }
     setLoading(false);
   }
@@ -133,7 +133,6 @@ export default function TransactionEdition() {
   }
 
   useEffect(() => {
-    console.log("Read transactions effect");
     readTransactions()
   }, []);
 

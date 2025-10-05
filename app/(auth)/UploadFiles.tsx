@@ -1,7 +1,7 @@
 import { PrimaryButton, SecondaryButton } from '@/components/buttons';
 import { CurrencyPickerModal } from '@/components/currencyPickerModal';
 import { CustomMainView } from '@/components/customMainView';
-import { headerSettings } from '@/utils';
+import { headerSettings, logger } from '@/utils';
 import { getAuth, getIdToken } from '@react-native-firebase/auth';
 import { getDownloadURL, getStorage, putFile, ref } from '@react-native-firebase/storage';
 import { usePreventRemove } from '@react-navigation/core';
@@ -48,7 +48,7 @@ const UploadFiles = () => {
       }
       setImagesURI(aux_images_uri)
     }else{
-      console.log("picker canceled")
+      logger("Image picker canceled");
     }
     setLoading(false)
   }

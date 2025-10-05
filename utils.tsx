@@ -1,4 +1,4 @@
-import { setAttributes, setUserId } from '@react-native-firebase/crashlytics';
+import { getCrashlytics, recordError, setAttributes, setUserId } from '@react-native-firebase/crashlytics';
 import { HeaderBackButton } from "@react-navigation/elements";
 
 export function sleep(ms: number): Promise<void> {
@@ -55,4 +55,14 @@ export function initAuthenticatedLogs(user: any, crashlytics: any) {
     uuid: user.uid.toString(),
   });
   return crashlytics;
+}
+
+export function logger(msg: string){
+  getCrashlytics().log(msg);
+  console.log(msg);
+}
+
+export function errorLogger(msg: string, error?: string){
+  getCrashlytics().log(msg);
+  recordError(getCrashlytics(), new Error(error));
 }

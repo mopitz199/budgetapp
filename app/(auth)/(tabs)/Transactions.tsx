@@ -65,7 +65,6 @@ export default function Transactions() {
           setPickerFilteredDate(date);
         }}
         onClose={() => {
-          console.log("Closing date picker", filteredDate)
           setShowDatePicker(false)
           setPickerFilteredDate(filteredDate);
         }}
@@ -113,7 +112,6 @@ export default function Transactions() {
   }
 
   useEffect(() => {
-    console.log("Read transactions effect");
     readTransactions()
   }, [filteredDate]);
 

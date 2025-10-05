@@ -26,6 +26,7 @@ import { TextInput } from 'react-native-paper';
 import { GoogleButton, PrimaryButton } from '@/components/buttons';
 import { CustomMainView } from '@/components/customMainView';
 import { Input } from '@/components/inputs';
+import { errorLogger, logger } from '@/utils';
 
 export default function Index() {
 
@@ -48,18 +49,16 @@ export default function Index() {
       await GoogleSignin.hasPlayServices();
       const response: any = await GoogleSignin.signIn();
       if (isSuccessResponse(response)) {
-        console.log("user", response.data);
         const googleCredential = GoogleAuthProvider.credential(
           response.data.idToken,
         );
-        console.log("google credential", googleCredential);
         await auth.signInWithCredential(googleCredential);
       } else {
-        console.log('Sign in cancelled by the user');
+        logger("User has cancelled the Google Sign-In");
       }
     } catch (error) {
       if (isErrorWithCode(error)) {
-        console.log('Error code:', error);
+        logger(`Google Sign-In error code: ${error.code}`);
         switch (error.code) {
           case statusCodes.IN_PROGRESS:
             Alert.alert('Information', 'Sign in already in progress', [{text: 'OK'}]);
@@ -92,7 +91,7 @@ export default function Index() {
       await signInWithEmailAndPassword(auth, email, password);
     } catch (e: any) {
       const err = e as FirebaseError;
-      console.log("sign in error", err);
+      errorLogger("sign in error", err.message);
       Alert.alert('Error', t('wrongEmailOrPassword'), [{text: 'OK'}]);
     } finally {
       setLoading(false);

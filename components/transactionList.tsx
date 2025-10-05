@@ -119,7 +119,6 @@ export default function TransactionListEditor({
 
   useEffect(() => {
     readCategories()
-    console.log("Read transactions effect");
   }, []);
 
   useEffect(() => {

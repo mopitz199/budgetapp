@@ -1,5 +1,5 @@
 import { UserAuthenticatedContext } from "@/contexts/UserAuthenticatedContext";
-import { initAuthenticatedLogs } from "@/utils";
+import { errorLogger, initAuthenticatedLogs } from "@/utils";
 import { getAuth } from "@react-native-firebase/auth";
 import { getCrashlytics } from "@react-native-firebase/crashlytics";
 import { doc, getDoc, getFirestore } from '@react-native-firebase/firestore';
@@ -19,7 +19,8 @@ const Layout = () => {
     const user = auth.currentUser;
 
     if(!user){
-      Alert.alert(t("error"), "User not authenticated");
+      errorLogger("User not authenticated", "User is not logged in");
+      Alert.alert(t("error"), t('userNotAuthenticated'));
       return
     }
 
@@ -29,10 +30,10 @@ const Layout = () => {
 
     if(docSnap.exists()){
       const userSettings = docSnap.data();
-      console.log(userSettings)
       return userSettings;
     }else{
-      Alert.alert(t("error"), "User settings not foundd");
+      errorLogger("User settings not found", "User settings document does not exist");
+      Alert.alert(t("error"), t('userSettingsNotFound'));
       return
     }
   }
