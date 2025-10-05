@@ -10,3 +10,7 @@ export type TransactionToDisplay = {
   currency: string;
 };
 export type Categories = Record<string, { value: string; color: string }>;
+export type User = {
+  uid: string;
+  email: string | null;
+}

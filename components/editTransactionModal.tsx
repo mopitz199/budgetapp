@@ -6,7 +6,7 @@ import { Input } from '@/components/inputs';
 import IOSDatePicker from '@/components/iosDatePicker';
 import { cleanNumber, formatNumberToDisplay } from '@/currencyUtils';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Keyboard, Platform, Pressable, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import { TextInput } from 'react-native-paper';
@@ -22,7 +22,8 @@ export function EditTransactionView(
     colors, // Colors from the theme
     mapCategories, // Map of categories
     onSaveEditTransaction, // Function to execute when saving the edited transaction
-    onCancelEditTransaction // Function to execute when cancelling the edit transaction
+    onCancelEditTransaction, // Function to execute when cancelling the edit transaction
+    hideCancelButton = false, // if we want to hide the cancel button
   }: any
 ) {
 
@@ -45,7 +46,7 @@ export function EditTransactionView(
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [transactionToEdit, setTransactionToEdit] = useState<TransactionToDisplay>(transactionToEditDefault);
   const [showCurrencyModal, setShowCurrencyModal] = useState(false);
-  const [categories, setCategories] = useState(buildCategories());
+  const [categories, setCategories] = useState<any[]>([]);
 
   const iosPicker = () => {
     if (Platform.OS == 'ios' && showDatePicker) {
@@ -83,6 +84,10 @@ export function EditTransactionView(
       day: "numeric",
     });
   }
+
+  useEffect(() => {
+    setCategories(buildCategories())
+  }, [mapCategories]);
 
   return (
     <TouchableWithoutFeedback onPress={() => {
@@ -206,7 +211,10 @@ export function EditTransactionView(
               />
             </View>
           </View>
-          <SecondaryButton className='mt-4' onPress={() => onCancelEditTransaction(transactionToEdit)} text={t("cancel")} />
+          {
+            !hideCancelButton &&
+            <SecondaryButton className='mt-4' onPress={() => onCancelEditTransaction(transactionToEdit)} text={t("cancel")} />
+          }
           <PrimaryButton className='mt-4' onPress={() => onSaveEditTransaction(
             {
               ...transactionToEdit,

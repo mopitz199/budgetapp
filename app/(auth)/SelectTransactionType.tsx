@@ -38,6 +38,7 @@ const SelectTransactionType = () => {
               items-center
               shadow-sm
               '
+              onPress={() => router.push('/(auth)/UploadManually')}
             >
               <Ionicons name="hand-right-outline" size={30} color="#0057FF" />
             </Pressable>
