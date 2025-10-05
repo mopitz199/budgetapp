@@ -1,7 +1,7 @@
 import { PrimaryButton, SecondaryButton } from '@/components/buttons';
 import { CustomMainView } from '@/components/customMainView';
 import { headerSettings } from '@/utils';
-import { getAuth } from '@react-native-firebase/auth';
+import { getAuth, signOut } from '@react-native-firebase/auth';
 import { useNavigation, useRouter } from "expo-router";
 import { useLayoutEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -35,8 +35,8 @@ export default function EmailVerification() {
     alert(t("emailSent"))
   }
 
-  const signOut = () => {
-    auth.signOut()
+  const onSignOut = () => {
+    signOut(auth)
   }
 
   const retry = async () => {
@@ -68,7 +68,7 @@ export default function EmailVerification() {
         <PrimaryButton text={t("resendEmail")} className='mt-4' onPress={resend} />
         <SecondaryButton onPress={retry} className='mt-4' text={t("verifyAgain")} />
         <View className='items-center mt-4'>
-          <Pressable className="active:opacity-20" onPress={signOut}>
+          <Pressable className="active:opacity-20" onPress={onSignOut}>
             <Text className=" text-linkTextOverLight dark:text-darkMode-onSurface">{t("signOut")}</Text>
           </Pressable>
         </View>

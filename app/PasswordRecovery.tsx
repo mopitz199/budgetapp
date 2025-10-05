@@ -2,7 +2,7 @@ import { PrimaryButton } from '@/components/buttons';
 import { CustomMainView } from '@/components/customMainView';
 import { Input } from '@/components/inputs';
 import { headerSettings } from '@/utils';
-import { getAuth } from '@react-native-firebase/auth';
+import { getAuth, sendPasswordResetEmail } from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 import React, { useLayoutEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
@@ -27,7 +27,7 @@ export default function Index() {
   const recoverPassword = async () => {
     setLoading(true)
     try {
-      await auth.sendPasswordResetEmail(email);
+      await sendPasswordResetEmail(auth, email);
       Alert.alert(t("checkYourEmail"), t("emailSentForPasswordRecovery"));
     } catch (error: any) {
       Alert.alert('Error', error.message);

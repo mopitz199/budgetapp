@@ -2,7 +2,7 @@ import { PrimaryButton } from '@/components/buttons';
 import { CustomMainView } from '@/components/customMainView';
 import { Input } from '@/components/inputs';
 import { headerSettings } from '@/utils';
-import { getAuth } from '@react-native-firebase/auth';
+import { createUserWithEmailAndPassword, getAuth } from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 import { FirebaseError } from 'firebase/app';
 import React, { useLayoutEffect, useState } from "react";
@@ -76,7 +76,7 @@ export default function CreateAccount() {
 
   const createAccount = async () => {
     try {
-      const {user} = await auth.createUserWithEmailAndPassword(email, password);
+      const {user} = await createUserWithEmailAndPassword(auth, email, password);
       user.sendEmailVerification();
     } catch (e: any) {
       const err = e as FirebaseError;

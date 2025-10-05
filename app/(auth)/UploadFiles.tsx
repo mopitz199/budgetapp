@@ -2,8 +2,8 @@ import { PrimaryButton, SecondaryButton } from '@/components/buttons';
 import { CurrencyPickerModal } from '@/components/currencyPickerModal';
 import { CustomMainView } from '@/components/customMainView';
 import { headerSettings } from '@/utils';
-import { getAuth } from '@react-native-firebase/auth';
-import { getStorage } from '@react-native-firebase/storage';
+import { getAuth, getIdToken } from '@react-native-firebase/auth';
+import { getDownloadURL, getStorage, putFile, ref } from '@react-native-firebase/storage';
 import { usePreventRemove } from '@react-navigation/core';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation, useRouter } from "expo-router";
@@ -54,7 +54,7 @@ const UploadFiles = () => {
   }
   
   const readImages = async (token: string, images_urls: string[]) => {
-    const response = await fetch('http://192.168.1.84:8080/analyze-bank-transactions', {
+    const response = await fetch('http://192.168.1.88:8080/analyze-bank-transactions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`, // 👈 Enviar token como Bearer
@@ -79,14 +79,14 @@ const UploadFiles = () => {
       for (const uri of images_uri) {
         const path = `/statements/${user?.uid}/${uuid.v4()}`
         const storage = getStorage()
-        const reference = storage.ref(path);
-        await reference?.putFile(uri);
-        const url = await reference?.getDownloadURL();
+        const reference = ref(storage, path)
+        await putFile(reference, uri);
+        const url = await getDownloadURL(reference);
         images_urls.push(url)
       }
 
       try {
-        const token = await user.getIdToken();
+        const token = await getIdToken(user);
         const response = await readImages(token, images_urls)
         if(response.ok){
           const data = await response.json();

@@ -1,5 +1,5 @@
 // import auth from '@react-native-firebase/auth';
-import { getAuth, GoogleAuthProvider } from '@react-native-firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithEmailAndPassword } from '@react-native-firebase/auth';
 import {
   GoogleSignin,
   isErrorWithCode,
@@ -89,7 +89,7 @@ export default function Index() {
   const signIn = async () => {
     setLoading(true);
     try {
-      await auth.signInWithEmailAndPassword(email, password);
+      await signInWithEmailAndPassword(auth, email, password);
     } catch (e: any) {
       const err = e as FirebaseError;
       console.log("sign in error", err);

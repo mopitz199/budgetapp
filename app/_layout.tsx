@@ -1,4 +1,4 @@
-import { FirebaseAuthTypes, getAuth } from '@react-native-firebase/auth';
+import { FirebaseAuthTypes, getAuth, onAuthStateChanged } from '@react-native-firebase/auth';
 import { useFonts } from 'expo-font';
 import { Stack, useRouter, useSegments } from "expo-router";
 import { useEffect, useState } from "react";
@@ -79,15 +79,14 @@ export default function RootLayout() {
   const router = useRouter();
   const segments = useSegments();
 
-  const onAuthStateChanged = (user: FirebaseAuthTypes.User | null) => {
-    console.log('onAuthStateChanged', user);
+  const onAuthStateChange = (user: FirebaseAuthTypes.User | null) => {
     setUser(user);
     if (initializing) setInitializing(false);
   }
 
   useEffect(() => {
     const auth = getAuth()
-    const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
+    const subscriber = onAuthStateChanged(auth, (user) => {onAuthStateChange(user)});
     return subscriber
   }, [])
 
