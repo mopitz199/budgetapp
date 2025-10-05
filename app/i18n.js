@@ -64,6 +64,7 @@ const resources = {
       "filter": "Filter",
       "saving": "Saving",
       "userNotAuthenticated": "User not authenticated",
+      "userSettingsNotFound": "User settings not found",
     }
   },
   es: {
@@ -125,6 +126,7 @@ const resources = {
       "filter": "Filtrar",
       "saving": "Guardando",
       "userNotAuthenticated": "Usuario no autenticado",
+      "userSettingsNotFound": "Configuraciones de usuario no encontradas",
     }
   }
 };
