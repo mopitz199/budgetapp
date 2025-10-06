@@ -20,3 +20,12 @@ export function useCurrencyRatioContext(){
   }
   return currencyRatio;
 }
+
+export function useTransactionCategoriesContext(){
+  const userAuthenticatedContext = useContext(UserAuthenticatedContext)
+  const transactionCategories = userAuthenticatedContext?.transactionCategories
+  if(transactionCategories === null || transactionCategories === undefined){
+    throw new Error("useTransactionCategoriesContext must be used within a UserAuthenticatedContext.Provider with a valid value.");
+  }
+  return transactionCategories;
+}

@@ -1,5 +1,5 @@
 import { UserAuthenticatedContext } from "@/contexts/UserAuthenticatedContext";
-import { UserAuthenticatedContextType } from "@/types";
+import { Categories, UserAuthenticatedContextType } from "@/types";
 import { errorLogger, initAuthenticatedLogs } from "@/utils";
 import { getAuth } from "@react-native-firebase/auth";
 import { collection, doc, getDoc, getDocs, getFirestore } from '@react-native-firebase/firestore';
@@ -48,13 +48,26 @@ const Layout = () => {
     return conversionMap;
   }
 
+  const setCategories = async () => {
+    const db = getFirestore();
+    let categories: Categories = {};
+    const categoriesRef = doc(db, "categories", "cP2dsMNnTfqK8EeG9Ai6");
+    const categoriesSnap = await getDoc(categoriesRef);
+    if(categoriesSnap.exists()){
+      const categoriesData = categoriesSnap.data();
+      categories = categoriesData as Categories;
+    }
+    return categories;
+  }
 
   const setAuthenticatedContext = async () => {
     const userSettings = await setUserSettings();
     const currencyRatio = await setCurrencyRatio();
+    const transactionCategories = await setCategories();
     setUserAuthenticatedContext({
       userSettings: userSettings,
-      currencyRatio: currencyRatio
+      currencyRatio: currencyRatio,
+      transactionCategories: transactionCategories,
     });
   }
 

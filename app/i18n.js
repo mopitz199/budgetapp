@@ -65,6 +65,8 @@ const resources = {
       "saving": "Saving",
       "userNotAuthenticated": "User not authenticated",
       "userSettingsNotFound": "User settings not found",
+      "newTransaction": "New Transaction",
+      "transaction": "Transaction",
     }
   },
   es: {
@@ -127,6 +129,8 @@ const resources = {
       "saving": "Guardando",
       "userNotAuthenticated": "Usuario no autenticado",
       "userSettingsNotFound": "Configuraciones de usuario no encontradas",
+      "newTransaction": "Nueva Transacción",
+      "transaction": "Transacción",
     }
   }
 };

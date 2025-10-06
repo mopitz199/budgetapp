@@ -1,7 +1,6 @@
 import { EditTransactionView } from '@/components/editTransactionModal';
 import { formatNegative } from '@/utils';
 import { Ionicons } from '@expo/vector-icons';
-import { doc, getDoc, getFirestore } from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useLayoutEffect, useState } from 'react';
@@ -9,7 +8,8 @@ import { useTranslation } from 'react-i18next';
 import { BackHandler, Pressable, ScrollView, Text, useColorScheme, View } from 'react-native';
 import { Snackbar, Tooltip, useTheme } from 'react-native-paper';
 
-import type { Categories, TransactionToDisplay } from "@/types";
+import { useTransactionCategoriesContext } from '@/contexts/UserAuthenticatedContext';
+import type { TransactionToDisplay } from "@/types";
 
 type Props = {
   transactions: TransactionToDisplay[];
@@ -30,7 +30,9 @@ export default function TransactionListEditor({
   const { colors } = useTheme() as any;
 
   const navigation = useNavigation();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
+  const transactionCategories = useTransactionCategoriesContext();
+
   let { transactionsId, selectedCurrency } = useLocalSearchParams();
   transactionsId = transactionsId as string;
   selectedCurrency = selectedCurrency as string;
@@ -38,27 +40,11 @@ export default function TransactionListEditor({
   // States to handle the undo snackbar when removing a transaction
   const [snackBarVisible, setSnackBarVisible] = useState(false);
   const [lastIndexElementRemoved, setIndexLastElementRemoved] = useState<number | null>(null);
-
   const [transactionToEdit, setTransactionToEdit] = useState<TransactionToDisplay>(null as any);
-  
   const [modalOpened, setModalOpened] = useState<boolean>(false);
 
-  const [mapCategories, setMapCategories] = useState<Categories>({});
-
   const getCategoryInfo = (key: string) => {
-    return mapCategories[key as keyof typeof mapCategories];
-  }
-
-  const readCategories = async () => {
-    const db = getFirestore();
-    let categories: Categories = {};
-    const categoriesRef = doc(db, "categories", "cP2dsMNnTfqK8EeG9Ai6");
-    const categoriesSnap = await getDoc(categoriesRef);
-    if(categoriesSnap.exists()){
-      const categoriesData = categoriesSnap.data();
-      categories = categoriesData as Categories;
-    }
-    setMapCategories(categories);
+    return transactionCategories[key];
   }
 
   useLayoutEffect(() => {
@@ -116,10 +102,6 @@ export default function TransactionListEditor({
     }, {});
     return groupedTransactions;
   }
-
-  useEffect(() => {
-    readCategories()
-  }, []);
 
   useEffect(() => {
     if(!modalOpened) return;
@@ -238,7 +220,7 @@ export default function TransactionListEditor({
         allowCurrencySelection={allowCurrencySelection}
         transactionToEditDefault={transactionToEdit}
         colors={colors}
-        mapCategories={mapCategories}
+        mapCategories={transactionCategories}
         hideBackButton={true}
         onSaveEditTransaction={(transaction: TransactionToDisplay) => {
           transactions[transaction.index] = transaction;

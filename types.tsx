@@ -17,4 +17,5 @@ export type User = {
 export type UserAuthenticatedContextType = {
   userSettings?: any,
   currencyRatio?: any,
+  transactionCategories?: Categories,
 }
