@@ -1,7 +1,6 @@
 
 import { PrimaryButton, SecondaryButton } from '@/components/buttons';
 import CustomDropDownPicker from '@/components/customDropDown';
-import { CustomSafeAreaView } from '@/components/customMainView';
 import { Input } from '@/components/inputs';
 import IOSDatePicker from '@/components/iosDatePicker';
 import { cleanNumber, formatNumberToDisplay } from '@/currencyUtils';
@@ -17,7 +16,6 @@ import type { TransactionToDisplay } from "@/types";
 export function EditTransactionView(
   {
     allowCurrencySelection,
-    hideBackButton, // if we want to hide the back button in the header
     transactionToEditDefault, // Transaction to edit, if null, we are creating a new transaction
     colors, // Colors from the theme
     mapCategories, // Map of categories
@@ -95,9 +93,8 @@ export function EditTransactionView(
       setOpenCategoryPicker(false);
       setShowDatePicker(false);
     }}>
-      <CustomSafeAreaView
-        className='px-4 pt-4'
-        screenWithHeader={hideBackButton}
+      <View
+        className='px-4 pt-4 flex-1'
       >
         {iosPicker()}
 
@@ -222,7 +219,7 @@ export function EditTransactionView(
             }
           )} text={t("save")} />
         </View>
-      </CustomSafeAreaView>
+      </View>
     </TouchableWithoutFeedback>
   );
 }

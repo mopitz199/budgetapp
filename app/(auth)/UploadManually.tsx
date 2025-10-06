@@ -1,4 +1,4 @@
-import { CustomSafeAreaView } from "@/components/customMainView";
+import { CustomMainView } from "@/components/customMainView";
 import { EditTransactionView } from "@/components/editTransactionModal";
 import { useCurrencyRatioContext, useTransactionCategoriesContext, useUserSettingContext } from "@/contexts/UserAuthenticatedContext";
 import { currencyConvertor } from "@/currencyUtils";
@@ -77,19 +77,18 @@ export default function UploadManually() {
   }
 
   return (
-    <CustomSafeAreaView loading={false}>
+    <CustomMainView loading={false}>
       <EditTransactionView
         allowCurrencySelection={true}
         transactionToEditDefault={transactionToEdit}
         colors={colors}
         mapCategories={transactionCategories as Categories}
-        hideBackButton={true}
         onSaveEditTransaction={(transaction: TransactionToDisplay) => {
           saveTransaction(transaction);
           router.replace('/(auth)/(tabs)/Home');
         }}
         hideCancelButton={true}
       />
-    </CustomSafeAreaView>
+    </CustomMainView>
   );
 }

@@ -18,7 +18,7 @@ export function CustomSafeAreaView(
 ) {
   return (
     <SafeAreaView
-      className="bg-background dark:bg-darkMode-background flex-1"
+      className="bg-background dark:bg-darkMode-background flex-1 border-2"
       style={{
         paddingTop: Platform.OS === 'android' && screenWithHeader ? StatusBar.currentHeight : 0,
       }}

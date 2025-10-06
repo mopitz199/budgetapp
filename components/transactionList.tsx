@@ -221,7 +221,6 @@ export default function TransactionListEditor({
         transactionToEditDefault={transactionToEdit}
         colors={colors}
         mapCategories={transactionCategories}
-        hideBackButton={true}
         onSaveEditTransaction={(transaction: TransactionToDisplay) => {
           transactions[transaction.index] = transaction;
           setTransactions(transactions)
