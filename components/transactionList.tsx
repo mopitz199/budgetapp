@@ -224,9 +224,6 @@ export default function TransactionListEditor({
         colors={colors}
         mapCategories={transactionCategories}
         onSaveEditTransaction={(transaction: TransactionToDisplay) => {
-          console.log("Transactions", transactions);
-          console.log("Transactions length", transactions.length);
-          console.log("Transaction to save", transaction);
           transactions[transaction.index] = transaction;
           setTransactions(transactions)
           setModalOpened(false);
