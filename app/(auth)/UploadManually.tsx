@@ -1,7 +1,7 @@
 import { CustomMainView } from "@/components/customMainView";
 import { EditTransactionView } from "@/components/editTransactionModal";
 import { useCurrencyRatioContext, useTransactionCategoriesContext, useUserSettingContext } from "@/contexts/UserAuthenticatedContext";
-import { currencyConvertor } from "@/currencyUtils";
+import { currencyConvertor, currencyMap } from "@/currencyUtils";
 import type { Categories, TransactionToDisplay } from "@/types";
 import { headerSettings, logger } from "@/utils";
 import { getAuth } from "@react-native-firebase/auth";
@@ -55,11 +55,11 @@ export default function UploadManually() {
     }
     const db = getFirestore();
     const docRef = doc(db, "user_transactions", user.uid);
-    let id = uuid.v4()
+    let uuidValue = uuid.v4()
 
     let transactionToSave = {} as Record<string, any>;
-    transactionToSave[id] = {
-      id: id,
+    transactionToSave[uuidValue] = {
+      id: uuidValue,
       category: transaction.category,
       currency: userSettings["defaultCurrency"],
       date: transaction.date,
@@ -69,7 +69,7 @@ export default function UploadManually() {
         transaction.currency,
         userSettings["defaultCurrency"],
         currencyRatio
-      ).toFixed(currencyRatio[transaction.currency]),
+      ).toFixed(currencyMap[transaction.currency].numberDecimals),
     }
     await setDoc(docRef, transactionToSave, { merge: false });
   }

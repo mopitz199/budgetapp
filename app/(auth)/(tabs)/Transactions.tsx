@@ -93,6 +93,7 @@ export default function Transactions() {
           const transaction = jsonOutput[transactionUUID];
           if(compareYearMonth(transaction.date.toDate(), filteredDate) == 0){
             transactions.push({
+              uuid: transactionUUID,
               amount: transaction.amount,
               description: transaction.description,
               date: transaction.date.toDate(),
@@ -109,6 +110,10 @@ export default function Transactions() {
       }
       setTransactions(transactions);
     }
+  }
+
+  const saveEditedTransaction = (editedTransaction: TransactionToDisplay) => {
+
   }
 
   useEffect(() => {
@@ -158,7 +163,7 @@ export default function Transactions() {
       {iosPicker()}
       <TransactionListEditor
         transactions={transactions}
-        onSaveEditTransaction={(editedTransaction: any) => {console.log("Edited transaction", editedTransaction)}}
+        onSaveEditTransaction={(editedTransaction) => saveEditedTransaction(editedTransaction)}
         setTransactions={setTransactions}
         floatButton={null}
         allowCurrencySelection={false}

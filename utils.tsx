@@ -1,6 +1,7 @@
-import { currencyMap } from "@/currencyUtils";
+import { currencyConvertor, currencyMap } from "@/currencyUtils";
 import { getCrashlytics, setAttributes, setUserId } from '@react-native-firebase/crashlytics';
 import { HeaderBackButton } from "@react-navigation/elements";
+import { TransactionToDisplay } from "./types";
 
 export function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -73,4 +74,24 @@ export function logger(msg: string, value?: any){
 export function errorLogger(msg: string, error?: string){
   /*getCrashlytics().log(msg);
   recordError(getCrashlytics(), new Error(error));*/
+}
+
+export function transformDisplayedTransactionToSavedTransaction(
+  transaction: TransactionToDisplay,
+  userSettings: any,
+  currencyRatio: Record<string, number>
+) {
+  return {
+    id: transaction.uuid,
+    category: transaction.category,
+    currency: userSettings["defaultCurrency"],
+    date: transaction.date,
+    description: transaction.description,
+    amount: currencyConvertor(
+      transaction.amount,
+      transaction.currency,
+      userSettings["defaultCurrency"],
+      currencyRatio
+    ),
+  }
 }

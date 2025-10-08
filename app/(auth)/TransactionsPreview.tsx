@@ -121,7 +121,7 @@ export default function TransactionEdition() {
           t.currency,
           userSettings["defaultCurrency"],
           conversionMap
-        ).toFixed(currencyMap[t.currency]),
+        ).toFixed(currencyMap[t.currency].numberDecimals),
       }
     })
 
