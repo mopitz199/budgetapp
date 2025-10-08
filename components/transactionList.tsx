@@ -152,7 +152,6 @@ export default function TransactionListEditor({
                         </Text>
                       </Tooltip>
                       <View className='items-start'>
-                        <Text>{transaction.index}</Text>
                         <Text
                           style={{
                             backgroundColor: getCategoryInfo(transaction.category).color
