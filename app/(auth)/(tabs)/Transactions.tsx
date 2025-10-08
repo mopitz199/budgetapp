@@ -1,12 +1,13 @@
 import { CustomMainView } from "@/components/customMainView";
 import IOSDatePicker from "@/components/iosDatePicker";
 import TransactionListEditor from "@/components/transactionList";
+import { useCurrencyRatioContext, useUserSettingContext } from "@/contexts/UserAuthenticatedContext";
 import { formatNumberToDisplay } from "@/currencyUtils";
 import { TransactionToDisplay } from "@/types";
-import { compareYearMonth, headerSettings } from "@/utils";
+import { compareYearMonth, headerSettings, transformDisplayedTransactionToSavedTransaction } from "@/utils";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import { getAuth } from '@react-native-firebase/auth';
-import { doc, getDoc, getFirestore } from "@react-native-firebase/firestore";
+import { doc, getDoc, getFirestore, setDoc } from "@react-native-firebase/firestore";
 import { useNavigation } from "expo-router";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -24,6 +25,8 @@ export default function Transactions() {
   const { t, i18n } = useTranslation();
   const navigation = useNavigation();
   const colorScheme = useColorScheme();
+  const userSettings = useUserSettingContext();
+  const currencyRatio = useCurrencyRatioContext();
   const { colors } = useTheme() as any;
 
   const getCurrentMonth = () => {
@@ -112,8 +115,18 @@ export default function Transactions() {
     }
   }
 
-  const saveEditedTransaction = (editedTransaction: TransactionToDisplay) => {
-
+  const saveEditedTransaction = async (editedTransaction: TransactionToDisplay) => {
+    const db = getFirestore();
+    const user = auth.currentUser;
+    const docRef = doc(db, "user_transactions", user?.uid || "");
+    
+    const transactionToSave = transformDisplayedTransactionToSavedTransaction(
+      editedTransaction,
+      editedTransaction.currency,
+      currencyRatio
+    )
+    await setDoc(docRef, transactionToSave, { merge: false });
+    console.log("Transaction saved", transactionToSave);
   }
 
   useEffect(() => {

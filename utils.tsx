@@ -78,20 +78,22 @@ export function errorLogger(msg: string, error?: string){
 
 export function transformDisplayedTransactionToSavedTransaction(
   transaction: TransactionToDisplay,
-  userSettings: any,
+  finalCurrency: string,
   currencyRatio: Record<string, number>
 ) {
-  return {
+  let transactionToSave = {} as Record<string, any>;
+  transactionToSave[transaction.uuid] = {
     id: transaction.uuid,
     category: transaction.category,
-    currency: userSettings["defaultCurrency"],
+    currency: finalCurrency,
     date: transaction.date,
     description: transaction.description,
     amount: currencyConvertor(
       transaction.amount,
       transaction.currency,
-      userSettings["defaultCurrency"],
+      finalCurrency,
       currencyRatio
-    ),
+    ).toFixed(currencyMap[finalCurrency].numberDecimals),
   }
+  return transactionToSave;
 }

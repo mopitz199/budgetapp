@@ -1,9 +1,9 @@
 import { PrimaryButton } from '@/components/buttons';
 import { CustomMainView } from '@/components/customMainView';
 import TransactionListEditor from '@/components/transactionList';
-import { currencyConvertor, currencyMap, formatNumberToDisplay } from '@/currencyUtils';
+import { formatNumberToDisplay } from '@/currencyUtils';
 import type { TransactionToDisplay } from "@/types";
-import { errorLogger, headerSettings } from '@/utils';
+import { errorLogger, headerSettings, transformDisplayedTransactionToSavedTransaction } from '@/utils';
 import { getAuth } from '@react-native-firebase/auth';
 import { collection, doc, getDoc, getDocs, getFirestore, setDoc } from '@react-native-firebase/firestore';
 import { router, useLocalSearchParams, useNavigation } from 'expo-router';
@@ -79,6 +79,7 @@ export default function TransactionEdition() {
       const jsonOutput = docSnap.data()?.json_output;
       let responseTransactions = jsonOutput.transactions.map((transaction: any, index: number) => {
         return {
+          uuid: uuid.v4(),
           description: transaction.description,
           date: new Date(transaction.date),
           negative: transaction.amount < 0,
@@ -99,7 +100,7 @@ export default function TransactionEdition() {
 
   const saveTransactions = async () => {
     setLoading(true);
-    const conversionMap = await getCurrencyConvertorValues();
+    const currencyRatio = await getCurrencyConvertorValues();
     const userSettings = await getUserSettings();
     if(!userSettings) return;
 
@@ -109,20 +110,10 @@ export default function TransactionEdition() {
     const transactionsToSave = {} as Record<string, any>;
     
     transactions.filter(t => !t.removed).forEach(t => {
-      let id = uuid.v4()
-      transactionsToSave[id] = {
-        id: id,
-        category: t.category,
-        currency: userSettings["defaultCurrency"],
-        date: t.date,
-        description: t.description,
-        amount: currencyConvertor(
-          t.amount,
-          t.currency,
-          userSettings["defaultCurrency"],
-          conversionMap
-        ).toFixed(currencyMap[userSettings["defaultCurrency"]].numberDecimals),
-      }
+      const transactionToSave = transformDisplayedTransactionToSavedTransaction(
+        t, userSettings["defaultCurrency"], currencyRatio
+      )[t.uuid];
+      transactionsToSave[t.uuid] = transactionToSave;
     })
 
 

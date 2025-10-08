@@ -1,5 +1,5 @@
 export type TransactionToDisplay = {
-  uuid?: string;
+  uuid: string;
   index: number;
   date: Date;
   description: string;

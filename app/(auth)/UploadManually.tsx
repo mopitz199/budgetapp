@@ -1,9 +1,8 @@
 import { CustomMainView } from "@/components/customMainView";
 import { EditTransactionView } from "@/components/editTransactionModal";
 import { useCurrencyRatioContext, useTransactionCategoriesContext, useUserSettingContext } from "@/contexts/UserAuthenticatedContext";
-import { currencyConvertor, currencyMap } from "@/currencyUtils";
 import type { Categories, TransactionToDisplay } from "@/types";
-import { headerSettings, logger } from "@/utils";
+import { headerSettings, logger, transformDisplayedTransactionToSavedTransaction } from "@/utils";
 import { getAuth } from "@react-native-firebase/auth";
 import { doc, getFirestore, setDoc } from "@react-native-firebase/firestore";
 import { router, useNavigation } from 'expo-router';
@@ -34,6 +33,7 @@ export default function UploadManually() {
   );
 
   const [transactionToEdit, setTransactionToEdit] = useState<TransactionToDisplay>({
+    uuid: uuid.v4() as string,
     index: 0,
     date: new Date(),
     description: '',
@@ -55,22 +55,13 @@ export default function UploadManually() {
     }
     const db = getFirestore();
     const docRef = doc(db, "user_transactions", user.uid);
-    let uuidValue = uuid.v4()
 
-    let transactionToSave = {} as Record<string, any>;
-    transactionToSave[uuidValue] = {
-      id: uuidValue,
-      category: transaction.category,
-      currency: userSettings["defaultCurrency"],
-      date: transaction.date,
-      description: transaction.description,
-      amount: currencyConvertor(
-        transaction.amount,
-        transaction.currency,
-        userSettings["defaultCurrency"],
-        currencyRatio
-      ).toFixed(currencyMap[userSettings["defaultCurrency"]].numberDecimals),
-    }
+
+    const transactionToSave = transformDisplayedTransactionToSavedTransaction(
+      transaction,
+      userSettings["defaultCurrency"],
+      currencyRatio
+    )
     await setDoc(docRef, transactionToSave, { merge: false });
   }
 
