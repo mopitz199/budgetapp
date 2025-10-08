@@ -13,6 +13,7 @@ import type { TransactionToDisplay } from "@/types";
 
 type Props = {
   transactions: TransactionToDisplay[];
+  onSaveEditTransaction?: (transaction: TransactionToDisplay) => void;
   setTransactions: (transactions: TransactionToDisplay[]) => void;
   floatButton: any;
   allowCurrencySelection?: boolean;
@@ -20,6 +21,7 @@ type Props = {
 
 export default function TransactionListEditor({
   transactions,
+  onSaveEditTransaction,
   setTransactions,
   floatButton,
   allowCurrencySelection = true
@@ -216,7 +218,6 @@ export default function TransactionListEditor({
   }
 
   const editTransactionModal = () => {
-    console.log("Transactions", transactions);
     return (
       <EditTransactionView
         allowCurrencySelection={allowCurrencySelection}
@@ -226,6 +227,7 @@ export default function TransactionListEditor({
         onSaveEditTransaction={(transaction: TransactionToDisplay) => {
           transactions[transaction.index] = transaction;
           setTransactions(transactions)
+          onSaveEditTransaction?.(transaction)
           setModalOpened(false);
         }}
         onCancelEditTransaction={() => {

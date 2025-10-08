@@ -107,7 +107,6 @@ export default function Transactions() {
           }
         }      
       }
-      console.log("Transactions", transactions);
       setTransactions(transactions);
     }
   }
@@ -159,6 +158,7 @@ export default function Transactions() {
       {iosPicker()}
       <TransactionListEditor
         transactions={transactions}
+        onSaveEditTransaction={(editedTransaction: any) => {console.log("Edited transaction", editedTransaction)}}
         setTransactions={setTransactions}
         floatButton={null}
         allowCurrencySelection={false}
