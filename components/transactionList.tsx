@@ -82,12 +82,12 @@ export default function TransactionListEditor({
   }
 
   const getUniqueSortedDates = () => {
-      let notRemovedTransactions = getTransactions()
-      .map(t => t.date.toDateString())
-      .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
+    let notRemovedTransactions = getTransactions()
+    .map(t => t.date.toDateString())
+    .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
 
-      let uniqueSortedDates = notRemovedTransactions.filter((s, i) => notRemovedTransactions.indexOf(s) === i);
-      return uniqueSortedDates
+    let uniqueSortedDates = notRemovedTransactions.filter((s, i) => notRemovedTransactions.indexOf(s) === i);
+    return uniqueSortedDates
   }
 
   const getGroupedTransactions = () => {
@@ -141,7 +141,7 @@ export default function TransactionListEditor({
                     key={transaction.index}
                   >
                     <View className='flex-1 grow-[2] justify-between mt-4 mb-4 ml-4'>
-                      <Tooltip title={transaction.description}>
+                      <Tooltip title={transaction.description}>                        
                         <Text
                           className='text-lg pt-1 font-light leading-5 mb-4 text-onSurface dark:text-darkMode-onSurface'
                           numberOfLines={1}
@@ -150,6 +150,7 @@ export default function TransactionListEditor({
                         </Text>
                       </Tooltip>
                       <View className='items-start'>
+                        <Text>{transaction.index}</Text>
                         <Text
                           style={{
                             backgroundColor: getCategoryInfo(transaction.category).color
@@ -164,7 +165,7 @@ export default function TransactionListEditor({
                         <Text
                             className={`text-xl ${!transaction.negative ? 'text-success' : 'text-warning'}`}
                           >
-                            {formatNegative(transaction.stringAmount, transaction.negative)}
+                            {formatNegative(transaction.stringAmount, transaction.negative, transaction.currency)}
                         </Text>
                         {allowCurrencySelection && <Text className='text-sm text-onSurface dark:text-darkMode-onSurface'>{transaction.currency}</Text>}
                     </View>
@@ -215,6 +216,7 @@ export default function TransactionListEditor({
   }
 
   const editTransactionModal = () => {
+    console.log("Transactions", transactions);
     return (
       <EditTransactionView
         allowCurrencySelection={allowCurrencySelection}
@@ -222,6 +224,9 @@ export default function TransactionListEditor({
         colors={colors}
         mapCategories={transactionCategories}
         onSaveEditTransaction={(transaction: TransactionToDisplay) => {
+          console.log("Transactions", transactions);
+          console.log("Transactions length", transactions.length);
+          console.log("Transaction to save", transaction);
           transactions[transaction.index] = transaction;
           setTransactions(transactions)
           setModalOpened(false);

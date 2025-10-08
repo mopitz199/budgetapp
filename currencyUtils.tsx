@@ -3,37 +3,44 @@ export const currencyMap: Record<string, any> = {
     'USD': {
       'decimal': '.',
       'thousand': ',',
-      'numberDecimals': 2
+      'numberDecimals': 2,
+      'symbol': '$',
     },
     'CLP': {
       'decimal': null,
       'thousand': ".",
-      'numberDecimals': 0
+      'numberDecimals': 0,
+      'symbol': '$',
     },
     'EUR': {
       'decimal': '.',
       'thousand': ',',
-      'numberDecimals': 2
+      'numberDecimals': 2,
+      'symbol': '€',
     },
     'MXN': {
       'decimal': '.',
       'thousand': ',',
-      'numberDecimals': 2
+      'numberDecimals': 2,
+      'symbol': '$',
     },
     'ARS': {
       'decimal': ',',
       'thousand': '.',
-      'numberDecimals': 0
+      'numberDecimals': 0,
+      'symbol': '$',
     },
     'PEN': {
       'decimal': '.',
       'thousand': ',',
-      'numberDecimals': 0
+      'numberDecimals': 0,
+      'symbol': 'S/.',
     },
     'COP': {
       'decimal': ',',
       'thousand': '.',
-      'numberDecimals': 0
+      'numberDecimals': 0,
+      'symbol': '$',
     }
 }
 

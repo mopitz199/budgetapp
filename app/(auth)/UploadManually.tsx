@@ -25,8 +25,6 @@ export default function UploadManually() {
   const currencyRatio = useCurrencyRatioContext();
   const transactionCategories = useTransactionCategoriesContext();
 
-  logger("User settings in UploadManually", transactionCategories);
-
   useLayoutEffect(() => headerSettings(
       navigation,
       colorScheme,

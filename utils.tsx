@@ -1,3 +1,4 @@
+import { currencyMap } from "@/currencyUtils";
 import { getCrashlytics, setAttributes, setUserId } from '@react-native-firebase/crashlytics';
 import { HeaderBackButton } from "@react-navigation/elements";
 
@@ -5,7 +6,9 @@ export function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export function formatNegative(value: string, negative: boolean): string {
+export function formatNegative(value: string, negative: boolean, currency: string): string {
+  const currencyTool = currencyMap[currency]
+  value = currencyTool.symbol+value
   if(negative){
     return "-"+value
   }else {

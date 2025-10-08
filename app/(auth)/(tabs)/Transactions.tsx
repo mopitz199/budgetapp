@@ -103,12 +103,13 @@ export default function Transactions() {
               category: transaction.category,
               currency: transaction.currency,
             });
+            index += 1;
           }
-        }
-        index += 1;
+        }      
       }
+      console.log("Transactions", transactions);
+      setTransactions(transactions);
     }
-    setTransactions(transactions);
   }
 
   useEffect(() => {
