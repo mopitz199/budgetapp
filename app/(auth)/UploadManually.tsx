@@ -69,7 +69,7 @@ export default function UploadManually() {
         transaction.currency,
         userSettings["defaultCurrency"],
         currencyRatio
-      ).toFixed(currencyMap[transaction.currency].numberDecimals),
+      ).toFixed(currencyMap[userSettings["defaultCurrency"]].numberDecimals),
     }
     await setDoc(docRef, transactionToSave, { merge: false });
   }
