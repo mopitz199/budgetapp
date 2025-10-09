@@ -118,7 +118,7 @@ export default function TransactionEdition() {
         t, userSettings["defaultCurrency"], currencyRatio
       );
 
-      const transactionRef = doc(transactionsCollection, transactionToSave.id);
+      const transactionRef = doc(transactionsCollection, transactionToSave.uuid);
       setDoc(transactionRef, transactionToSave);
     })
     setLoading(false);

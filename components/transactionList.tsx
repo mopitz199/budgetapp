@@ -3,7 +3,7 @@ import { formatNegative } from '@/utils';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useLocalSearchParams } from 'expo-router';
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BackHandler, Pressable, ScrollView, Text, useColorScheme, View } from 'react-native';
 import { Snackbar, Tooltip, useTheme } from 'react-native-paper';
@@ -11,11 +11,11 @@ import { Snackbar, Tooltip, useTheme } from 'react-native-paper';
 import { useTransactionCategoriesContext } from '@/contexts/UserAuthenticatedContext';
 import type { TransactionToDisplay } from "@/types";
 import { getAuth } from '@react-native-firebase/auth';
-import { doc, getFirestore } from '@react-native-firebase/firestore';
 
 type Props = {
   transactions: TransactionToDisplay[];
   onSaveEditTransaction?: (transaction: TransactionToDisplay) => void;
+  onRemoveTransaction?: (transaction: TransactionToDisplay) => void;
   setTransactions: (transactions: TransactionToDisplay[]) => void;
   floatButton: any;
   allowCurrencySelection?: boolean;
@@ -24,6 +24,7 @@ type Props = {
 export default function TransactionListEditor({
   transactions,
   onSaveEditTransaction,
+  onRemoveTransaction,
   setTransactions,
   floatButton,
   allowCurrencySelection = true
@@ -44,7 +45,11 @@ export default function TransactionListEditor({
 
   // States to handle the undo snackbar when removing a transaction
   const [snackBarVisible, setSnackBarVisible] = useState(false);
-  const [lastIndexElementRemoved, setIndexLastElementRemoved] = useState<number | null>(null);
+
+  // To handle the last element to be removed for the undo action
+  const transactionIndexToNotRemove = useRef<number | null>(null);
+  const lastTransactionIndexToRemove = useRef<number | null>(null);
+
   const [transactionToEdit, setTransactionToEdit] = useState<TransactionToDisplay>(null as any);
   const [modalOpened, setModalOpened] = useState<boolean>(false);
 
@@ -64,8 +69,16 @@ export default function TransactionListEditor({
     const newTransactions = [...transactions];
     newTransactions[index].removed = true; // Mark the transaction as removed
     setTransactions(newTransactions);
-    setIndexLastElementRemoved(index);
+    lastTransactionIndexToRemove.current = index;
     setSnackBarVisible(true);
+    setTimeout(() => {
+      console.log(transactionIndexToNotRemove.current, index)
+      if(index != transactionIndexToNotRemove.current) {
+        console.log("transaction to remove permanently", transactions[index])
+        onRemoveTransaction?.(transactions[index])
+      }
+      console.log('Han pasado 7 segundos');
+    }, 7000); // tiempo en milisegundos
   }
 
   const editTransaction = (transaction: TransactionToDisplay) => {
@@ -74,12 +87,12 @@ export default function TransactionListEditor({
   }
 
   const undoRemoveTransaction = () => {
-    if (lastIndexElementRemoved !== null) {
-      const newTransactions = [...transactions];
-      newTransactions[lastIndexElementRemoved].removed = false; // Mark the transaction as restored
-      setTransactions(newTransactions);
-      setIndexLastElementRemoved(null);
-    }
+    transactionIndexToNotRemove.current = lastTransactionIndexToRemove.current;
+    if(transactionIndexToNotRemove.current === null) return;
+
+    const newTransactions = [...transactions];
+    newTransactions[transactionIndexToNotRemove.current].removed = false; // Mark the transaction as restored
+    setTransactions(newTransactions);
   }
 
   const getTransactions = () => {
@@ -203,22 +216,14 @@ export default function TransactionListEditor({
             borderRadius: 12,
           }}
           onDismiss={() => {
+            console.log("Snackbar dismissed")
             setSnackBarVisible(false)
-            if(lastIndexElementRemoved === null) return;
-            const t = transactions[lastIndexElementRemoved]
-
-            const db = getFirestore();
-            const user = auth.currentUser;
-            const docRef = doc(db, "user_transactions", user?.uid || "");
-
-            console.log("Snackbar dismissed", t)
           }}
           duration={4000}
           action={{
             label: t("undo"),
             onPress: () => {
               undoRemoveTransaction()
-              setSnackBarVisible(false)
             },
             textColor: colors.onSurfaceDarkText
           }}

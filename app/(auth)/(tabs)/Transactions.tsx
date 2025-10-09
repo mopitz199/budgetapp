@@ -4,10 +4,10 @@ import TransactionListEditor from "@/components/transactionList";
 import { useCurrencyRatioContext, useUserSettingContext } from "@/contexts/UserAuthenticatedContext";
 import { formatNumberToDisplay } from "@/currencyUtils";
 import { TransactionToDisplay } from "@/types";
-import { compareYearMonth, headerSettings, transformDisplayedTransactionToSavedTransaction } from "@/utils";
+import { compareYearMonth, headerSettings, logger, transformDisplayedTransactionToSavedTransaction } from "@/utils";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import { getAuth } from '@react-native-firebase/auth';
-import { collection, doc, getDocs, getFirestore, setDoc } from "@react-native-firebase/firestore";
+import { collection, deleteDoc, doc, getDocs, getFirestore, setDoc } from "@react-native-firebase/firestore";
 import { useNavigation } from "expo-router";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -180,6 +180,19 @@ export default function Transactions() {
       <TransactionListEditor
         transactions={transactions}
         onSaveEditTransaction={(editedTransaction) => saveEditedTransaction(editedTransaction)}
+        onRemoveTransaction={(removedTransaction: TransactionToDisplay) => {
+          const db = getFirestore();
+          const user = auth.currentUser;
+          if(!user){
+            logger("User not authenticated in saveTransaction");
+            Alert.alert(t("error"), "User not authenticated");
+            return
+          }
+          const transactionsCollection = collection(db, 'user_transactions', user.uid, 'transactions')
+          const transactionDoc = doc(transactionsCollection, removedTransaction.uuid);
+          deleteDoc(transactionDoc);
+          console.log("Snackbar dismissed", t)
+        }}
         setTransactions={setTransactions}
         floatButton={null}
         allowCurrencySelection={false}
