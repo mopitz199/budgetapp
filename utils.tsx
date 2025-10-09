@@ -83,7 +83,7 @@ export function transformDisplayedTransactionToSavedTransaction(
 ) {
   let transactionToSave = {} as Record<string, any>;
   transactionToSave = {
-    id: transaction.uuid,
+    uuid: transaction.uuid,
     category: transaction.category,
     currency: finalCurrency,
     date: transaction.date,
