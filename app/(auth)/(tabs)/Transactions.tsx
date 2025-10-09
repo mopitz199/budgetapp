@@ -130,7 +130,6 @@ export default function Transactions() {
     const transactionsCollection = collection(db, 'user_transactions', user.uid, 'transactions')
     const transactionRef = doc(transactionsCollection, transactionToSave.uuid);
     await setDoc(transactionRef, transactionToSave);
-    console.log("Transaction saved", transactionToSave);
   }
 
   useEffect(() => {
