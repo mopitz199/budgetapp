@@ -61,7 +61,7 @@ export default function UploadManually() {
       userSettings["defaultCurrency"],
       currencyRatio
     )
-    const transactionRef = doc(transactionsCollection, transactionToSave.id);
+    const transactionRef = doc(transactionsCollection, transactionToSave.uuid);
     setDoc(transactionRef, transactionToSave);
   }
 

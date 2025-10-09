@@ -116,14 +116,20 @@ export default function Transactions() {
   const saveEditedTransaction = async (editedTransaction: TransactionToDisplay) => {
     const db = getFirestore();
     const user = auth.currentUser;
-    const docRef = doc(db, "user_transactions", user?.uid || "");
+    if(!user) {
+      Alert.alert(t("error"), "User not authenticated");
+      return
+    }
     
     const transactionToSave = transformDisplayedTransactionToSavedTransaction(
       editedTransaction,
       editedTransaction.currency,
       currencyRatio
     )
-    await setDoc(docRef, transactionToSave, { merge: false });
+
+    const transactionsCollection = collection(db, 'user_transactions', user.uid, 'transactions')
+    const transactionRef = doc(transactionsCollection, transactionToSave.uuid);
+    await setDoc(transactionRef, transactionToSave);
     console.log("Transaction saved", transactionToSave);
   }
 
