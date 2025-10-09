@@ -10,6 +10,8 @@ import { Snackbar, Tooltip, useTheme } from 'react-native-paper';
 
 import { useTransactionCategoriesContext } from '@/contexts/UserAuthenticatedContext';
 import type { TransactionToDisplay } from "@/types";
+import { getAuth } from '@react-native-firebase/auth';
+import { doc, getFirestore } from '@react-native-firebase/firestore';
 
 type Props = {
   transactions: TransactionToDisplay[];
@@ -31,6 +33,7 @@ export default function TransactionListEditor({
   const colorScheme = useColorScheme();
   const { colors } = useTheme() as any;
 
+  const auth = getAuth()
   const navigation = useNavigation();
   const { t } = useTranslation();
   const transactionCategories = useTransactionCategoriesContext();
@@ -199,7 +202,17 @@ export default function TransactionListEditor({
             marginHorizontal: 16,
             borderRadius: 12,
           }}
-          onDismiss={() => {setSnackBarVisible(false)}}
+          onDismiss={() => {
+            setSnackBarVisible(false)
+            if(lastIndexElementRemoved === null) return;
+            const t = transactions[lastIndexElementRemoved]
+
+            const db = getFirestore();
+            const user = auth.currentUser;
+            const docRef = doc(db, "user_transactions", user?.uid || "");
+
+            console.log("Snackbar dismissed", t)
+          }}
           duration={4000}
           action={{
             label: t("undo"),

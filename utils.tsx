@@ -82,7 +82,7 @@ export function transformDisplayedTransactionToSavedTransaction(
   currencyRatio: Record<string, number>
 ) {
   let transactionToSave = {} as Record<string, any>;
-  transactionToSave[transaction.uuid] = {
+  transactionToSave = {
     id: transaction.uuid,
     category: transaction.category,
     currency: finalCurrency,

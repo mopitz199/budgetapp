@@ -105,25 +105,22 @@ export default function TransactionEdition() {
     if(!userSettings) return;
 
     const user = auth.currentUser;
-    const db = getFirestore();
-
-    const transactionsToSave = {} as Record<string, any>;
-    
-    transactions.filter(t => !t.removed).forEach(t => {
-      const transactionToSave = transformDisplayedTransactionToSavedTransaction(
-        t, userSettings["defaultCurrency"], currencyRatio
-      )[t.uuid];
-      transactionsToSave[t.uuid] = transactionToSave;
-    })
-
-
     if(!user) {
       Alert.alert(t("error"), "User not authenticated");
       return
     }
 
-    const docRef = doc(db, "user_transactions", user.uid);
-    await setDoc(docRef, transactionsToSave, { merge: false });
+    const db = getFirestore();
+    const transactionsCollection = collection(db, 'user_transactions', user.uid, 'transactions')
+    
+    transactions.filter(t => !t.removed).forEach(t => {
+      const transactionToSave = transformDisplayedTransactionToSavedTransaction(
+        t, userSettings["defaultCurrency"], currencyRatio
+      );
+
+      const transactionRef = doc(transactionsCollection, transactionToSave.id);
+      setDoc(transactionRef, transactionToSave);
+    })
     setLoading(false);
     router.replace('/(auth)/(tabs)/Home');
   }
