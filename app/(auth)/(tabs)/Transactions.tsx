@@ -7,11 +7,11 @@ import { TransactionToDisplay } from "@/types";
 import { compareYearMonth, headerSettings, transformDisplayedTransactionToSavedTransaction } from "@/utils";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import { getAuth } from '@react-native-firebase/auth';
-import { doc, getDoc, getFirestore, setDoc } from "@react-native-firebase/firestore";
+import { collection, doc, getDocs, getFirestore, setDoc } from "@react-native-firebase/firestore";
 import { useNavigation } from "expo-router";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Keyboard, Platform, Pressable, Text, useColorScheme, View } from "react-native";
+import { Alert, Keyboard, Platform, Pressable, Text, useColorScheme, View } from "react-native";
 import { Icon, useTheme } from "react-native-paper";
 
 export default function Transactions() {
@@ -85,34 +85,32 @@ export default function Transactions() {
     let transactions: TransactionToDisplay[] = [];
     const db = getFirestore();
     const user = auth.currentUser;
-    const docRef = doc(db, "user_transactions", user?.uid || "");
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-      const jsonOutput = docSnap.data();
-      let index = 0;
-      for (const transactionUUID in jsonOutput) {
-        if (jsonOutput.hasOwnProperty(transactionUUID)) {
-          const transaction = jsonOutput[transactionUUID];
-          if(compareYearMonth(transaction.date.toDate(), filteredDate) == 0){
-            transactions.push({
-              uuid: transactionUUID,
-              amount: transaction.amount,
-              description: transaction.description,
-              date: transaction.date.toDate(),
-              removed: false,
-              negative: transaction.amount < 0,
-              stringAmount: formatNumberToDisplay(Math.abs(transaction.amount).toString(), transaction.currency, transaction.currency),
-              index: index,
-              category: transaction.category,
-              currency: transaction.currency,
-            });
-            index += 1;
-          }
-        }      
-      }
-      setTransactions(transactions);
+    if(!user) {
+      Alert.alert(t("error"), "User not authenticated");
+      return
     }
+    const transactionsCollection = collection(db, 'user_transactions', user.uid, 'transactions')
+    const transactionsDocs = await getDocs(transactionsCollection);
+
+    transactionsDocs.forEach((transactionDoc: any, index: number) => {
+      const transaction = transactionDoc.data();
+      if(compareYearMonth(transaction.date.toDate(), filteredDate) == 0){
+        transactions.push({
+          uuid: transaction.uuid,
+          amount: transaction.amount,
+          description: transaction.description,
+          date: transaction.date.toDate(),
+          removed: false,
+          negative: transaction.amount < 0,
+          stringAmount: formatNumberToDisplay(Math.abs(transaction.amount).toString(), transaction.currency, transaction.currency),
+          index: index,
+          category: transaction.category,
+          currency: transaction.currency,
+        });
+        index += 1;
+      }
+    })
+    setTransactions(transactions);
   }
 
   const saveEditedTransaction = async (editedTransaction: TransactionToDisplay) => {
