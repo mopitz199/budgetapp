@@ -4,7 +4,7 @@ import { useCurrencyRatioContext, useTransactionCategoriesContext, useUserSettin
 import type { Categories, TransactionToDisplay } from "@/types";
 import { headerSettings, logger, transformDisplayedTransactionToSavedTransaction } from "@/utils";
 import { getAuth } from "@react-native-firebase/auth";
-import { doc, getFirestore, setDoc } from "@react-native-firebase/firestore";
+import { collection, doc, getFirestore, setDoc } from "@react-native-firebase/firestore";
 import { router, useNavigation } from 'expo-router';
 import { useLayoutEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -54,15 +54,15 @@ export default function UploadManually() {
       return
     }
     const db = getFirestore();
-    const docRef = doc(db, "user_transactions", user.uid);
-
+    const transactionsCollection = collection(db, 'user_transactions', user.uid, 'transactions')
 
     const transactionToSave = transformDisplayedTransactionToSavedTransaction(
       transaction,
       userSettings["defaultCurrency"],
       currencyRatio
     )
-    await setDoc(docRef, transactionToSave, { merge: false });
+    const transactionRef = doc(transactionsCollection, transactionToSave.id);
+    setDoc(transactionRef, transactionToSave);
   }
 
   return (
