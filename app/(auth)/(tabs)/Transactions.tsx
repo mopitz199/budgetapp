@@ -91,7 +91,8 @@ export default function Transactions() {
     const transactionsCollection = collection(db, 'user_transactions', user.uid, 'transactions')
     const transactionsDocs = await getDocs(transactionsCollection);
 
-    transactionsDocs.forEach((transactionDoc: any, index: number) => {
+    let index = 0;
+    transactionsDocs.forEach((transactionDoc: any) => {
       const transaction = transactionDoc.data();
       if(compareYearMonth(transaction.date.toDate(), filteredDate) == 0){
         transactions.push({
