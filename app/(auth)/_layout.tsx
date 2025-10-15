@@ -1,5 +1,5 @@
 import { UserAuthenticatedContext } from "@/contexts/UserAuthenticatedContext";
-import { Categories, UserAuthenticatedContextType } from "@/types";
+import { Categories, UserAuthenticatedContextValue } from "@/types";
 import { errorLogger, initAuthenticatedLogs } from "@/utils";
 import { getAuth } from "@react-native-firebase/auth";
 import { collection, doc, getDoc, getDocs, getFirestore } from '@react-native-firebase/firestore';
@@ -13,7 +13,7 @@ const Layout = () => {
   const auth = getAuth()
 
 
-  const [userAuthenticatedContext, setUserAuthenticatedContext] = useState<UserAuthenticatedContextType | null>(null);
+  const [userAuthenticatedContext, setUserAuthenticatedContext] = useState<UserAuthenticatedContextValue | null>(null);
 
   const setUserSettings = async () => {
     const user = auth.currentUser;
@@ -82,7 +82,10 @@ const Layout = () => {
   }
 
   return (
-    <UserAuthenticatedContext.Provider value={userAuthenticatedContext}>
+    <UserAuthenticatedContext.Provider value={{
+      'userAuthenticatedContextValue': userAuthenticatedContext,
+      'setUserAuthenticatedContext': setUserAuthenticatedContext
+    }}>
       <Stack>
         <Stack.Screen name='(tabs)' options={({ route }) => {
           const skip = (route.params as { skipAnimation?: string })?.skipAnimation;

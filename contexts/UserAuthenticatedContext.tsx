@@ -5,7 +5,7 @@ export const UserAuthenticatedContext = createContext<UserAuthenticatedContextTy
 
 export function useUserSettingContext(){
   const userAuthenticatedContext = useContext(UserAuthenticatedContext)
-  const userSettings = userAuthenticatedContext?.userSettings
+  const userSettings = userAuthenticatedContext?.userAuthenticatedContextValue.userSettings
   if(userSettings === null){
     throw new Error("useUserSettingContext must be used within a UserAuthenticatedContext.Provider with a valid value.");
   }
@@ -14,7 +14,7 @@ export function useUserSettingContext(){
 
 export function useCurrencyRatioContext(){
   const userAuthenticatedContext = useContext(UserAuthenticatedContext)
-  const currencyRatio = userAuthenticatedContext?.currencyRatio
+  const currencyRatio = userAuthenticatedContext?.userAuthenticatedContextValue.currencyRatio
   if(currencyRatio === null){
     throw new Error("useCurrencyRatioContext must be used within a UserAuthenticatedContext.Provider with a valid value.");
   }
@@ -23,7 +23,7 @@ export function useCurrencyRatioContext(){
 
 export function useTransactionCategoriesContext(){
   const userAuthenticatedContext = useContext(UserAuthenticatedContext)
-  const transactionCategories = userAuthenticatedContext?.transactionCategories
+  const transactionCategories = userAuthenticatedContext?.userAuthenticatedContextValue.transactionCategories
   if(transactionCategories === null || transactionCategories === undefined){
     throw new Error("useTransactionCategoriesContext must be used within a UserAuthenticatedContext.Provider with a valid value.");
   }
