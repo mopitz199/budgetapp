@@ -15,7 +15,7 @@ export function useUserSettingContext(){
 export function useCurrencyRatioContext(){
   const userAuthenticatedContext = useContext(UserAuthenticatedContext)
   const currencyRatio = userAuthenticatedContext?.userAuthenticatedContextValue.currencyRatio
-  if(currencyRatio === null){
+  if(currencyRatio === null || currencyRatio === undefined){
     throw new Error("useCurrencyRatioContext must be used within a UserAuthenticatedContext.Provider with a valid value.");
   }
   return currencyRatio;

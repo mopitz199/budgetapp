@@ -1,7 +1,7 @@
 import { CustomMainView } from "@/components/customMainView";
 import IOSDatePicker from "@/components/iosDatePicker";
 import TransactionListEditor from "@/components/transactionList";
-import { useCurrencyRatioContext, useUserSettingContext } from "@/contexts/UserAuthenticatedContext";
+import { useCurrencyRatioContext } from "@/contexts/UserAuthenticatedContext";
 import { formatNumberToDisplay } from "@/currencyUtils";
 import { TransactionToDisplay } from "@/types";
 import { compareYearMonth, headerSettings, logger, transformDisplayedTransactionToSavedTransaction } from "@/utils";
@@ -25,7 +25,6 @@ export default function Transactions() {
   const { t, i18n } = useTranslation();
   const navigation = useNavigation();
   const colorScheme = useColorScheme();
-  const userSettings = useUserSettingContext();
   const currencyRatio = useCurrencyRatioContext();
   const { colors } = useTheme() as any;
 
