@@ -1,16 +1,15 @@
 import { EditTransactionView } from '@/components/editTransactionModal';
+import { useTransactionCategoriesContext } from '@/contexts/TransactionCategoryContext';
+import type { TransactionToDisplay } from "@/types";
 import { formatNegative } from '@/utils';
 import { Ionicons } from '@expo/vector-icons';
+import { getAuth } from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BackHandler, Pressable, ScrollView, Text, useColorScheme, View } from 'react-native';
 import { Snackbar, Tooltip, useTheme } from 'react-native-paper';
-
-import { useTransactionCategoriesContext } from '@/contexts/UserAuthenticatedContext';
-import type { TransactionToDisplay } from "@/types";
-import { getAuth } from '@react-native-firebase/auth';
 
 type Props = {
   transactions: TransactionToDisplay[];
@@ -37,7 +36,7 @@ export default function TransactionListEditor({
   const auth = getAuth()
   const navigation = useNavigation();
   const { t } = useTranslation();
-  const transactionCategories = useTransactionCategoriesContext();
+  const { transactionCategories } = useTransactionCategoriesContext();
 
   let { transactionsId, selectedCurrency } = useLocalSearchParams();
   transactionsId = transactionsId as string;

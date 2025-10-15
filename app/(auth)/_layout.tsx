@@ -1,5 +1,7 @@
+import { CurrencyRatioContext } from "@/contexts/CurrencyRatioContext";
+import { TransactionCategoriesContext } from "@/contexts/TransactionCategoryContext";
 import { UserAuthenticatedContext } from "@/contexts/UserAuthenticatedContext";
-import { Categories, UserAuthenticatedContextValue } from "@/types";
+import { Categories } from "@/types";
 import { errorLogger, initAuthenticatedLogs } from "@/utils";
 import { getAuth } from "@react-native-firebase/auth";
 import { collection, doc, getDoc, getDocs, getFirestore } from '@react-native-firebase/firestore';
@@ -13,9 +15,11 @@ const Layout = () => {
   const auth = getAuth()
 
 
-  const [userAuthenticatedContext, setUserAuthenticatedContext] = useState<UserAuthenticatedContextValue | null>(null);
+  const [userSettings, setUserSettings] = useState<any | null>(null);
+  const [currencyRatio, setCurrencyRatio] = useState<Record<string, number> | null>(null);
+  const [transactionCategories, setTransactionCategories] = useState<Categories | null>(null);
 
-  const setUserSettings = async () => {
+  const fetchUserSettings = async () => {
     const user = auth.currentUser;
     if(!user){
       errorLogger("User not authenticated", "User is not logged in");
@@ -35,7 +39,7 @@ const Layout = () => {
     }
   }
 
-  const setCurrencyRatio = async () => {
+  const fetchCurrencyRatio = async () => {
     const db = getFirestore();
     const collectionRef = collection(db, "currency_conversion");
     const docSnap = await getDocs(collectionRef);
@@ -61,14 +65,14 @@ const Layout = () => {
   }
 
   const setAuthenticatedContext = async () => {
-    const userSettings = await setUserSettings();
-    const currencyRatio = await setCurrencyRatio();
+    const userSettings = await fetchUserSettings();
+    setUserSettings(userSettings);
+
+    const currencyRatio = await fetchCurrencyRatio();
+    setCurrencyRatio(currencyRatio);
+
     const transactionCategories = await setCategories();
-    setUserAuthenticatedContext({
-      userSettings: userSettings,
-      currencyRatio: currencyRatio,
-      transactionCategories: transactionCategories,
-    });
+    setTransactionCategories(transactionCategories);
   }
 
   useEffect(() => {
@@ -77,31 +81,32 @@ const Layout = () => {
   }, []);
 
 
-  if (! userAuthenticatedContext) {
+  if (! userSettings || ! currencyRatio || ! transactionCategories) {
     return null; // or a loading spinner, etc.
   }
 
   return (
-    <UserAuthenticatedContext.Provider value={{
-      'userAuthenticatedContextValue': userAuthenticatedContext,
-      'setUserAuthenticatedContext': setUserAuthenticatedContext
-    }}>
-      <Stack>
-        <Stack.Screen name='(tabs)' options={({ route }) => {
-          const skip = (route.params as { skipAnimation?: string })?.skipAnimation;
-          return {
-            headerShown: false,
-            title: 'Home',
-            animation: skip === '1' ? 'none' : 'slide_from_right',
-          }
-        }} />
-        {/*<Stack.Screen name='home' options={{headerShown: true, title: 'Home'}} />
-        <Stack.Screen name='RealHome' options={{headerShown: false}} />*/}
-        <Stack.Screen name='EmailVerification'/>
-        <Stack.Screen name='SelectTransactionType' options={{animation: 'fade_from_bottom', headerShown: false}}/>
-        <Stack.Screen name='TransactionsPreview'/>
-        <Stack.Screen name='UploadFiles'/>
-      </Stack>
+    <UserAuthenticatedContext.Provider value={{ userSettings, setUserSettings }}>
+      <TransactionCategoriesContext.Provider value={{ transactionCategories, setTransactionCategories }}>
+        <CurrencyRatioContext.Provider value={{ currencyRatio, setCurrencyRatio }}>
+          <Stack>
+            <Stack.Screen name='(tabs)' options={({ route }) => {
+              const skip = (route.params as { skipAnimation?: string })?.skipAnimation;
+              return {
+                headerShown: false,
+                title: 'Home',
+                animation: skip === '1' ? 'none' : 'slide_from_right',
+              }
+            }} />
+            {/*<Stack.Screen name='home' options={{headerShown: true, title: 'Home'}} />
+            <Stack.Screen name='RealHome' options={{headerShown: false}} />*/}
+            <Stack.Screen name='EmailVerification'/>
+            <Stack.Screen name='SelectTransactionType' options={{animation: 'fade_from_bottom', headerShown: false}}/>
+            <Stack.Screen name='TransactionsPreview'/>
+            <Stack.Screen name='UploadFiles'/>
+          </Stack>
+        </CurrencyRatioContext.Provider>
+      </TransactionCategoriesContext.Provider>
     </UserAuthenticatedContext.Provider>
   )
 }

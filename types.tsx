@@ -15,13 +15,3 @@ export type User = {
   uid: string;
   email: string | null;
 }
-export type UserAuthenticatedContextValue = {
-  userSettings: any;
-  currencyRatio: Record<string, number>;
-  transactionCategories: Categories;
-}
-
-export type UserAuthenticatedContextType = {
-  userAuthenticatedContextValue: UserAuthenticatedContextValue;
-  setUserAuthenticatedContext: React.Dispatch<React.SetStateAction<UserAuthenticatedContextValue | null>>;
-}

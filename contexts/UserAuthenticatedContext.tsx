@@ -1,31 +1,11 @@
-import { UserAuthenticatedContextType } from "@/types";
 import { createContext, useContext } from "react";
 
-export const UserAuthenticatedContext = createContext<UserAuthenticatedContextType | null>(null);
+export const UserAuthenticatedContext = createContext<any | null>(null);
 
-export function useUserSettingContext(){
-  const userAuthenticatedContext = useContext(UserAuthenticatedContext)
-  const userSettings = userAuthenticatedContext?.userAuthenticatedContextValue.userSettings
-  if(userSettings === null){
-    throw new Error("useUserSettingContext must be used within a UserAuthenticatedContext.Provider with a valid value.");
+export function useUserAuthenticatedContext(){
+  const userSettings = useContext(UserAuthenticatedContext)
+  if(userSettings === null || userSettings === undefined){
+    throw new Error("useUserAuthenticatedContext must be used within a UserAuthenticatedContext.Provider with a valid value.");
   }
   return userSettings;
-}
-
-export function useCurrencyRatioContext(){
-  const userAuthenticatedContext = useContext(UserAuthenticatedContext)
-  const currencyRatio = userAuthenticatedContext?.userAuthenticatedContextValue.currencyRatio
-  if(currencyRatio === null || currencyRatio === undefined){
-    throw new Error("useCurrencyRatioContext must be used within a UserAuthenticatedContext.Provider with a valid value.");
-  }
-  return currencyRatio;
-}
-
-export function useTransactionCategoriesContext(){
-  const userAuthenticatedContext = useContext(UserAuthenticatedContext)
-  const transactionCategories = userAuthenticatedContext?.userAuthenticatedContextValue.transactionCategories
-  if(transactionCategories === null || transactionCategories === undefined){
-    throw new Error("useTransactionCategoriesContext must be used within a UserAuthenticatedContext.Provider with a valid value.");
-  }
-  return transactionCategories;
 }

@@ -1,6 +1,8 @@
 import { CustomMainView } from "@/components/customMainView";
 import { EditTransactionView } from "@/components/editTransactionModal";
-import { useCurrencyRatioContext, useTransactionCategoriesContext, useUserSettingContext } from "@/contexts/UserAuthenticatedContext";
+import { useCurrencyRatioContext } from "@/contexts/CurrencyRatioContext";
+import { useTransactionCategoriesContext } from "@/contexts/TransactionCategoryContext";
+import { useUserAuthenticatedContext } from "@/contexts/UserAuthenticatedContext";
 import type { Categories, TransactionToDisplay } from "@/types";
 import { headerSettings, logger, transformDisplayedTransactionToSavedTransaction } from "@/utils";
 import { getAuth } from "@react-native-firebase/auth";
@@ -20,9 +22,9 @@ export default function UploadManually() {
   const { t } = useTranslation();
   const auth = getAuth()
   const { colors } = useTheme() as any;
-  const userSettings = useUserSettingContext();
-  const currencyRatio = useCurrencyRatioContext();
-  const transactionCategories = useTransactionCategoriesContext();
+  const { userSettings } = useUserAuthenticatedContext();
+  const { currencyRatio } = useCurrencyRatioContext();
+  const { transactionCategories } = useTransactionCategoriesContext();
 
   useLayoutEffect(() => headerSettings(
       navigation,
