@@ -92,7 +92,6 @@ export default function Settings() {
         <SecondaryButton
           className="mt-4"
           text={defaultCurrency}
-          // disabled={loading}
           onPress={() => setShowCurrencyModal(true)}
           rightIcon={
             <View className='absolute right-0'>
