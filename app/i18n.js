@@ -67,6 +67,8 @@ const resources = {
       "userSettingsNotFound": "User settings not found",
       "newTransaction": "New Transaction",
       "transaction": "Transaction",
+      "settings": "Settings",
+      "defaultCurrency": "Default Currency",
     }
   },
   es: {
@@ -131,6 +133,8 @@ const resources = {
       "userSettingsNotFound": "Configuraciones de usuario no encontradas",
       "newTransaction": "Nueva Transacción",
       "transaction": "Transacción",
+      "settings": "Configuraciones",
+      "defaultCurrency": "Moneda por Defecto",
     }
   }
 };

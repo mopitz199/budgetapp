@@ -143,21 +143,22 @@ export function currencyConvertor(amount: number, fromCurrency: string, toCurren
 
   let fromRate = undefined;
   let toRate = undefined;
-
+  let finalValue = amount;
+  
   if(fromCurrency === toCurrency){
-    return amount;
+    finalValue = amount;
   } else if (fromCurrency === 'USD'){
     toRate = conversionMap[`USD-${toCurrency}`];
     if(toRate === undefined){
       throw new Error(`Conversion rate not found for currency: ${toCurrency}`);
     }
-    return amount * toRate;
+    finalValue = amount * toRate;
   } else if (toCurrency === 'USD'){
     fromRate = conversionMap[`USD-${fromCurrency}`];
     if(fromRate === undefined){
       throw new Error(`Conversion rate not found for currency: ${fromCurrency}`);
     }
-    return amount / fromRate;
+    finalValue = amount / fromRate;
   } else {
     let fromRateKey = `USD-${fromCurrency}`;
     let toRateKey = `USD-${toCurrency}`;
@@ -167,7 +168,10 @@ export function currencyConvertor(amount: number, fromCurrency: string, toCurren
     if(fromRate === undefined || toRate === undefined){
       throw new Error(`Conversion rate not found for currency: ${fromCurrency} or ${toCurrency}`);
     } else {
-      return (amount * toRate) / fromRate;
+      finalValue = (amount * toRate) / fromRate;
     }
   }
+
+  return Number(finalValue.toFixed(currencyMap[toCurrency].numberDecimals));
+
 }

@@ -93,7 +93,7 @@ export function transformDisplayedTransactionToSavedTransaction(
       transaction.currency,
       finalCurrency,
       currencyRatio
-    ).toFixed(currencyMap[finalCurrency].numberDecimals),
+    ),
   }
   return transactionToSave;
 }
