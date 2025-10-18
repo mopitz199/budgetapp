@@ -2,6 +2,7 @@ import { PrimaryButton, SecondaryButton } from '@/components/buttons';
 import { CurrencyPickerModal } from '@/components/currencyPickerModal';
 import { CustomMainView } from '@/components/customMainView';
 import { headerSettings, logger } from '@/utils';
+import Ionicons from '@expo/vector-icons/build/Ionicons';
 import { getAuth, getIdToken } from '@react-native-firebase/auth';
 import { getDownloadURL, getStorage, putFile, ref } from '@react-native-firebase/storage';
 import { usePreventRemove } from '@react-navigation/core';
@@ -10,7 +11,7 @@ import { useNavigation, useRouter } from "expo-router";
 import React, { useLayoutEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
 import { Alert, Image, ScrollView, Text, useColorScheme, View } from "react-native";
-import { Icon, useTheme } from 'react-native-paper';
+import { useTheme } from 'react-native-paper';
 import uuid from 'react-native-uuid';
 
 const UploadFiles = () => {
@@ -163,9 +164,9 @@ const UploadFiles = () => {
               onPress={() => setShowCurrencyModal(true)}
               rightIcon={
                 <View className='absolute right-0'>
-                  <Icon
-                    source="arrow-down-drop-circle"
-                    color={colors.primary}
+                  <Ionicons
+                    name="caret-down-outline"
+                    color={colors.onSurface}
                     size={25}
                   />
                 </View>

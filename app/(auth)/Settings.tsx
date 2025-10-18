@@ -5,13 +5,14 @@ import { useCurrencyRatioContext } from "@/contexts/CurrencyRatioContext";
 import { useUserAuthenticatedContext } from "@/contexts/UserAuthenticatedContext";
 import { currencyConvertor } from "@/currencyUtils";
 import { headerSettings } from "@/utils";
+import Ionicons from "@expo/vector-icons/build/Ionicons";
 import { getAuth } from "@react-native-firebase/auth";
 import { collection, doc, getDocs, getFirestore, setDoc } from "@react-native-firebase/firestore";
 import { router, useNavigation } from "expo-router";
 import { useLayoutEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, Text, useColorScheme, View } from "react-native";
-import { Icon, useTheme } from "react-native-paper";
+import { useTheme } from "react-native-paper";
 
 export default function Settings() {
 
@@ -87,7 +88,7 @@ export default function Settings() {
         }}
       />
 
-      <View className="flex-1">
+      <View className="flex-1 mt-8">
         <Text className=" dark:text-darkMode-onSurface text-darkMode-onSurface">{t("defaultCurrency")}</Text>
         <SecondaryButton
           className="mt-4"
@@ -95,9 +96,9 @@ export default function Settings() {
           onPress={() => setShowCurrencyModal(true)}
           rightIcon={
             <View className='absolute right-0'>
-              <Icon
-                source="arrow-down-drop-circle"
-                color={colors.primary}
+              <Ionicons
+                name="caret-down-outline"
+                color={colors.onSurface}
                 size={25}
               />
             </View>

@@ -5,6 +5,7 @@ import { useCurrencyRatioContext } from "@/contexts/CurrencyRatioContext";
 import { formatNumberToDisplay } from "@/currencyUtils";
 import { TransactionToDisplay } from "@/types";
 import { compareYearMonth, headerSettings, logger, transformDisplayedTransactionToSavedTransaction } from "@/utils";
+import Ionicons from "@expo/vector-icons/build/Ionicons";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import { getAuth } from '@react-native-firebase/auth';
 import { collection, deleteDoc, doc, getDocs, getFirestore, setDoc } from "@react-native-firebase/firestore";
@@ -12,7 +13,7 @@ import { useNavigation } from "expo-router";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, Keyboard, Platform, Pressable, Text, useColorScheme, View } from "react-native";
-import { Icon, useTheme } from "react-native-paper";
+import { useTheme } from "react-native-paper";
 
 export default function Transactions() {
 
@@ -158,9 +159,9 @@ export default function Transactions() {
                   rounded-full p-2 pr-3 pl-3'
                 >
                   <Text className='text-onPrimary mr-1'>{`${currentDate}`}</Text>
-                  <Icon
-                    source="arrow-down-drop-circle"
-                    color={colors.onPrimary}
+                  <Ionicons
+                    name="caret-down-outline"
+                    color={colors.onSurface}
                     size={20}
                   />
                 </View>
