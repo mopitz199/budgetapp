@@ -7,7 +7,7 @@ import { currencyConvertor } from "@/currencyUtils";
 import { headerSettings } from "@/utils";
 import { getAuth } from "@react-native-firebase/auth";
 import { collection, doc, getDocs, getFirestore, setDoc } from "@react-native-firebase/firestore";
-import { useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import { useLayoutEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, Text, useColorScheme, View } from "react-native";
@@ -23,6 +23,7 @@ export default function Settings() {
   const { userSettings, setUserSettings } = useUserAuthenticatedContext();
   const { currencyRatio } = useCurrencyRatioContext();
 
+  const [loading, setLoading] = useState(false);
   const [showCurrencyModal, setShowCurrencyModal] = useState(false);
   const [defaultCurrency, setDefaultCurrency] = useState(userSettings.defaultCurrency);
 
@@ -75,33 +76,14 @@ export default function Settings() {
   }
 
   return (
-    <CustomMainView className="p-8 pb-14">
+    <CustomMainView className="p-8 pb-14" loading={loading}>
       <CurrencyPickerModal
         showCurrencyModal={showCurrencyModal}
         setShowCurrencyModal={setShowCurrencyModal}
         colors={colors}
         currencyValue={defaultCurrency}
         onCurrencyChange={async (oldCurrencyValue: string, newCurrencyValue: string) => {
-
           setDefaultCurrency(newCurrencyValue);
-          
-          /*
-          const newSettings = {...userSettings, defaultCurrency: newCurrencyValue}
-
-          const db = getFirestore();
-          const user = auth.currentUser;
-          if(!user) {
-            Alert.alert(t("error"), "User not authenticated");
-            return
-          }
-
-          const settingsCollection = collection(db, 'user_settings')
-          const settingsRef = doc(settingsCollection, user.uid);
-          await setDoc(settingsRef, newSettings);
-
-          console.log("New currency selected:", newCurrencyValue);
-          setUserSettings(newSettings);
-          */
         }}
       />
 
@@ -124,15 +106,14 @@ export default function Settings() {
         />
         <View className="flex-1 justify-end">
           <PrimaryButton className='mt-4' text={t("save")} onPress={() => {
-            Alert.alert('Important', 'By changing the default currency, you may affect your budget calculations.', [
-              {
-                text: 'Cancel',
-                onPress: () => console.log('Cancel Pressed'),
-                style: 'cancel',
-              },
-              {text: 'OK', onPress: () => {
+            Alert.alert(t('important'), t('changingDefaultCurrencyWarning'), [
+              {text: t('cancel'), style: 'cancel'},
+              {text: t('save'), onPress: () => {
+                setLoading(true);
                 setAllTransactions()
                 setDefaultSettingCurrency()
+                setLoading(false);
+                router.push('/(auth)/(tabs)/Home');
               }},
             ]);
           }} />

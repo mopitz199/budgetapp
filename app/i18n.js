@@ -69,6 +69,9 @@ const resources = {
       "transaction": "Transaction",
       "settings": "Settings",
       "defaultCurrency": "Default Currency",
+      "important": "Important",
+      "changingDefaultCurrencyWarning": "By changing the default currency, you may affect your budget calculations.",
+      "ok": "Ok",
     }
   },
   es: {
@@ -135,6 +138,9 @@ const resources = {
       "transaction": "Transacción",
       "settings": "Configuraciones",
       "defaultCurrency": "Moneda por Defecto",
+      "important": "Importante",
+      "changingDefaultCurrencyWarning": "Al cambiar la moneda por defecto, puede afectar los cálculos de su presupuesto.",
+      "ok": "Ok",
     }
   }
 };
